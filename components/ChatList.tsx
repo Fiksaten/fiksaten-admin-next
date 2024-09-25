@@ -1,4 +1,4 @@
-import { formatMessageDate } from "@/lib/utils"
+import { formatMessageDate } from "@/app/lib/utils"
 import { Avatar } from "./ui/avatar"
 import { ScrollArea } from "./ui/scroll-area"
 import { Chat } from "./CustomerServiceChat"

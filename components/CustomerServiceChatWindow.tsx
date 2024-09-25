@@ -6,7 +6,7 @@ import { Button } from "./ui/button"
 import { MessageCircle, Paperclip, Send, User } from "lucide-react"
 import { ScrollArea } from "./ui/scroll-area"
 import { Input } from "./ui/input"
-import { formatMessageDate } from "@/lib/utils"
+import { formatMessageDate } from "@/app/lib/utils"
 
 const CustomerServiceChatWindow = ({ messages, inputMessage, handleInputChange, handleSendMessage, isTyping, selectedChat, userId }: { selectedChat: Chat | undefined, messages: Message[], inputMessage: string, handleInputChange: (value: string) => void, handleSendMessage: () => void, isTyping: boolean, userId: string }) => {
 

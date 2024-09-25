@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from './AuthProvider';
-import { getChats } from '@/lib/actions';
+import { getChats } from '@/app/lib/actions';
 import CustomerServiceChatWindow from './CustomerServiceChatWindow';
 import ChatList from './ChatList';
 

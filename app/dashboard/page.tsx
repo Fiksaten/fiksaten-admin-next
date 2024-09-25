@@ -1,6 +1,8 @@
 import { ReportsPage } from "@/components/reports-page";
-export default function Home() {
+import { getReports } from "../lib/actions";
+export default async function Home() {
+  const reports = await getReports();
   return (
-    <ReportsPage />
+    <ReportsPage reports={reports}/>
   );
 }

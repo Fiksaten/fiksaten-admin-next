@@ -14,51 +14,19 @@ import { format } from "date-fns"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { PieChart, Pie, Cell } from 'recharts'
 import { BarChart, Bar, Legend } from 'recharts'
-import { DashboardStatsResponse } from "@/lib/types"
-import { getIdTokenFromCookie } from "@/lib/actions"
-import { buildApiUrl } from "@/lib/utils"
+import { DashboardStatsResponse } from "@/app/lib/types"
 
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
-export function ReportsPage() {
+export function ReportsPage({reports}: {reports: DashboardStatsResponse}) {
   const [date, setDate] = useState<{ from: Date; to: Date | undefined }>({
     from: new Date(2023, 0, 1),
     to: new Date(2023, 0, 31),
   })
-  const [reports, setReports] = useState<DashboardStatsResponse>()
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true)
-      const token = await getIdTokenFromCookie();
-      const response = await fetch(buildApiUrl('/admin/metrics'), {
-          method: 'GET',
-          headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-          },
-      });
-      if (!response.ok) {
-          throw new Error('Failed to fetch reports')
-      }
-      const data: DashboardStatsResponse = await response.json()
-      console.log(data)
-      setReports(data)
-    } catch (error) {
-      console.error('Error fetching reports:', error)
-    } finally {
-      setLoading(false)
-    }
-    })()
-  }, [])
-
-  if(loading && !reports) { 
-    return <div>Loading...</div>
-  }
-
+  
+  if (!reports) return <h1>loading</h1>
   const orderStatusData  = false
   return (
     <div className="container mx-auto py-10">
