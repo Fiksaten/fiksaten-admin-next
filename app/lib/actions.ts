@@ -94,37 +94,101 @@ export const getCategories = async () => {
 export const createCategory = async (category: CreateCategory) => {
   const idToken = await getIdToken();
   try {
-    const response = await postCategory(category, idToken);
-    return {
-      message: response
+    const response = await fetch(buildApiUrl("/categories/create"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify(category),
+    });
+    if (!response.ok) {
+      throw new Error(await response.json());
     }
-  } catch (error) {
-    console.log(error);
-    throw new Error(error.message)
+    return { message: "Ok" }
+  } catch (e) {
+    console.error(e);
+    return { message: "Error" }
   }
-}
+};
 
-export const editClaim = async (_: any, formData: FormData) => {
+export const updateCategory = async (category: CreateCategory, id: string) => {
   const idToken = await getIdToken();
-  const claim = await parseFormData(formData);
-
-  console.log('editClaim - start - data = %j', claim);
   try {
-    await updateClaim(claim, idToken);
-    revalidatePath('/claims', 'page');
-    return {
-      message: claim.claim_uuid
+    const response = await fetch(buildApiUrl(`/categories/update/${id}`), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify(category),
+    });
+    if (!response.ok) {
+      throw new Error(await response.json());
     }
-  } catch (error: any) {
-    throw new Error(error.message)
+    return { message: "Ok" }
+  } catch (e) {
+    console.error(e);
+    return { message: "Error" }
+  }
+};
+
+export const deleteCategory = async (id: string) => {
+  const idToken = await getIdToken();
+  try {
+    const response = await fetch(buildApiUrl(`/categories/delete/${id}`), {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(await response.json());
+    }
+    return { message: "Ok" }
+  } catch (e) {
+    console.error(e);
+    return { message: "Error" }
+  }
+};
+
+
+
+export const getUser = async (id: string) => {
+  const token = await getIdToken();
+  try {
+    const response = await fetch(buildApiUrl(`/users/${id}`), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(await response.json());
+    }
+    return await response.json();
+  } catch (e) {
+    console.error(e);
   }
 }
 
-export const removeClaim = async (claimId: string) => {
-  const idToken = await getIdToken();
-  console.log('removeClaim - start - data = %j', { claimId });
-  await deleteClaim(claimId, idToken);
-  return {
-    message: 'Claim removed'
+export const getUserOrders = async (id: string, page = 1, limit = 5) => {
+  const token = await getIdToken();
+  try {
+    const response = await fetch(buildApiUrl(`/users/orders/${id}?page=${page}&limit=${limit}`), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(await response.json());
+    }
+    return await response.json();
+  } catch (e) {
+    console.error(e);
   }
-}
+};

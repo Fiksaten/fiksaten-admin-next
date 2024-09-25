@@ -139,8 +139,9 @@ export default function UsersPage({
                           Copy user ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View user details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit user</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => router.push(`/dashboard/users/${user.id}`)}
+                        >View user details</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

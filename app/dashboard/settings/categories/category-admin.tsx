@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { CategoryForm } from './category-form'
 import { CategoryList } from './category-list'
-import { useRouter } from 'next/router'
 
 type Category = {
     description: string;
@@ -20,16 +19,21 @@ type CategoryProps = {
       newCategory: Omit<Category, 'id'>
     ) => Promise<{ message: string }>;
     categories: Category[]
+    onUpdate: (
+      updatedCategory: Category
+    ) => Promise<{ message: string }>;
+    onDelete: (
+      id: string
+    ) => Promise<{ message: string }>;
   };
 
-export function CategoryAdminComponent({categories, onSubmit}:CategoryProps) {
+export function CategoryAdminComponent({categories, onSubmit, onUpdate, onDelete}:CategoryProps) {
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [editingCategory, setEditingCategory] = useState<Category | null>(null)
     const [message, setMessage] = useState("")
     
 
     const handleCreateCategory = async (newCategory: Omit<Category, 'id' | 'created_at' | 'updated_at'>) => {
-        
         const category: Omit<Category, 'id'> = {
             ...newCategory,
             created_at: new Date().toISOString(),
@@ -46,13 +50,24 @@ export function CategoryAdminComponent({categories, onSubmit}:CategoryProps) {
     }
 
     const handleUpdateCategory = (updatedCategory: Category) => {
-        // In a real application, you would send a PUT request to your API here
+        try {
+            onUpdate(updatedCategory);
+            setMessage("Ok")
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (error: any) {
+            setMessage(error.message);
+          }
         setEditingCategory(null)
     }
 
     const handleDeleteCategory = (id: string) => {
-        // In a real application, you would send a DELETE request to your API here
-        
+        try {
+            onDelete(id);
+            setMessage("Ok")
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (error: any) {
+            setMessage(error.message);
+          }
     }
 
     return (
@@ -70,7 +85,7 @@ export function CategoryAdminComponent({categories, onSubmit}:CategoryProps) {
             {editingCategory && (
                 <CategoryForm 
                     category={editingCategory} 
-                    onSubmit={handleUpdateCategory} 
+                    onSubmit={(updatedCategory) => handleUpdateCategory({ ...editingCategory, ...updatedCategory })} 
                     onCancel={() => setEditingCategory(null)} 
                 />
             )}
