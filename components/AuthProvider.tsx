@@ -95,7 +95,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setTokens(data)
       await fetchUserData(data.idToken)
 
-      router.replace('/dashboard')
+      const userRole = user?.role
+      if (userRole === 'admin') {
+        router.replace('/admin/dashboard')
+      } else {
+        router.replace('/contractor/dashboard')
+      }
     } catch (error) {
       console.error('Login error:', error)
       throw new Error('Login error')
@@ -109,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     Cookies.remove('refreshToken')
     Cookies.remove('idToken')
     Cookies.remove('username')
-    router.push('/login')
+    router.push('/')
   }
 
   return (

@@ -31,32 +31,18 @@ export default function AdminPanel({
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
             <Link
-               href="/dashboard"
+               href="/contractor/dashboard"
               className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               <LayoutDashboard className="mr-3 h-5 w-5" />
               Dashboard
             </Link>
             <Link
-               href="/dashboard/users"
-              className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              <Users className="mr-3 h-5 w-5" />
-              Users
-            </Link>
-            <Link
-                href="/dashboard/settings"
+                href="/contractor/dashboard/settings"
               className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               <Settings className="mr-3 h-5 w-5" />
               Settings
-            </Link>
-            <Link
-              href="/dashboard/chat"
-              className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              <MessageSquare className="mr-3 h-5 w-5" />
-              Chat
             </Link>
           </nav>
         </div>
@@ -80,21 +66,14 @@ export default function AdminPanel({
                 </div>
                 <nav className="flex-1 space-y-1 px-2 py-4">
                   <Link
-                    href="/dashboard"
+                    href="/contractor/dashboard"
                     className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
                     <LayoutDashboard className="mr-3 h-5 w-5" />
                     Dashboard
                   </Link>
                   <Link
-                    href="/dashboard/users"
-                    className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    <Users className="mr-3 h-5 w-5" />
-                    Users
-                  </Link>
-                  <Link
-                    href="/dashboard/settings"
+                    href="/contractor/dashboard/settings"
                     className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
                     <Settings className="mr-3 h-5 w-5" />
@@ -125,9 +104,9 @@ export default function AdminPanel({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem><Link href="/dashboard/profile">Profile</Link></DropdownMenuItem>
+                <DropdownMenuItem><Link href="/admin/dashboard/profile">Profile</Link></DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href="/dashboard/settings">Settings</Link>
+                  <Link href="/contractor/dashboard/settings">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Link href="/logout">Logout</Link>

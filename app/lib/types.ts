@@ -77,3 +77,67 @@ export type OrderWithOffers = {
   orderOfferCount: number;
   offers: Offer[];
 }
+
+export type Metrics = {
+    avgBudget: string;
+    avgRating: string;
+    mostCommonCategories: {
+      categoryCount: number;
+      categoryId: string;
+      categoryName: string;
+    }[];
+    offerAcceptanceRate: number;
+    retentionRate: number;
+    topClients: {
+      totalRevenue: number;
+      userId: string;
+      name: string;
+    }[];
+    totalMaterialCost: number;
+    totalProjects: number;
+    totalRevenue: number;
+  };
+
+
+  export type ContractorData = {
+    id: string;
+    sub: string | null;
+    firstname: string;
+    lastname: string;
+    email: string;
+    phoneNumber: string;
+    expoPushToken: string | null;
+    stripeCustomerId: string | null;
+    addressStreet: string | null;
+    addressDetail: string | null;
+    addressZip: string | null;
+    addressCountry: string | null;
+    badgeCountOffers: number;
+    badgeCountMessages: number;
+    role: string;
+    pushNotificationPermission: boolean;
+    smsPersmission: boolean;
+    emailPermission: boolean;
+    created_at: string;
+    updated_at: string;
+    userId: string;
+    contractorName: string;
+    contractorDescription: string;
+    contractorWebsite: string;
+    contractorEmail: string;
+    contractorPhone: string;
+    contractorAddressStreet: string;
+    contractorAddressDetail: string | null;
+    contractorAddressZip: string;
+    contractorAddressCountry: string;
+    contractorImageUrl: string;
+    contractorReviewAverage: number | null;
+    contractorReviewCount: number | null;
+    contractorVerified: boolean;
+    contractorBusinessId: string | null;
+    contractorCategoryId: string;
+    contractorHeaderImageUrl: string;
+    contractorIban: string;
+    contractorBic: string;
+    approvalStatus: string;
+  }
