@@ -90,6 +90,25 @@ export const getCategories = async () => {
   }
 };
 
+export const getContractorCategories = async () => {
+  const token = await getIdToken();
+  try {
+    const response = await fetch(buildApiUrl("/contractors/me/categories"), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(await response.json());
+    }
+    return await response.json();
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 
 export const createCategory = async (category: CreateCategory) => {
   const idToken = await getIdToken();
@@ -225,3 +244,19 @@ export const getContractorData = async (idToken: string) => {
   }
   return await response.json();
 }
+
+export const getContractorReviews = async (idToken: string) => {
+  const response = await fetch(buildApiUrl("/contractors/me/reviews"), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(await response.json());
+  }
+  return await response.json();
+}
+
+

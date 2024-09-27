@@ -98,6 +98,43 @@ export type Metrics = {
     totalRevenue: number;
   };
 
+  export type Review = {
+    id: string;
+    userId: string;
+    starRating: number;
+    reviewTitle: string;
+    review: string;
+    userFirstname: string;
+    userZip: string;
+  };
+  
+  export type Contractor = {
+    contractorAddressCountry: string;
+    contractorAddressDetail: string;
+    contractorAddressStreet: string;
+    contractorAddressZip: string;
+    contractorBic: string;
+    contractorBusinessId: string;
+    contractorCategoryId: string;
+    contractorDescription: string;
+    contractorEmail: string;
+    contractorFirstname: string;
+    contractorId: string;
+    contractorLastname: string;
+    contractorHeaderImageUrl: string;
+    contractorIban: string;
+    contractorImageUrl: string;
+    contractorName: string;
+    contractorPhone: string;
+    contractorReviewAverage: string;
+    contractorReviewCount: number;
+    contractorVerified: boolean;
+    contractorWebsite: string;
+    created_at: string;
+    updated_at: string;
+    userId: string;
+  };
+  
 
   export type ContractorData = {
     id: string;
@@ -141,3 +178,92 @@ export type Metrics = {
     contractorBic: string;
     approvalStatus: string;
   }
+
+  
+export type ExtendedOrder = RequestOrder & OrderDetails
+
+export type RequestOrder = {
+    orderId: string;
+    title: string;
+    description: string;
+    budget: string;
+    status: string;
+    startDate: string;
+    endDate: string;
+    orderCreatedAt: string;
+    orderUpdatedAt: string;
+    categoryName: string;
+    categoryDescription: string;
+    categoryImageUrl: string;
+    offersCount: number;
+    offerCreatedAt: string;
+    orderTimeLabel: string;
+    isOfferSent: boolean;
+};
+
+export type OrderDetails = {
+    orderId: string;
+    offerId?: string;
+    userId: string;
+    contractorId: string;
+    categoryId: string;
+    title: string;
+    description: string;
+    attachments: string;
+    budget: string;
+    status: string;
+    orderStreet: string;
+    orderCity: string;
+    orderZip: string;
+    locationMoreInfo: string;
+    scheduleOption: string;
+    paymentMethod: string;
+    categoryName: string;
+    startDate: string;
+    endDate: string;
+    orderCreatedAt: string;
+    orderUpdatedAt: string;
+    userFirstname: string;
+    userLastname: string;
+    userEmail: string;
+    userAddressStreet: string;
+    userAddressDetail: string;
+    userAddressZip: string;
+    userAddressCountry: string;
+    userRole: string;
+    categoryCategoryName: string;
+    categoryCategoryImageUrl: string;
+    categoryDescription: string;
+};
+
+
+export interface Category {
+  id: string;
+  categoryName: string;
+  categoryImageUrl: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ContractorCategory {
+  id: string;
+  categoryId: string;
+  contractorId: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CategoryData {
+  categories: Category;
+  contractorCategories: ContractorCategory;
+}
+
+export type OfferDetails = {
+  date: Date;
+  startTime: Date; // For example 13.10
+  endTime: Date; // for example 21.30
+  offerPrice: number;
+  materialCost: number;
+  offerDescription: string;
+};

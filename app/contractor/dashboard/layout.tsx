@@ -1,8 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { Menu, X, ChevronDown, LayoutDashboard, Users, Settings, Bell, Search, MessageSquare } from "lucide-react"
-
+import { Menu, ChevronDown, LayoutDashboard, Settings, Bell, Search, ListOrdered, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -36,6 +35,20 @@ export default function AdminPanel({
             >
               <LayoutDashboard className="mr-3 h-5 w-5" />
               Dashboard
+            </Link>
+            <Link
+                href="/contractor/dashboard/orders"
+              className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              <ListOrdered className="mr-3 h-5 w-5" />
+              Orders
+            </Link>
+            <Link
+                href="/contractor/dashboard/reviews"
+              className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              <Star className="mr-3 h-5 w-5" />
+              Reviews
             </Link>
             <Link
                 href="/contractor/dashboard/settings"
