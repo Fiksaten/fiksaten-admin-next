@@ -76,11 +76,7 @@ export default function ContractorReviews({contractor, reviews}: {contractor: Co
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {reviews.length === 0 || reviews === undefined ? (
-                <div className="text-center text-muted-foreground">
-                  No reviews yet
-                </div>
-              ) : (
+
                 <>
                   {reviews?.map((review) => (
                 <div key={review.id} className="border-b pb-4 last:border-b-0">
@@ -107,7 +103,7 @@ export default function ContractorReviews({contractor, reviews}: {contractor: Co
                 </div>
               ))}
               </>
-              )}
+          
             </div>
           </CardContent>
         </Card>

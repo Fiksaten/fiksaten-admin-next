@@ -41,6 +41,36 @@ type Order = {
 
 export function LandingPage({ latestOrders, ownOrders }: { latestOrders: Order[], ownOrders: Order[] }) {
 
+  if (latestOrders.length === 0 && ownOrders.length === 0) {
+    return( <div className="container mx-auto px-4 py-8 text-black">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl font-bold">Latest Orders</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>No orders found</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl font-bold">Own Orders</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>No orders found</p>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="mt-8 flex justify-center">
+        <Button className="w-full md:w-auto">
+          <PlusCircle className="w-4 h-4 mr-2" />
+          Create New Order
+        </Button>
+      </div>
+    </div>
+  )
+}
+ 
   return (
     <div className="container mx-auto px-4 py-8 text-black">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -73,7 +103,7 @@ export function LandingPage({ latestOrders, ownOrders }: { latestOrders: Order[]
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-[400px]">
-              {ownOrders.map((order) => (
+              {ownOrders?.map((order) => (
                 <div key={order.orderId} className="mb-4 p-4 border rounded-lg">
                   <h3 className="font-semibold">{order.title}</h3>
                   <p className="text-sm text-muted-foreground mb-2">{order.description}</p>

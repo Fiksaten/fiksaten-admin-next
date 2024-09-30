@@ -35,7 +35,7 @@ export const getOwnOrders = async () => {
 
 export const getOrderById = async (id: string) => {
     const token = await getIdToken();
-    const url = buildApiUrl(`/orders/${id}`);
+    const url = buildApiUrl(`/orders/${id}?includeOffers=true`);
     const response = await fetch(url, {
         method: "GET",
         headers: {

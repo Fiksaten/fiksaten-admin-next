@@ -3,10 +3,10 @@ import { ExtendedOrder } from "./types";
 import { buildApiUrl } from "./utils";
 
 export type Sort =
-  | "NEWEST_DATE"
-  | "OLDEST_DATE"
-  | "SMALLEST_BUDGET"
-  | "BIGGEST_BUDGET";
+  | "newest_date"
+  | "oldest_date"
+  | "smallest_budget"
+  | "biggest_budget";
 
 export enum Status {
   OPEN = "open",

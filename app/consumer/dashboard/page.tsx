@@ -4,7 +4,9 @@ import { LandingPage } from "@/components/landing-page";
 export default async function Page() {
   const latestOrders = await getLatestOrders();
   const ownOrders = await getOwnOrders();
+  console.log("Latest orders:", latestOrders);
+  console.log("Own orders:", ownOrders);
   return (
-    <LandingPage latestOrders={latestOrders} ownOrders={ownOrders}/>
+    <LandingPage latestOrders={latestOrders} ownOrders={ownOrders.orders}/>
   );
 }

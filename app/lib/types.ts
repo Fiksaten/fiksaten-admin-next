@@ -6,6 +6,31 @@ export type TotalUsers = {
     admins: string;
 };
 
+
+export type Review = {
+  id: string;
+  userId: string;
+  starRating: number;
+  reviewTitle: string;
+  review: string;
+  userFirstname: string;
+  userZip: string;
+};
+
+export type AdminReview = {
+  id: string;
+  userId: string;
+  starRating: number;
+  reviewTitle: string;
+  review: string;
+  userFirstname: string;
+  userZip: string | null;
+  createdAt: string;
+  orderId: string;
+  accepted: boolean;
+  userCity: string;
+}
+
 export type NewUsersOverTime = {
     date: string;
     newUsers: number;
@@ -98,15 +123,6 @@ export type Metrics = {
     totalRevenue: number;
   };
 
-  export type Review = {
-    id: string;
-    userId: string;
-    starRating: number;
-    reviewTitle: string;
-    review: string;
-    userFirstname: string;
-    userZip: string;
-  };
   
   export type Contractor = {
     contractorAddressCountry: string;
@@ -266,4 +282,6 @@ export type OfferDetails = {
   offerPrice: number;
   materialCost: number;
   offerDescription: string;
+  status: string;
+  orderId: string;
 };

@@ -11,16 +11,77 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
+import { buildApiUrl } from '@/app/lib/utils'
+import { Category } from '@/app/lib/types'
+
+export enum ScheduleOption {
+  AsSoonAsPossible = "ASAP",
+  Today = "TODAY",
+  Tomorrow = "TOMORROW",
+  Flexible = "FLEXIBLE",
+  inTwoWeeks = "IN_TWO_WEEKS",
+}
 
 
-export default function NewRequestFormComponent() {
+
+export default function NewRequestFormComponent({ idToken, categories }: { idToken: string, categories: Category[] }) {
   const [startDate, setStartDate] = useState<Date>()
   const [endDate, setEndDate] = useState<Date>()
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted')
+    const formData = new FormData(event.target as HTMLFormElement)
+    const data = Object.fromEntries(formData.entries())
+    console.log('Form submitted', data)
+    try {
+      const url = buildApiUrl("/orders/create")
+      const { 
+        title, 
+        description, 
+        budget,
+        attachments, 
+        orderCity, 
+        orderStreet, 
+        orderZip, 
+        locationMoreInfo, 
+        scheduleOption, 
+        categoryName, 
+        paymentMethod, 
+        categoryId 
+      } = data
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({
+          title,
+          description,
+          budget,
+          attachments,
+          startDate: startDate?.toISOString(),
+          endDate: endDate?.toISOString(),
+          orderCity,
+          orderStreet,
+          orderZip,
+          locationMoreInfo,
+          scheduleOption,
+          categoryName,
+          paymentMethod,
+          categoryId,
+          isDraft: false,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        }
+      })
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Order created', result)
+      } else {
+        console.error('Failed to create order')
+      }
+    } catch (error) {
+      console.error('Error creating order', error)
+    }
   }
 
   return (
@@ -42,9 +103,9 @@ export default function NewRequestFormComponent() {
               <SelectValue placeholder="Select a category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="category1">Category 1</SelectItem>
-              <SelectItem value="category2">Category 2</SelectItem>
-              <SelectItem value="category3">Category 3</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.id}>{category.categoryName}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -127,9 +188,9 @@ export default function NewRequestFormComponent() {
               <SelectValue placeholder="Select a schedule option" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="option1">Option 1</SelectItem>
-              <SelectItem value="option2">Option 2</SelectItem>
-              <SelectItem value="option3">Option 3</SelectItem>
+              {Object.values(ScheduleOption).map((option) => (
+                <SelectItem key={option} value={option}>{option}</SelectItem>
+              ))} 
             </SelectContent>
           </Select>
         </div>

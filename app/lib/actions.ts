@@ -276,3 +276,17 @@ export const getContractorById = async (id: string) => {
   return await response.json();
 }
 
+export const getReviews = async () => {
+  const idToken = await getIdToken();
+  const response = await fetch(buildApiUrl("/reviews/unapproved"), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(await response.json());
+  }
+  return await response.json();
+}

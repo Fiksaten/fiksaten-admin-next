@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from '@/components/ui/badge'
+
 export type Offer = {
   date: string | null;
   id: string;
@@ -86,10 +87,17 @@ export default function ConsumerOrdersComponent({ orders }: { orders: OrdersMy[]
         </div>
         <div>{order.orderCity}</div>
       </CardFooter>
-      {isActive && (
+      {isActive ? (
         <Link href={`/consumer/dashboard/orders/${order.orderId}`} passHref>
           <Button variant="ghost" className="w-full flex justify-between items-center">
             View Details
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </Link>
+      ) : (
+        <Link href={`/consumer/dashboard/review/${order.orderId}`} passHref>
+          <Button variant="ghost" className="w-full flex justify-between items-center">
+            Leave a Review
             <ChevronRight className="h-4 w-4" />
           </Button>
         </Link>
@@ -99,7 +107,7 @@ export default function ConsumerOrdersComponent({ orders }: { orders: OrdersMy[]
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">My Orders</h1>
+      <h1 className="text-2xl font-bold mb-6 text-black">My Orders</h1>
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-4">
           <TabsTrigger value="active">Active Orders</TabsTrigger>

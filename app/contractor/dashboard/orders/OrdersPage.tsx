@@ -22,13 +22,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CalendarIcon, MapPinIcon, EuroIcon,  FileTextIcon, ClockIcon } from "lucide-react";
+import { CalendarIcon, MapPinIcon, EuroIcon, FileTextIcon, ClockIcon } from "lucide-react";
 import { ExtendedOrder, OfferDetails } from "@/app/lib/types";
 import { fetchOfferDetails, Sort, Status } from "@/app/lib/orderActions";
 import { buildApiUrl, cn } from "@/app/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-function OfferDetailsComponent({ offers }: { offers: OfferDetails[]; }) {
+function OfferDetailsComponent({ offers, idToken }: { offers: OfferDetails[]; idToken: string }) {
+
+  const handleMarkAsCompleted = async (offer: OfferDetails) => {
+    const url = buildApiUrl(`/orders/completed`);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({ orderId: offer.orderId }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to mark order as completed");
+    }
+    const data = await response.json();
+    console.log("Order marked as completed:", data);
+  }
+
   if (!offers || offers.length === 0) {
     return <p className="text-black">No offers found</p>;
   }
@@ -48,8 +66,7 @@ function OfferDetailsComponent({ offers }: { offers: OfferDetails[]; }) {
             <div className="flex items-center">
               <ClockIcon className="mr-2 h-5 w-5 text-gray-500" />
               <span>
-                Time: {new Date(offer.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{" "}
-                {new Date(offer.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                Time: {offer.startTime.toString()} - {offer.endTime.toString()}
               </span>
             </div>
             <div className="flex items-center">
@@ -64,6 +81,9 @@ function OfferDetailsComponent({ offers }: { offers: OfferDetails[]; }) {
               <FileTextIcon className="mr-2 h-5 w-5 text-gray-500 mt-1" />
               <span>Description: {offer.offerDescription}</span>
             </div>
+            {offer.status === "accepted" && (
+              <Button onClick={() => handleMarkAsCompleted(offer)}>Mark as completed</Button>
+            )}
           </CardContent>
         </Card>
       ))}
@@ -127,6 +147,7 @@ function SendOffer({
     offerPrice: 0,
     materialCost: 0,
     offerDescription: "",
+    status: "",
   });
 
   const handleChange = (
@@ -158,7 +179,7 @@ function SendOffer({
           type="date"
           id="date"
           name="date"
-          value={offer.date.toISOString().split("T")[0]}
+          value={offer.date.toString()}
           onChange={handleChange}
           required
         />
@@ -170,7 +191,7 @@ function SendOffer({
             type="time"
             id="startTime"
             name="startTime"
-            value={offer.startTime.toTimeString().slice(0, 5)}
+            value={offer.startTime.toString()}
             onChange={handleChange}
             required
           />
@@ -181,7 +202,7 @@ function SendOffer({
             type="time"
             id="endTime"
             name="endTime"
-            value={offer.endTime.toTimeString().slice(0, 5)}
+            value={offer.endTime.toString()}
             onChange={handleChange}
             required
           />
@@ -228,7 +249,7 @@ export default function OrdersPage({ token }: { token: string }) {
   const [activeTab, setActiveTab] = useState<Status>(Status.OPEN);
   const [page, setPage] = useState(1);
   const [nameFilter, setNameFilter] = useState("");
-  const [sort, setSort] = useState<Sort>("NEWEST_DATE");
+  const [sort, setSort] = useState<Sort>("newest_date");
   const [orders, setOrders] = useState<ExtendedOrder[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -238,7 +259,7 @@ export default function OrdersPage({ token }: { token: string }) {
   );
   const [offerDetails, setOfferDetails] = useState<OfferDetails[] | null>(null);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const limit = 10;
+  const limit = 20;
 
   const fetchOrders = useCallback(async () => {
     setIsLoading(true);
@@ -253,7 +274,7 @@ export default function OrdersPage({ token }: { token: string }) {
           sort,
         })
       );
-
+      console.log("url", url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -359,10 +380,10 @@ export default function OrdersPage({ token }: { token: string }) {
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem className="text-black" value="NEWEST_DATE">
+            <SelectItem className="text-black" value="newest_date">
               Newest
             </SelectItem>
-            <SelectItem className="text-black" value="OLDEST_DATE">
+            <SelectItem className="text-black" value="olde">
               Oldest
             </SelectItem>
             <SelectItem className="text-black" value="SMALLEST_BUDGET">
@@ -416,7 +437,7 @@ export default function OrdersPage({ token }: { token: string }) {
             <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
               Previous
             </Button>
-            <span>
+            <span className="text-black">
               Page {page} of {totalPages}
             </span>
             <Button
@@ -441,7 +462,7 @@ export default function OrdersPage({ token }: { token: string }) {
               </>
             ) : selectedOrder ? (
               offerDetails ? (
-                <OfferDetailsComponent offers={offerDetails} />
+                <OfferDetailsComponent offers={offerDetails} idToken={token} />
               ) : (
                 <p className="text-black">Loading offer details...</p>
               )
