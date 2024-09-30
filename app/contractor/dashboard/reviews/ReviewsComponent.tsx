@@ -70,7 +70,7 @@ export default function ContractorReviews({contractor, reviews}: {contractor: Co
                 ))}
               </div>
               <span className="ml-2 text-sm text-muted-foreground">
-                ({contractor.contractorReviewCount} reviews)
+                ({contractor.contractorReviewCount || 0} reviews)
               </span>
             </div>
           </CardHeader>

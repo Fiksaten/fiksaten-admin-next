@@ -172,8 +172,6 @@ export const deleteCategory = async (id: string) => {
   }
 };
 
-
-
 export const getUser = async (id: string) => {
   const token = await getIdToken();
   try {
@@ -259,4 +257,22 @@ export const getContractorReviews = async (idToken: string) => {
   return await response.json();
 }
 
+export const getContractorById = async (id: string) => {
+  console.log("id", id);
+  if(!id) {
+    throw new Error("No id provided");
+  }
+  const idToken = await getIdToken();
+  const response = await fetch(buildApiUrl(`/contractors/${id}`), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(await response.json());
+  }
+  return await response.json();
+}
 
