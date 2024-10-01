@@ -12,12 +12,8 @@ import {
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { PieChart, Pie, Cell } from 'recharts'
 import { BarChart, Bar, Legend } from 'recharts'
 import { DashboardStatsResponse } from "@/app/lib/types"
-
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
 export function ReportsPage({reports}: {reports: DashboardStatsResponse}) {
   const [date, setDate] = useState<{ from: Date; to: Date | undefined }>({
@@ -27,7 +23,7 @@ export function ReportsPage({reports}: {reports: DashboardStatsResponse}) {
 
   
   if (!reports) return <h1>loading</h1>
-  const orderStatusData  = false
+  
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-6">
@@ -54,7 +50,8 @@ export function ReportsPage({reports}: {reports: DashboardStatsResponse}) {
               className="text-black"
               mode="range"
               selected={date}
-              onSelect={setDate}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onSelect={setDate as any}
               initialFocus
             />
           </PopoverContent>
@@ -116,35 +113,6 @@ export function ReportsPage({reports}: {reports: DashboardStatsResponse}) {
             </ResponsiveContainer>
           </CardContent>
         </Card>
-        {orderStatusData && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Order Status Distribution</CardTitle>
-          </CardHeader>
-          
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={orderStatusData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
-                  {orderStatusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        )}
       </div>
 
       <Card className="mt-6">
