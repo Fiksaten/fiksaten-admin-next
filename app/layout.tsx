@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { PHProvider } from './providers'
+import PHProvider from './providers'
 import dynamic from 'next/dynamic'
 import { AuthProvider } from "@/components/AuthProvider";
 
@@ -36,8 +36,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <PostHogPageView />
         <AuthProvider>
-          <PostHogPageView />
           {children}
         </AuthProvider>
       </body>
