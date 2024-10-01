@@ -148,6 +148,7 @@ function SendOffer({
     materialCost: 0,
     offerDescription: "",
     status: "",
+    orderId: "",
   });
 
   const handleChange = (

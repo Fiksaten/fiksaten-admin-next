@@ -1,4 +1,4 @@
-import { createCategory, deleteCategory, getCategories, updateCategory } from "@/app/lib/actions";
+import { createCategory, deleteCategory, getCategories } from "@/app/lib/actions";
 import { CategoryAdminComponent } from "./category-admin";
 
 export default async function Page() {
@@ -8,7 +8,6 @@ export default async function Page() {
     <CategoryAdminComponent 
       categories={categories}
       onSubmit={createCategory}
-      onUpdate={updateCategory}
       onDelete={deleteCategory}
     />
 

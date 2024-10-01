@@ -19,15 +19,12 @@ type CategoryProps = {
       newCategory: Omit<Category, 'id'>
     ) => Promise<{ message: string }>;
     categories: Category[]
-    onUpdate: (
-      updatedCategory: Category
-    ) => Promise<{ message: string }>;
     onDelete: (
       id: string
     ) => Promise<{ message: string }>;
   };
 
-export function CategoryAdminComponent({categories, onSubmit, onUpdate, onDelete}:CategoryProps) {
+export function CategoryAdminComponent({categories, onSubmit, onDelete}:CategoryProps) {
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [editingCategory, setEditingCategory] = useState<Category | null>(null)
     
@@ -48,13 +45,7 @@ export function CategoryAdminComponent({categories, onSubmit, onUpdate, onDelete
     }
 
     const handleUpdateCategory = (updatedCategory: Category) => {
-        try {
-            onUpdate(updatedCategory);
-            console.log("Ok")
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (error: any) {
-            console.error(error)
-          }
+        console.log(updatedCategory)
         setEditingCategory(null)
     }
 
