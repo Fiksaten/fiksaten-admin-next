@@ -4,9 +4,9 @@ import { buildApiUrl } from "./utils";
 import { DashboardStatsResponse } from "./types";
 import { Chat } from "@/components/CustomerServiceChat";
 import { cookies } from "next/headers";
-import { CreateCategory } from "../dashboard/settings/categories/category-form";
+import { CreateCategory } from "../admin/dashboard/settings/categories/category-form";
 
-async function getIdToken(): Promise<string> {
+export async function getIdToken(): Promise<string> {
   const cookieStore = cookies();
   const token = cookieStore.get("idToken");
 
@@ -90,6 +90,25 @@ export const getCategories = async () => {
   }
 };
 
+export const getContractorCategories = async () => {
+  const token = await getIdToken();
+  try {
+    const response = await fetch(buildApiUrl("/contractors/me/categories"), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(await response.json());
+    }
+    return await response.json();
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 
 export const createCategory = async (category: CreateCategory) => {
   const idToken = await getIdToken();
@@ -153,8 +172,6 @@ export const deleteCategory = async (id: string) => {
   }
 };
 
-
-
 export const getUser = async (id: string) => {
   const token = await getIdToken();
   try {
@@ -192,3 +209,84 @@ export const getUserOrders = async (id: string, page = 1, limit = 5) => {
     console.error(e);
   }
 };
+
+export const getContractorReports = async () => {
+  const token = await getIdToken();
+  try {
+    const response = await fetch(buildApiUrl("/contractors/me/metrics"), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    if (!response.ok) {
+      throw new Error(await response.json());
+    }
+    return await response.json();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export const getContractorData = async (idToken: string) => {
+  const response = await fetch(buildApiUrl("/contractors/me"), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(await response.json());
+  }
+  return await response.json();
+}
+
+export const getContractorReviews = async (idToken: string) => {
+  const response = await fetch(buildApiUrl("/contractors/me/reviews"), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(await response.json());
+  }
+  return await response.json();
+}
+
+export const getContractorById = async (id: string) => {
+  console.log("id", id);
+  if(!id) {
+    throw new Error("No id provided");
+  }
+  const idToken = await getIdToken();
+  const response = await fetch(buildApiUrl(`/contractors/${id}`), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(await response.json());
+  }
+  return await response.json();
+}
+
+export const getReviews = async () => {
+  const idToken = await getIdToken();
+  const response = await fetch(buildApiUrl("/reviews/unapproved"), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(await response.json());
+  }
+  return await response.json();
+}
