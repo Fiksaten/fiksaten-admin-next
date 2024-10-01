@@ -1,4 +1,4 @@
-import { getContractorReports, getReports } from "@/app/lib/actions";
+import { getContractorReports } from "@/app/lib/actions";
 import ContractorMetricsDashboard from "@/components/contractor-reports-page";
 
 export default async function Home() {

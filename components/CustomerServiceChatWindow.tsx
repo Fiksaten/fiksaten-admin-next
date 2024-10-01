@@ -3,12 +3,13 @@ import { useEffect, useRef } from "react"
 import { Chat, Message } from "./CustomerServiceChat"
 import { Avatar } from "./ui/avatar"
 import { Button } from "./ui/button"
-import { MessageCircle, Paperclip, Send, User } from "lucide-react"
+import { MessageCircle, Paperclip, Send } from "lucide-react"
 import { ScrollArea } from "./ui/scroll-area"
 import { Input } from "./ui/input"
 import { formatMessageDate } from "@/app/lib/utils"
+import Image from "next/image"
 
-const CustomerServiceChatWindow = ({ messages, inputMessage, handleInputChange, handleSendMessage, isTyping, selectedChat, userId }: { selectedChat: Chat | undefined, messages: Message[], inputMessage: string, handleInputChange: (value: string) => void, handleSendMessage: () => void, isTyping: boolean, userId: string }) => {
+const CustomerServiceChatWindow = ({ messages, inputMessage, handleInputChange, handleSendMessage, isTyping, selectedChat }: { selectedChat: Chat | undefined, messages: Message[], inputMessage: string, handleInputChange: (value: string) => void, handleSendMessage: () => void, isTyping: boolean }) => {
 
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -49,7 +50,7 @@ const CustomerServiceChatWindow = ({ messages, inputMessage, handleInputChange, 
                     }`}
                 >
                   {message.isImage ? (
-                    <img src={message.content} alt="Shared image" className="max-w-full rounded" />
+                    <Image src={message.content} alt="Shared image" className="max-w-full rounded" width={300} height={300} />
                   ) : (
                     <p className="text-black">{message.content}</p>
                   )}

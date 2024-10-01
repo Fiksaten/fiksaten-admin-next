@@ -30,7 +30,6 @@ type CategoryProps = {
 export function CategoryAdminComponent({categories, onSubmit, onUpdate, onDelete}:CategoryProps) {
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [editingCategory, setEditingCategory] = useState<Category | null>(null)
-    const [message, setMessage] = useState("")
     
 
     const handleCreateCategory = async (newCategory: Omit<Category, 'id' | 'created_at' | 'updated_at'>) => {
@@ -41,10 +40,9 @@ export function CategoryAdminComponent({categories, onSubmit, onUpdate, onDelete
         }
         try {
             await onSubmit(category);
-            setMessage("Ok")
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
-            setMessage(error.message);
+            console.error(error)
           }
         setIsFormOpen(false)
     }
@@ -52,10 +50,10 @@ export function CategoryAdminComponent({categories, onSubmit, onUpdate, onDelete
     const handleUpdateCategory = (updatedCategory: Category) => {
         try {
             onUpdate(updatedCategory);
-            setMessage("Ok")
+            console.log("Ok")
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
-            setMessage(error.message);
+            console.error(error)
           }
         setEditingCategory(null)
     }
@@ -63,10 +61,10 @@ export function CategoryAdminComponent({categories, onSubmit, onUpdate, onDelete
     const handleDeleteCategory = (id: string) => {
         try {
             onDelete(id);
-            setMessage("Ok")
+            console.log("Ok")
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
-            setMessage(error.message);
+            console.error(error)
           }
     }
 

@@ -49,7 +49,10 @@ const CustomerServiceChat: React.FC = () => {
   const [selectedChatMessages, setSelectedChatMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState('');
   const [typingSent, setTypingSent] = useState(false);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTyping, setIsTyping] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [typingUsers, setTypingUsers] = useState<{ [key: string]: boolean }>({});
   
   const { user, tokens } = useAuth();
@@ -121,6 +124,7 @@ const CustomerServiceChat: React.FC = () => {
     return () => {
       socketRef.current?.disconnect();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -159,7 +163,8 @@ const CustomerServiceChat: React.FC = () => {
         receiverId: selectedChat.id,
         sentAt: new Date().toISOString(),
         read: false,
-        isImage: false
+        isImage: false,
+        isSenderSupport: true
       };
       socketRef.current?.emit("supportMessage", {
         userId: selectedChat.id,
@@ -223,8 +228,7 @@ const CustomerServiceChat: React.FC = () => {
       inputMessage={inputMessage} 
       handleInputChange={handleInputChange} 
       handleSendMessage={handleSendMessage} 
-      isTyping={isTyping} 
-      userId={userId} 
+      isTyping={isTyping}
       />
     </div>
   );

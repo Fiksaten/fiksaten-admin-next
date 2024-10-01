@@ -4,7 +4,6 @@ import { getContractorById, getIdToken } from "@/app/lib/actions";
 
 export default async function Page({
     params,
-    searchParams,
   }: {
     params: { id: string };
     searchParams?: { [key: string]: string | string[] | undefined };
