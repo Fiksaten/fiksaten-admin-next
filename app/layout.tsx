@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { PHProvider } from './providers'
+import dynamic from 'next/dynamic'
 import { AuthProvider } from "@/components/AuthProvider";
 
 const geistSans = localFont({
@@ -19,6 +21,10 @@ export const metadata: Metadata = {
   description: "Fiksaten",
 };
 
+const PostHogPageView = dynamic(() => import('./PostHogPageView'), {
+  ssr: false,
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,11 +32,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <PHProvider>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <PostHogPageView />
+          {children}
+        </AuthProvider>
       </body>
+      </PHProvider>
     </html>
   );
 }
