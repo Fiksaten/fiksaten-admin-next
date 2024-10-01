@@ -20,10 +20,11 @@ function Card({ title, path }: CardProps) {
 export default async function Page() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-      <Card title="Categories" path="/dashboard/settings/categories" />
-      <Card title="Users" path="/dashboard/settings/users" />
-      <Card title="Contractors" path="/dashboard/settings/contractors" />
-      <Card title="Orders" path="/dashboard/settings/orders" />
+      <Card title="Categories" path="/admin/dashboard/settings/categories" />
+      <Card title="Reviews" path="/admin/dashboard/settings/reviews" />
+      <Card title="Users" path="/admin/dashboard/settings/users" />
+      <Card title="Contractors" path="/admin/dashboard/settings/contractors" />
+      <Card title="Orders" path="/admin/dashboard/settings/orders" />
     </div>
   );
 }

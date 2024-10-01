@@ -1,98 +1,144 @@
-'use client'
-
-import Link from "next/link"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useAuth } from "@/components/AuthProvider"
+import { ArrowRight, CheckCircle, MessageCircle, Search } from "lucide-react"
+import Link from "next/link"
 
-
-export default function Login() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('')
-  const { login } = useAuth()
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    setLoading(true)
-    e.preventDefault()
-    setError('')
-    try {
-      await login(email, password)
-    } catch (err) {
-      setError('Login failed. Please check your credentials.')
-    } finally{
-      setLoading(false)
-    }
-  }
-
+export default function Page() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Login to Fiksaten</CardTitle>
-          <CardDescription className="text-center">
-            Enter your email and password to access your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} onKeyDown={(e)=>{
-            if (e.key === "Enter"){
-              handleSubmit
-            }
-          }}>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                />
-                <Label htmlFor="remember" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Remember me
-                </Label>
-              </div>
-              {error && <div>
-                <p className="text-red-600">{error}</p>
-                </div>}
-              <Button type="submit" className="w-full" disabled={loading}>
-                Login
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-2">
-          <Link href="/forgot-password" className="text-sm text-center text-blue-500 hover:text-blue-700">
-            Forgot your password?
+    <div className="flex flex-col min-h-screen">
+      <header className="bg-white shadow-sm">
+        <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="text-2xl font-bold text-primary">
+            Fiksaten
           </Link>
-        </CardFooter>
-      </Card>
+          <ul className="hidden md:flex space-x-6">
+            <li><Link href="/" className="text-gray-600 hover:text-primary">Etusivu</Link></li>
+            <li><Link href="/yrityksesta" className="text-gray-600 hover:text-primary">Yrityksestä</Link></li>
+            <li><Link href="/liity-apulaiseksi" className="text-gray-600 hover:text-primary">Liity apulaiseksi</Link></li>
+            <li><Link href="/blogi" className="text-gray-600 hover:text-primary">Blogi</Link></li>
+            <li><Link href="/asiakaspalvelu" className="text-gray-600 hover:text-primary">Asiakaspalvelu</Link></li>
+          </ul>
+          <Link href="/login">
+            <Button className="hidden md:inline-flex">Kirjaudu sisään</Button>
+          </Link>
+          <Link href="/login">
+            <Button variant="outline" size="icon" className="md:hidden">
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </nav>
+      </header>
+
+      <main className="flex-grow">
+        <section className="bg-gradient-to-r from-primary to-primary-foreground text-white py-20">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-4xl font-bold mb-6">Fiksatenin mobiilisovellus on julkaistu!</h1>
+            <p className="text-xl mb-8">
+              Sovelluksessa voit lähettää ilmoituksen tarvitsemastasi avuntarpeesta ja saat pian tarjouksia apulaisilta.
+            </p>
+            <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
+              Lataa sovellus tänään ja lähetä avuntarve
+            </Button>
+          </div>
+        </section>
+
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-12">Löydä tekijä pienille ja isommille töille</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <Search className="mx-auto h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Kilpailuta helposti</h3>
+                <p>Voit kilpailuttaa pienenkin työn helposti ja nopeasti. Lähetä vain tarjouspyyntö työstäsi ja valitse sopiva tarjous apulaisilta.</p>
+              </div>
+              <div className="text-center">
+                <CheckCircle className="mx-auto h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Löydä tekijä</h3>
+                <p>Löydä kiinteä hintainen apulainen pieniin ja isompiin kodin askareisiin. Sovelluksen avulla saat lähetettyä tarjouspyynnön kätevästi etsimällesi työlle.</p>
+              </div>
+              <div className="text-center">
+                <MessageCircle className="mx-auto h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Keskustele apulaisen kanssa</h3>
+                <p>Voit keskustella apulaisen kanssa helposti ennen- ja jälkeen työn aloitusta, esimerkiksi aikataulu muutoksista.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-gray-100 py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-12">Haluatko liittyä apulaiseksi?</h2>
+            <div className="max-w-2xl mx-auto text-center">
+              <p className="mb-8">
+                Fiksaten tarjoaa kätevän ja helpon tavan löytää asiakkaat. Saat käyttöön kaikki työkalut ja vapauden päättää työajat. Näet reaaliaikaiset raportit tekemistä töistä ja tilityksistä.
+              </p>
+              <Button size="lg">Liity apulaiseksi</Button>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-12">Usein kysytyt kysymykset</h2>
+            <div className="max-w-2xl mx-auto text-center">
+              <p className="mb-8">
+                Fiksatenin mobiilisovellus julkaistaan pian. Sovelluksessa voit lähettää ilmoituksen tarvitsemastasi avuntarpeesta ja saat pian tarjouksia apulaisilta.
+              </p>
+              <Button variant="outline" size="lg">Usein kysyttyä</Button>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-primary text-white py-20">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold mb-6">Lataa Fiksaten mobiilisovellus</h2>
+            <p className="text-xl mb-8">
+              Sovellus on julkaistu 🤗 Lataa nyt 🚀<br />
+              Fiksaten mobiilisovellus on nyt saatavilla AppStoresta.<br />
+              Lataa sovellus nyt ja lähetä avuntarve helposti.
+            </p>
+            <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
+              Lataa nyt
+            </Button>
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-gray-800 text-white py-8">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Fiksaten</h3>
+              <p>Löydä tekijä pienille ja isommille töille</p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Linkit</h3>
+              <ul className="space-y-2">
+                <li><Link href="/" className="hover:underline">Etusivu</Link></li>
+                <li><Link href="/yrityksesta" className="hover:underline">Yrityksestä</Link></li>
+                <li><Link href="/liity-apulaiseksi" className="hover:underline">Liity apulaiseksi</Link></li>
+                <li><Link href="/blogi" className="hover:underline">Blogi</Link></li>
+                <li><Link href="/asiakaspalvelu" className="hover:underline">Asiakaspalvelu</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Ota yhteyttä</h3>
+              <p>info@fiksaten.fi</p>
+              <p>+358 123 456 789</p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Uutiskirje</h3>
+              <form className="flex">
+                <Input type="email" placeholder="Sähköpostiosoitteesi" className="rounded-r-none" />
+                <Button type="submit" className="rounded-l-none">Tilaa</Button>
+              </form>
+            </div>
+          </div>
+          <div className="mt-8 text-center">
+            <p>&copy; 2023 Fiksaten. Kaikki oikeudet pidätetään.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
