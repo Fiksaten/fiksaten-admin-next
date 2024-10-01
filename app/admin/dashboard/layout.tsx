@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useAuth } from "@/components/AuthProvider"
+import Unauthorized from "@/components/Unauthorized"
 
 export default function AdminPanel({
     children,
@@ -21,6 +22,13 @@ export default function AdminPanel({
   }>) {
   const { user } = useAuth()
   console.log("Layout", user)
+ 
+ setTimeout(() => {
+    if( !user || user.role !== "admin") {
+        return <Unauthorized />
+    }
+ }, 1000)
+  
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
       {/* Sidebar */}
