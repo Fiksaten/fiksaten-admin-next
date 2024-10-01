@@ -65,7 +65,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       });
       const userData: User = await userResponse.json();
+      console.log("userData", userData);
       setUser(userData);
+      return userData;
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -105,9 +107,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         sameSite: "strict",
       });
       setTokens(data);
-      await fetchUserData(data.idToken);
+      const fetchedUser = await fetchUserData(data.idToken);
 
-      const userRole = user?.role;
+      const userRole = fetchedUser?.role;
+      console.log("userRole", userRole);
       if (userRole === "admin") {
         router.replace("/admin/dashboard");
       } else if (userRole === "contractor") {
@@ -123,7 +126,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    // Remove cookies instead of localStorage items
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     Cookies.remove("idToken");
