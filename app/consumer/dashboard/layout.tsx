@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { Menu, ChevronDown, LayoutDashboard, Settings, Bell, Search, ListOrdered, Star, PlusCircle } from "lucide-react"
+import { Menu, ChevronDown, LayoutDashboard, Settings, Bell, Search, ListOrdered, PlusCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,

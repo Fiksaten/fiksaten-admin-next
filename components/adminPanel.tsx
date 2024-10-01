@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { Menu, X, ChevronDown, LayoutDashboard, Users, FileText, Settings, Bell, Search } from "lucide-react"
+import { Menu, ChevronDown, LayoutDashboard, Users, FileText, Settings, Bell, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {

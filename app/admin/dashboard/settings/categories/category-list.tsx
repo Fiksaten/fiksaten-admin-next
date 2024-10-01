@@ -34,7 +34,7 @@ export function CategoryList({ categories, onEdit, onDelete }: CategoryListProps
                         <TableCell className="text-black">{category.description}</TableCell>
                         <TableCell className="text-black">{category.categoryImageUrl}</TableCell>
                         <TableCell>
-                            <Button className="text-black" variant="outline" onClick={() => onEdit(category)} className="mr-2">Edit</Button>
+                            <Button className="text-black mr-2" variant="outline" onClick={() => onEdit(category)}>Edit</Button>
                             <Button variant="destructive" onClick={() => onDelete(category.id)}>Delete</Button>
                         </TableCell>
                     </TableRow>

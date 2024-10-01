@@ -1,4 +1,4 @@
-import { getCategories, getContractorCategories, getContractorData, getIdToken, getUser } from "@/app/lib/actions";
+import { getCategories, getContractorCategories, getContractorData, getIdToken } from "@/app/lib/actions";
 import ContractorSettings from "./ContractorSettings";
 import CategoryPicker from "./CategoryPicker";
 import { CategoryData } from "@/app/lib/types";

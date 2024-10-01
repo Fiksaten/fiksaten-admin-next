@@ -4,10 +4,8 @@ import { getContractorById, getIdToken } from "@/app/lib/actions";
 
 export default async function Page({
     params,
-    searchParams,
   }: {
     params: { id: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
   }) {
     const idToken = await getIdToken();
     const order = await getOrderById(params.id as string);
@@ -15,7 +13,7 @@ export default async function Page({
 
     return (
         <div>
-            <ReviewComponent order={order.order} orderImages={order.orderImages} contractor={contractor} idToken={idToken}  />
+            <ReviewComponent order={order.order} contractor={contractor} idToken={idToken}  />
         </div>
     );
 }

@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   CalendarIcon,
   MapPinIcon,
@@ -81,16 +80,13 @@ type Offer = {
 
 export default function OrderDetails({
   order,
-  orderImages,
   contractor,
   idToken,
 }: {
   order: OrderDetails;
-  orderImages: string[];
   contractor?: Contractor | null;
   idToken: string;
 }) {
-const [acceptedOfferId, setAcceptedOfferId] = useState<string | null>(null);
 const [submittedReview, setSubmittedReview] = useState(false);
 const { register, handleSubmit, setValue, watch } = useForm({
   defaultValues: {
@@ -100,7 +96,8 @@ const { register, handleSubmit, setValue, watch } = useForm({
   },
 });
 
-const onSubmit = async (values: any) => {
+
+const onSubmit = async (values: { stars: number; title: string; review: string }) => {
   const url = buildApiUrl(`/reviews/contractor`);
   console.log("contractor?.contractorId", contractor)
   console.log("order.orderId", order.orderId)
@@ -129,30 +126,6 @@ const onSubmit = async (values: any) => {
 };
 
 const watchStars = watch("stars");
-
-const handleAcceptOffer = async (offerId: string, contractorId: string, orderId: string) => {
-  setAcceptedOfferId(offerId);
-  const url = buildApiUrl(`/offers/accept`);
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify({
-      offerId,
-      contractorId,
-      orderId,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${idToken}`,
-    },
-  });
-  if (response.ok) {
-    console.log(`Offer ${offerId} accepted`);
-  } else {
-    console.error(`Failed to accept offer ${offerId}`);
-  }
-};
-
-console.log("order.offers", order.offers);
 
 return (
   <div className="max-w-4xl mx-auto p-4 space-y-8">

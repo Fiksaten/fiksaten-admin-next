@@ -10,6 +10,7 @@ import { Upload } from 'lucide-react'
 import { buildApiUrl } from '@/app/lib/utils'
 import { useAuth } from '@/components/AuthProvider'
 import { ContractorData } from '@/app/lib/types'
+import Image from 'next/image'
 
 type CompanyInfoFields = {
     contractorName: string;
@@ -187,7 +188,7 @@ export default function UserSettings({ idToken, contractorData }: { idToken: str
                         onDrop={handleImageDrop}
                     >
                         {previewUrl ? (
-                            <img
+                            <Image
                                 src={previewUrl}
                                 alt="Profile"
                                 className="mx-auto h-32 w-32 rounded-full object-cover"

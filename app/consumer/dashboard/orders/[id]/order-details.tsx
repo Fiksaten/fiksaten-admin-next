@@ -208,7 +208,25 @@ const [acceptedOfferId, setAcceptedOfferId] = useState<string | null>(null);
           </p>
         </CardFooter>
       </Card>
-
+      <Card>
+        <CardHeader>
+          <CardTitle>Images</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {orderImages.map((image, index) => (
+              <Image
+                key={index}
+                src={image}
+                alt={`Order Image ${index}`}
+                width={300}
+                height={300}
+                className="object-cover"
+              />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>Offers</CardTitle>
