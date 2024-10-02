@@ -25,6 +25,14 @@ import {
 import { Contractor } from "@/app/lib/types";
 import Image from "next/image";
 import { buildApiUrl } from "@/app/lib/utils";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+
 type OrderDetails = {
   orderId: string;
   userId: string;
@@ -75,6 +83,51 @@ type Offer = {
   offerDescription: string | null;
 };
 
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
+
+const PaymentForm: React.FC<{
+  clientSecret: string;
+  onPaymentSuccess: () => void;
+}> = ({ clientSecret, onPaymentSuccess }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState<string | null>(null);
+  const [processing, setProcessing] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!stripe || !elements) return;
+
+    setProcessing(true);
+    const result = await stripe.confirmPayment({
+      elements,
+      clientSecret,
+      confirmParams: {
+        return_url: `${window.location.origin}/payment-confirmation`,
+      },
+    });
+
+    if (result.error) {
+      setError(result.error.message || "An error occurred");
+    } else {
+      onPaymentSuccess();
+    }
+    setProcessing(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <PaymentElement />
+      {error && <div className="text-red-500 mt-2">{error}</div>}
+      <Button type="submit" disabled={!stripe || processing} className="mt-4">
+        {processing ? "Processing..." : "Pay now"}
+      </Button>
+    </form>
+  );
+};
+
 export default function OrderDetails({
   order,
   orderImages,
@@ -86,15 +139,23 @@ export default function OrderDetails({
   contractor?: Contractor | null;
   idToken: string;
 }) {
-const [acceptedOfferId, setAcceptedOfferId] = useState<string | null>(null);
+  const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
 
-  const handleAcceptOffer = async (offerId: string, contractorId: string, orderId: string) => {
-    setAcceptedOfferId(offerId);
-    const url = buildApiUrl(`/offers/accept`);
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        
+  const handleSelectOffer = async (
+    offerId: string,
+    contractorId: string,
+    orderId: string,
+    paymentMethod: string
+  ) => {
+    setSelectedOfferId(offerId);
+    if (paymentMethod === "now") {
+      setPaymentProcessing(true);
+      const url = buildApiUrl("/payment/create-payment-intent");
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
           offerId,
           contractorId,
           orderId,
@@ -103,14 +164,46 @@ const [acceptedOfferId, setAcceptedOfferId] = useState<string | null>(null);
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
-      
-    });
-    if (response.ok) {
-      console.log(`Offer ${offerId} accepted`);
+      });
+
+      if (response.ok) {
+        const { clientSecret } = await response.json();
+        setClientSecret(clientSecret);
+      } else {
+        console.error("Failed to create payment intent");
+      }
+      setPaymentProcessing(false);
     } else {
-      console.error(`Failed to accept offer ${offerId}`);
+      // Handle non-immediate payment method
+      await handleAcceptOffer(offerId);
     }
   };
+
+  const handleAcceptOffer = async (offerId: string) => {
+    const url = buildApiUrl(`/offers/${offerId}/accept`);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+
+    if (response.ok) {
+      // Update local state or refetch order details
+      console.log("Offer accepted successfully");
+      // You might want to refresh the order details or update the UI here
+    } else {
+      console.error("Failed to accept offer");
+    }
+  };
+
+  const handlePaymentSuccess = async () => {
+    if (selectedOfferId) {
+      await handleAcceptOffer(selectedOfferId);
+    }
+  };
+
   console.log("order.offers", order.offers);
 
   return (
@@ -231,7 +324,7 @@ const [acceptedOfferId, setAcceptedOfferId] = useState<string | null>(null);
         <CardHeader>
           <CardTitle>Offers</CardTitle>
           <CardDescription>
-            Review and accept offers for this order
+            Review and select offers for this order
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -274,14 +367,23 @@ const [acceptedOfferId, setAcceptedOfferId] = useState<string | null>(null);
                   </CardContent>
                   <CardFooter>
                     <Button
-                      onClick={() => handleAcceptOffer(offer.id, offer.contractorId, order.orderId)}
+                      onClick={() =>
+                        handleSelectOffer(
+                          offer.id,
+                          offer.contractorId,
+                          order.orderId,
+                          order.paymentMethod
+                        )
+                      }
                       disabled={
-                        acceptedOfferId !== null && acceptedOfferId !== offer.id
+                        paymentProcessing ||
+                        (selectedOfferId !== null &&
+                          selectedOfferId !== offer.id)
                       }
                     >
-                      {acceptedOfferId === offer.id
-                        ? "Accepted"
-                        : "Accept Offer"}
+                      {selectedOfferId === offer.id
+                        ? "Selected"
+                        : "Select Offer"}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -290,6 +392,22 @@ const [acceptedOfferId, setAcceptedOfferId] = useState<string | null>(null);
           </ScrollArea>
         </CardContent>
       </Card>
+
+      {clientSecret && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Elements stripe={stripePromise} options={{ clientSecret }}>
+              <PaymentForm
+                clientSecret={clientSecret}
+                onPaymentSuccess={handlePaymentSuccess}
+              />
+            </Elements>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
