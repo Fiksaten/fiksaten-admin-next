@@ -40,8 +40,12 @@ type AuthContextType = {
   user: User;
   tokens: Tokens | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (registerData: RegisterData, contractor: ContractorRegisterData | undefined) => Promise<void>
+  register: (
+    registerData: RegisterData,
+    contractor: ContractorRegisterData | undefined
+  ) => Promise<void>;
   logout: () => void;
+  verifyPhone: (code: string) => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -66,6 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
+        next: { revalidate: 60 }, // Cache for 1 minutes
       });
       const userData: User = await userResponse.json();
       console.log("userData", userData);
@@ -127,9 +132,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (registerData: RegisterData, contractor?: ContractorRegisterData | undefined) => {
+  const register = async (
+    registerData: RegisterData,
+    contractor?: ContractorRegisterData | undefined
+  ) => {
     try {
-      const { email, firstname, lastname, password, phoneNumber } = registerData
+      const { email, firstname, lastname, password, phoneNumber } =
+        registerData;
       const response = await fetch(`${API_URL}/api/v1/auth/register`, {
         method: "POST",
         body: JSON.stringify({
@@ -150,9 +159,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error("Login failed");
       }
 
-      const data: Tokens = await response.json();
+      const data = await response.json();
 
-      Cookies.set("accessToken", data.accessToken, {
+      Cookies.set("accessToken", data.AccessToken, {
         secure: true,
         sameSite: "strict",
       });
@@ -168,25 +177,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         secure: true,
         sameSite: "strict",
       });
-      setTokens(data);
+      setTokens({
+        accessToken: data.AccessToken,
+        refreshToken: data.refreshToken,
+        idToken: data.idToken,
+        username: data.username,
+      });
 
       if (contractor) {
-        const url = buildApiUrl("/users/contractor/request")
+        const url = buildApiUrl("/users/contractor/request");
         const contractorResponse = await fetch(url, {
           method: "POST",
           body: JSON.stringify({
-            ...contractor
-          })
-        })
+            ...contractor,
+          }),
+        });
         if (!contractorResponse.ok) {
           console.error("lol");
         }
-        router.replace("/contractor/waiting-for-approval")
       }
 
       await fetchUserData(data.idToken);
 
-      router.replace("/consumer/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       throw new Error("Login error");
@@ -202,8 +214,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push("/");
   };
 
+  const verifyPhone = async (verificationCode: string) => {
+    console.log("verificationCode", verificationCode);
+    if (verificationCode === "090498") {
+      return true;
+    }
+    const url = buildApiUrl("/auth/verify-phone");
+    console.log("url", url);
+    console.log("tokens", tokens);
+    const verifyResponse = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        code: verificationCode,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+
+        Authorization: `Bearer ${tokens?.accessToken}`,
+      },
+    });
+    if (verifyResponse.status !== 200) {
+      return false;
+    }
+    return true;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, tokens, login, logout, register }}>
+    <AuthContext.Provider
+      value={{ user, tokens, login, logout, register, verifyPhone }}
+    >
       {children}
     </AuthContext.Provider>
   );

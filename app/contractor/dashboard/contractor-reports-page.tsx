@@ -16,6 +16,7 @@ const MetricCard = ({ title, value }: { title: string; value: string | number })
 );
 
 const ContractorMetricsDashboard = ({ metrics }: { metrics: Metrics }) => {
+  
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-2xl text-black font-bold mb-4">Metrics Dashboard</h1>

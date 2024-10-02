@@ -2,11 +2,6 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/components/AuthProvider"
 import Image from "next/image"
 import LoginImage from "@/public/images/login.webp"
@@ -14,19 +9,16 @@ import LoginImage from "@/public/images/login.webp"
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('')
   const { login } = useAuth()
   
   const handleSubmit = async (e: React.FormEvent) => {
     setLoading(true)
     e.preventDefault()
-    setError('')
     try {
       await login(email, password)
     } catch (err) {
-      setError('Login failed. Please check your credentials.')
+      console.error('Login failed. Please check your credentials.')
     } finally{
       setLoading(false)
     }
@@ -57,9 +49,14 @@ export default function Login() {
         >
           Kirjaudu sisään
         </button>
+        <div className="flex justify-between">
         <Link href={"/register"}>
           <h3 className="text-blue-500 underline">Eikö sinulla ole vielä tiliä?</h3>
         </Link>
+        <Link href={"/forgot-password"}>
+          <h3 className="text-blue-500 underline">Unohtuiko salasanasi?</h3>
+        </Link>
+        </div>
       </div>
       <div className="w-1/2">
         <Image src={LoginImage} alt="Login" className="w-full h-full object-cover" />

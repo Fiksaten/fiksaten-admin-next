@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useAuth } from "@/components/AuthProvider"
 import Unauthorized from "@/components/Unauthorized"
+import NotificationComponent from "@/components/Notification"
 export default function AdminPanel({
     children,
   }: Readonly<{
@@ -20,6 +21,7 @@ export default function AdminPanel({
   }>) {
   const { user } = useAuth()
   console.log("Layout", user)
+
   
  setTimeout(() => {
   if( !user || user.role !== "consumer") {
@@ -138,7 +140,6 @@ export default function AdminPanel({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem><Link href="/consumer/dashboard/profile">Profile</Link></DropdownMenuItem>
                 <DropdownMenuItem>
                   <Link href="/consumer/dashboard/settings">Settings</Link>
                 </DropdownMenuItem>
@@ -152,6 +153,7 @@ export default function AdminPanel({
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto p-6">
+        <NotificationComponent />
           {children}
         </main>
       </div>

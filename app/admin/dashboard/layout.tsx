@@ -1,33 +1,41 @@
-'use client'
+"use client";
 
-import Link from "next/link"
-import { Menu, ChevronDown, LayoutDashboard, Users, Settings, Bell, Search, MessageSquare } from "lucide-react"
+import Link from "next/link";
+import {
+  Menu,
+  ChevronDown,
+  LayoutDashboard,
+  Users,
+  Settings,
+  Bell,
+  Search,
+  MessageSquare,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { useAuth } from "@/components/AuthProvider"
-import Unauthorized from "@/components/Unauthorized"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/components/AuthProvider";
+import Unauthorized from "@/components/Unauthorized";
+import NotificationComponent from "@/components/Notification";
 
 export default function AdminPanel({
-    children,
-  }: Readonly<{
-    children: React.ReactNode;
-  }>) {
-  const { user } = useAuth()
-  console.log("Layout", user)
- 
-    if( !user || user.role !== "admin") {
-        return <Unauthorized />
-    }
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const { user } = useAuth();
+  console.log("Layout", user);
+  if (!user || user.role !== "admin") {
+    return <Unauthorized />;
+  }
 
-  
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
       {/* Sidebar */}
@@ -38,21 +46,21 @@ export default function AdminPanel({
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
             <Link
-               href="/admin/dashboard"
+              href="/admin/dashboard"
               className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               <LayoutDashboard className="mr-3 h-5 w-5" />
               Dashboard
             </Link>
             <Link
-               href="/admin/dashboard/users"
+              href="/admin/dashboard/users"
               className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               <Users className="mr-3 h-5 w-5" />
               Users
             </Link>
             <Link
-                href="/admin/dashboard/settings"
+              href="/admin/dashboard/settings"
               className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               <Settings className="mr-3 h-5 w-5" />
@@ -132,7 +140,9 @@ export default function AdminPanel({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem><Link href="/admin/dashboard/profile">Profile</Link></DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/admin/dashboard/settings">Profile</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Link href="/admin/dashboard/settings">Settings</Link>
                 </DropdownMenuItem>
@@ -146,9 +156,10 @@ export default function AdminPanel({
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto p-6">
+          <NotificationComponent />
           {children}
         </main>
       </div>
     </div>
-  )
+  );
 }

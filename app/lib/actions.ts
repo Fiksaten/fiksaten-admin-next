@@ -25,6 +25,7 @@ export const getReports = async () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    next: { revalidate: 360 }, // Cache for 6 minutes
   });
   if (!response.ok) {
     throw new Error("Failed to fetch reports");
@@ -60,6 +61,7 @@ export const getUsers = async (limit = 20, page = 1, search: string) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        next: { revalidate: 360 }, // Cache for 6 minutes
       }
     );
     if (!response.ok) {
@@ -80,6 +82,7 @@ export const getCategories = async () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      next: { revalidate: 3600 }, // Cache for 1 hour
     });
     if (!response.ok) {
       throw new Error(await response.json());
@@ -99,6 +102,7 @@ export const getContractorCategories = async () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      next: { revalidate: 60 }, // Cache for 1 minutes
     });
     if (!response.ok) {
       throw new Error(await response.json());
@@ -108,7 +112,6 @@ export const getContractorCategories = async () => {
     console.error(e);
   }
 };
-
 
 export const createCategory = async (category: CreateCategory) => {
   const idToken = await getIdToken();
@@ -124,10 +127,10 @@ export const createCategory = async (category: CreateCategory) => {
     if (!response.ok) {
       throw new Error(await response.json());
     }
-    return { message: "Ok" }
+    return { message: "Ok" };
   } catch (e) {
     console.error(e);
-    return { message: "Error" }
+    return { message: "Error" };
   }
 };
 
@@ -145,10 +148,10 @@ export const updateCategory = async (category: CreateCategory, id: string) => {
     if (!response.ok) {
       throw new Error(await response.json());
     }
-    return { message: "Ok" }
+    return { message: "Ok" };
   } catch (e) {
     console.error(e);
-    return { message: "Error" }
+    return { message: "Error" };
   }
 };
 
@@ -165,10 +168,10 @@ export const deleteCategory = async (id: string) => {
     if (!response.ok) {
       throw new Error(await response.json());
     }
-    return { message: "Ok" }
+    return { message: "Ok" };
   } catch (e) {
     console.error(e);
-    return { message: "Error" }
+    return { message: "Error" };
   }
 };
 
@@ -181,6 +184,7 @@ export const getUser = async (id: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      next: { revalidate: 60 }, // Cache for 1 minutes
     });
     if (!response.ok) {
       throw new Error(await response.json());
@@ -189,18 +193,22 @@ export const getUser = async (id: string) => {
   } catch (e) {
     console.error(e);
   }
-}
+};
 
 export const getUserOrders = async (id: string, page = 1, limit = 5) => {
   const token = await getIdToken();
   try {
-    const response = await fetch(buildApiUrl(`/users/orders/${id}?page=${page}&limit=${limit}`), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      buildApiUrl(`/users/orders/${id}?page=${page}&limit=${limit}`),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        next: { revalidate: 60 }, // Cache for 1 minutes
+      }
+    );
     if (!response.ok) {
       throw new Error(await response.json());
     }
@@ -218,7 +226,8 @@ export const getContractorReports = async () => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-      }
+      },
+      next: { revalidate: 60 }, // Cache for 1 minutes
     });
     if (!response.ok) {
       throw new Error(await response.json());
@@ -227,7 +236,7 @@ export const getContractorReports = async () => {
   } catch (e) {
     console.error(e);
   }
-}
+};
 
 export const getContractorData = async (idToken: string) => {
   const response = await fetch(buildApiUrl("/contractors/me"), {
@@ -236,12 +245,13 @@ export const getContractorData = async (idToken: string) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${idToken}`,
     },
+    next: { revalidate: 60 }, // Cache for 1 minutes
   });
   if (!response.ok) {
     throw new Error(await response.json());
   }
   return await response.json();
-}
+};
 
 export const getContractorReviews = async (idToken: string) => {
   const response = await fetch(buildApiUrl("/contractors/me/reviews"), {
@@ -250,16 +260,17 @@ export const getContractorReviews = async (idToken: string) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${idToken}`,
     },
+    next: { revalidate: 60 }, // Cache for 1 minutes
   });
   if (!response.ok) {
     throw new Error(await response.json());
   }
   return await response.json();
-}
+};
 
 export const getContractorById = async (id: string) => {
   console.log("id", id);
-  if(!id) {
+  if (!id) {
     throw new Error("No id provided");
   }
   const idToken = await getIdToken();
@@ -269,12 +280,13 @@ export const getContractorById = async (id: string) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${idToken}`,
     },
+    next: { revalidate: 60 }, // Cache for 1 minutes
   });
   if (!response.ok) {
     throw new Error(await response.json());
   }
   return await response.json();
-}
+};
 
 export const getReviews = async () => {
   const idToken = await getIdToken();
@@ -284,9 +296,10 @@ export const getReviews = async () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${idToken}`,
     },
+    next: { revalidate: 60 }, // Cache for 1 minutes
   });
   if (!response.ok) {
     throw new Error(await response.json());
   }
   return await response.json();
-}
+};

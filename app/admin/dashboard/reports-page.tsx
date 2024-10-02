@@ -21,7 +21,6 @@ export function ReportsPage({reports}: {reports: DashboardStatsResponse}) {
     to: new Date(2023, 0, 31),
   })
 
-  
   if (!reports) return <h1>loading</h1>
   
   return (

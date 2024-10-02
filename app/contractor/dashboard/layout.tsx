@@ -21,6 +21,8 @@ export default function AdminPanel({
   const { user } = useAuth()
   const router = useRouter()
   console.log("user", user)
+
+  
   if( !user || user.role !== "contractor") {
     router.replace("/contractor/waiting-for-approval")
   }
