@@ -2,6 +2,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { ContractorRegisterData, RegisterData } from "@/app/lib/types";
+import { buildApiUrl } from "@/app/lib/utils";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 type User = {
@@ -38,6 +40,7 @@ type AuthContextType = {
   user: User;
   tokens: Tokens | null;
   login: (email: string, password: string) => Promise<void>;
+  register: (registerData: RegisterData, contractor: ContractorRegisterData | undefined) => Promise<void>
   logout: () => void;
 };
 
@@ -124,6 +127,72 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const register = async (registerData: RegisterData, contractor?: ContractorRegisterData | undefined) => {
+    try {
+      const { email, firstname, lastname, password, phoneNumber } = registerData
+      const response = await fetch(`${API_URL}/api/v1/auth/register`, {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          firstname,
+          lastname,
+          password,
+          phoneNumber,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.error("Login failed:", response.statusText);
+        throw new Error("Login failed");
+      }
+
+      const data: Tokens = await response.json();
+
+      Cookies.set("accessToken", data.accessToken, {
+        secure: true,
+        sameSite: "strict",
+      });
+      Cookies.set("refreshToken", data.refreshToken, {
+        secure: true,
+        sameSite: "strict",
+      });
+      Cookies.set("idToken", data.idToken, {
+        secure: true,
+        sameSite: "strict",
+      });
+      Cookies.set("username", data.username, {
+        secure: true,
+        sameSite: "strict",
+      });
+      setTokens(data);
+
+      if (contractor) {
+        const url = buildApiUrl("/users/contractor/request")
+        const contractorResponse = await fetch(url, {
+          method: "POST",
+          body: JSON.stringify({
+            ...contractor
+          })
+        })
+        if (!contractorResponse.ok) {
+          console.error("lol");
+        }
+        router.replace("/contractor/waiting-for-approval")
+      }
+
+      await fetchUserData(data.idToken);
+
+      router.replace("/consumer/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
+      throw new Error("Login error");
+    }
+  };
+
   const logout = () => {
     setUser(null);
     Cookies.remove("accessToken");
@@ -134,7 +203,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, tokens, login, logout }}>
+    <AuthContext.Provider value={{ user, tokens, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

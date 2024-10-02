@@ -23,11 +23,10 @@ export default function AdminPanel({
   const { user } = useAuth()
   console.log("Layout", user)
  
- setTimeout(() => {
     if( !user || user.role !== "admin") {
         return <Unauthorized />
     }
- }, 1000)
+
   
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">

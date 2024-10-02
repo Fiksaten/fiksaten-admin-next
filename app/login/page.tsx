@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/components/AuthProvider"
-
+import Image from "next/image"
+import LoginImage from "@/public/images/login.webp"
 
 export default function Login() {
   const [email, setEmail] = useState("")
@@ -30,69 +31,39 @@ export default function Login() {
       setLoading(false)
     }
   }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Login to Fiksaten</CardTitle>
-          <CardDescription className="text-center">
-            Enter your email and password to access your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} onKeyDown={(e)=>{
-            if (e.key === "Enter"){
-              handleSubmit
-            }
-          }}>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                />
-                <Label htmlFor="remember" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Remember me
-                </Label>
-              </div>
-              {error && <div>
-                <p className="text-red-600">{error}</p>
-                </div>}
-              <Button type="submit" className="w-full" disabled={loading}>
-                Login
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-2">
-          <Link href="/forgot-password" className="text-sm text-center text-blue-500 hover:text-blue-700">
-            Forgot your password?
-          </Link>
-        </CardFooter>
-      </Card>
+    <div className="flex h-screen bg-white">
+      <div className="w-1/2 flex flex-col justify-center p-12 space-y-6">
+        <h1 className="text-3xl font-bold text-[#F3D416]">Fiksaten</h1>
+        <p className="text-sm text-black">Kirjaudu Fiksaten sovellukseen</p>
+        <input
+          className="border p-2"
+          type="text"
+          placeholder="Sähköposti"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className="border p-2"
+          type="password"
+          placeholder="Salasana"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          className="bg-yellow-500 text-white p-3 font-semibold"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          Kirjaudu sisään
+        </button>
+        <Link href={"/register"}>
+          <h3 className="text-blue-500 underline">Eikö sinulla ole vielä tiliä?</h3>
+        </Link>
+      </div>
+      <div className="w-1/2">
+        <Image src={LoginImage} alt="Login" className="w-full h-full object-cover" />
+      </div>
     </div>
-  )
+  );
 }

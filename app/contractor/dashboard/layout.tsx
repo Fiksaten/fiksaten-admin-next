@@ -12,20 +12,18 @@ import {
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useAuth } from "@/components/AuthProvider"
-import Unauthorized from "@/components/Unauthorized"
+import { useRouter } from "next/navigation"
 export default function AdminPanel({
     children,
   }: Readonly<{
     children: React.ReactNode;
   }>) {
   const { user } = useAuth()
-  console.log("Layout", user)
-  
- setTimeout(() => {
+  const router = useRouter()
+  console.log("user", user)
   if( !user || user.role !== "contractor") {
-      return <Unauthorized />
+    router.replace("/contractor/waiting-for-approval")
   }
-}, 1000)
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
