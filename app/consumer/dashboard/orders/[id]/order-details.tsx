@@ -21,6 +21,7 @@ import {
   ClockIcon,
   UserIcon,
   Star,
+  Pen,
 } from "lucide-react";
 import { Contractor } from "@/app/lib/types";
 import Image from "next/image";
@@ -32,6 +33,8 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 type OrderDetails = {
   orderId: string;
@@ -142,6 +145,8 @@ export default function OrderDetails({
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedOrder, setEditedOrder] = useState<OrderDetails>(order);
 
   const handleSelectOffer = async (
     offerId: string,
@@ -204,13 +209,63 @@ export default function OrderDetails({
     }
   };
 
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+    if (isEditing) {
+      setEditedOrder(order); // Reset changes if canceling edit
+    }
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setEditedOrder((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveChanges = async () => {
+    const url = buildApiUrl(`/orders/update`);
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify(editedOrder),
+    });
+
+    if (response.ok) {
+      setIsEditing(false);
+      // You might want to update the order state here or refetch the order details
+    } else {
+      console.error("Failed to save order changes");
+    }
+  };
+
   console.log("order.offers", order.offers);
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-8">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">{order.title}</CardTitle>
+          <CardTitle className="text-2xl">
+            <div className="flex justify-between">
+              {isEditing ? (
+                <Input
+                  name="title"
+                  value={editedOrder.title}
+                  onChange={handleInputChange}
+                  className="text-2xl font-bold"
+                />
+              ) : (
+                <h2>{order.title}</h2>
+              )}
+              <Button variant="ghost" onClick={handleEditToggle}>
+                <Pen className="h-4 w-4 mr-2" />
+                <span>{isEditing ? "Cancel" : "Edit"}</span>
+              </Button>
+            </div>
+          </CardTitle>
           <CardDescription>Order ID: {order.orderId}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -226,7 +281,17 @@ export default function OrderDetails({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center space-x-2">
               <DollarSignIcon className="h-5 w-5 text-muted-foreground" />
-              <span>Budget: ${order.budget}</span>
+              <span>Budget: $</span>
+              {isEditing ? (
+                <Input
+                  name="budget"
+                  value={editedOrder.budget}
+                  onChange={handleInputChange}
+                  className="w-24"
+                />
+              ) : (
+                <span>{order.budget}</span>
+              )}
             </div>
             <div className="flex items-center space-x-2">
               <CalendarIcon className="h-5 w-5 text-muted-foreground" />
@@ -249,7 +314,15 @@ export default function OrderDetails({
           <Separator />
           <div className="space-y-2">
             <h3 className="font-semibold">Additional Information</h3>
-            <p>{order.locationMoreInfo}</p>
+            {isEditing ? (
+              <Textarea
+                name="locationMoreInfo"
+                value={editedOrder.locationMoreInfo}
+                onChange={handleInputChange}
+              />
+            ) : (
+              <p>{order.locationMoreInfo}</p>
+            )}
           </div>
           <Separator />
           {contractor && (
@@ -294,7 +367,10 @@ export default function OrderDetails({
           )}
         </CardContent>
         <CardFooter>
-          <p className="text-sm text-muted-foreground">
+          {isEditing && (
+            <Button onClick={handleSaveChanges}>Save Changes</Button>
+          )}
+          <p className="text-sm text-muted-foreground ml-auto">
             Created: {format(new Date(order.orderCreatedAt), "PPP")}
             {order.orderCreatedAt !== order.orderUpdatedAt &&
               ` | Updated: ${format(new Date(order.orderUpdatedAt), "PPP")}`}

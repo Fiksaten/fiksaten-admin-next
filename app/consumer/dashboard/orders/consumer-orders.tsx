@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { buildApiUrl } from "@/app/lib/utils";
+import { useRouter } from "next/navigation";
 
 export type Offer = {
   date: string | null;
@@ -61,17 +63,37 @@ export type OrdersMy = {
 
 export default function ConsumerOrdersComponent({
   orders,
+  idToken,
 }: {
   orders: OrdersMy[];
+  idToken: string;
 }) {
   const [activeTab, setActiveTab] = useState("active");
-
+  const router = useRouter();
   if (!orders) {
     return <div>No orders found</div>;
   }
 
+  
+
   const activeOrders = orders?.filter((order) => order.status !== "done");
   const completedOrders = orders?.filter((order) => order.status === "done");
+
+  const handleRemoveOrder = async (orderId: string) => {
+    const url = buildApiUrl(`/orders/remove`);
+		const response = await fetch(url, {
+			method: "POST", 
+      body: JSON.stringify({ orderId }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+		if (!response.ok) {
+			console.error("Failed to remove order");
+    }
+			router.refresh();
+	}
 
   const OrderCard = ({
     order,
@@ -113,15 +135,18 @@ export default function ConsumerOrdersComponent({
         <div>{order.orderCity}</div>
       </CardFooter>
       {isActive ? (
-        <Link href={`/consumer/dashboard/orders/${order.orderId}`} passHref>
-          <Button
-            variant="ghost"
-            className="w-full flex justify-between items-center"
-          >
-            View Details
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </Link>
+        <div className="flex justify-between p-2">
+          <Button onClick={()=>handleRemoveOrder(order.orderId)} variant="destructive">Cancel Order</Button>
+          <Link href={`/consumer/dashboard/orders/${order.orderId}`} passHref>
+            <Button
+              variant="outline"
+              className="flex justify-between items-center"
+            >
+              View Details
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
       ) : (
         <Link href={`/consumer/dashboard/review/${order.orderId}`} passHref>
           <Button
