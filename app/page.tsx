@@ -3,29 +3,45 @@ import { Input } from "@/components/ui/input"
 import { ArrowRight, CheckCircle, MessageCircle, Search } from "lucide-react"
 import Link from "next/link"
 
+const HeaderPromotion = () => {
+  return (
+    <div className="bg-[#007AFF] text-white py-2">
+      <p className="text-center text-sm font-thin">
+        Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti.
+      </p>
+    </div>
+  )
+}
+
 export default function Page() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-white shadow-sm">
+        <HeaderPromotion />
         <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-primary">
-            Fiksaten
+            <h1 className="text-2xl font-bold text-[#F3D416]">Fiksaten</h1>
           </Link>
           <ul className="hidden md:flex space-x-6">
-            <li><Link href="/" className="text-gray-600 hover:text-primary">Etusivu</Link></li>
-            <li><Link href="/yrityksesta" className="text-gray-600 hover:text-primary">Yrityksestä</Link></li>
-            <li><Link href="/liity-apulaiseksi" className="text-gray-600 hover:text-primary">Liity apulaiseksi</Link></li>
-            <li><Link href="/blogi" className="text-gray-600 hover:text-primary">Blogi</Link></li>
-            <li><Link href="/asiakaspalvelu" className="text-gray-600 hover:text-primary">Asiakaspalvelu</Link></li>
+            <li><Link href="/" className="text-black font-semibold hover:text-primary">Ilmoita avuntarve</Link></li>
+            <li><Link href="/yrityksesta" className="text-black font-semibold hover:text-primary">Mikä on Fiksaten</Link></li>
+            <li><Link href="/register" className="text-black font-semibold hover:text-primary">Liity apulaiseksi</Link></li>
+            <li><Link href="/contact" className="text-black font-semibold hover:text-primary">Asiakaspalvelu</Link></li>
           </ul>
+          <div className="flex items-center gap-4">
           <Link href="/login">
-            <Button className="hidden md:inline-flex">Kirjaudu sisään</Button>
+            <Button variant="outline" className="hidden md:inline-flex text-[#6B7280] font-semibold">Kirjaudu</Button>
           </Link>
+          <Link href="/register">
+            <Button variant="default" className="hidden bg-[#007AFF] text-white font-semibold md:inline-flex">Rekisteröidy</Button>
+            </Link>
+            
           <Link href="/login">
             <Button variant="outline" size="icon" className="md:hidden">
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
+          </div>
         </nav>
       </header>
 
