@@ -1,4 +1,4 @@
-// public/firebase-messaging-sw.js
+/* // public/firebase-messaging-sw.js
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js');
 
@@ -26,3 +26,4 @@ messaging.onBackgroundMessage(function(payload) {
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
+ */

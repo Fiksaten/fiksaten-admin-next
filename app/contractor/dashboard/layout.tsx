@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useAuth } from "@/components/AuthProvider"
 import { useRouter } from "next/navigation"
-import NotificationComponent from "@/components/Notification"
 import LiveChatWidget from "@/components/LiveChatWidget"
 import { buildApiUrl } from "@/app/lib/utils"
 import Cookies from "js-cookie"
@@ -256,7 +255,6 @@ export default function AdminPanel({
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto p-6">
-          <NotificationComponent />
           <LiveChatWidget />
           {children}
         </main>

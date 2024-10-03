@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 import { useEffect } from 'react';
 import { messaging, getToken, onMessage } from '../lib/firebase';
 import { buildApiUrl } from '@/app/lib/utils';
@@ -75,3 +75,4 @@ const NotificationComponent = () => {
 };
 
 export default NotificationComponent;
+ */
