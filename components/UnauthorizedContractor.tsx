@@ -6,6 +6,7 @@ import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { Textarea } from "./ui/textarea"
 import { buildApiUrl } from "@/app/lib/utils"
+import { useRouter } from "next/navigation"
 
 type ContractorRegisterResponse = {
     id: string
@@ -52,6 +53,12 @@ type ContractorRegisterResponse = {
 
 export default function UnauthorizedContractor({contractor}: {contractor: ContractorRegisterResponse }){
     console.log("contractor", contractor)
+
+    const router = useRouter()
+
+    if(contractor.approvalStatus === "approved"){
+      router.replace("/contractor/dashboard")
+    } 
     const [formData, setFormData] = useState({
         companyName: contractor ? contractor.contractorName : '',
         companyEmail: contractor ? contractor.contractorEmail : '',

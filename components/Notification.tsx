@@ -68,7 +68,6 @@ const NotificationComponent = () => {
 
     onMessage(messaging, (payload) => {
       console.log('Message received. ', payload);
-      // Customize notification handling here
     });
   }, []);
 
