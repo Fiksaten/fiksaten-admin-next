@@ -131,7 +131,7 @@ export default function ChatComponent({chatId, partnerId, idToken}: {chatId: str
 			});
 		}, 35000);
 		return () => clearTimeout(timer);
-	}, [messages, user]);
+	}, [messages, user, chatId]);
 
 	const handleSendMessage = (msgContent: string) => {
 		if (!msgContent || !partnerId) {

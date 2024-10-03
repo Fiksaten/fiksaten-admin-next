@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */ 
 'use client'
 
 import { buildApiUrl } from '@/app/lib/utils'
@@ -104,7 +104,7 @@ export default function ChatComponent({chatId, partnerId, idToken}: {chatId: str
 			});
 		}, 35000);
 		return () => clearTimeout(timer);
-	}, [messages, user]);
+	}, [messages, user, chatId]);
 
 	const handleSendMessage = (msgContent: string) => {
 		if (!msgContent || !partnerId) {
