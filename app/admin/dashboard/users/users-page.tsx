@@ -134,7 +134,7 @@ export default function UsersPage({
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                          onClick={() => navigator.clipboard.writeText(user.id)}
+                          onClick={() => navigator?.clipboard?.writeText(user.id)}
                         >
                           Copy user ID
                         </DropdownMenuItem>
