@@ -22,14 +22,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CalendarIcon, MapPinIcon, EuroIcon, FileTextIcon, ClockIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  MapPinIcon,
+  EuroIcon,
+  FileTextIcon,
+  ClockIcon,
+} from "lucide-react";
 import { ExtendedOrder, OfferDetails } from "@/app/lib/types";
 import { fetchOfferDetails, Sort, Status } from "@/app/lib/orderActions";
 import { buildApiUrl, cn } from "@/app/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-function OfferDetailsComponent({ offers, idToken }: { offers: OfferDetails[]; idToken: string }) {
-
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
+function OfferDetailsComponent({
+  offers,
+  idToken,
+}: {
+  offers: OfferDetails[];
+  idToken: string;
+}) {
   const handleMarkAsCompleted = async (offer: OfferDetails) => {
     const url = buildApiUrl(`/orders/completed`);
     const response = await fetch(url, {
@@ -45,7 +57,7 @@ function OfferDetailsComponent({ offers, idToken }: { offers: OfferDetails[]; id
     }
     const data = await response.json();
     console.log("Order marked as completed:", data);
-  }
+  };
 
   if (!offers || offers.length === 0) {
     return <p className="text-black">No offers found</p>;
@@ -71,18 +83,25 @@ function OfferDetailsComponent({ offers, idToken }: { offers: OfferDetails[]; id
             </div>
             <div className="flex items-center">
               <EuroIcon className="mr-2 h-5 w-5 text-gray-500" />
-              <span>Offer Price: {offer.offerPrice ? offer.offerPrice : "N/A"}€</span>
+              <span>
+                Offer Price: {offer.offerPrice ? offer.offerPrice : "N/A"}€
+              </span>
             </div>
             <div className="flex items-center">
               <EuroIcon className="mr-2 h-5 w-5 text-gray-500" />
-              <span>Material Cost: {offer.materialCost ? offer.materialCost : "N/A"}€</span>
+              <span>
+                Material Cost: {offer.materialCost ? offer.materialCost : "N/A"}
+                €
+              </span>
             </div>
             <div className="flex items-start">
               <FileTextIcon className="mr-2 h-5 w-5 text-gray-500 mt-1" />
               <span>Description: {offer.offerDescription}</span>
             </div>
             {offer.status === "accepted" && (
-              <Button onClick={() => handleMarkAsCompleted(offer)}>Mark as completed</Button>
+              <Button onClick={() => handleMarkAsCompleted(offer)}>
+                Mark as completed
+              </Button>
             )}
           </CardContent>
         </Card>
@@ -91,7 +110,48 @@ function OfferDetailsComponent({ offers, idToken }: { offers: OfferDetails[]; id
   );
 }
 
-function OrderCard({ order, isSelected }: { order: ExtendedOrder, isSelected: boolean }) {
+function OrderCard({
+  order,
+  isSelected,
+  idToken,
+}: {
+  order: ExtendedOrder;
+  isSelected: boolean;
+  idToken: string;
+}) {
+  const router = useRouter();
+  const handleChat = async (order: ExtendedOrder) => {
+    const url = buildApiUrl("/chats/conversation/create");
+    console.log("order.userId", order);
+
+    if (!order.userId) {
+      console.error("No user ID found");
+      toast({
+        title: "Error",
+        description: "No user ID found",
+        variant: "destructive",
+      });
+      return;
+    }
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        partnerId: order.userId,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log("chatId", data.id);
+      router.push(`/chats?chatId=${data.id}&partnerId=${order.userId}`);
+    } else {
+      console.error("Failed to create chat");
+    }
+  };
+
   return (
     <Card className={cn("mb-4", isSelected ? "bg-blue-100" : "")}>
       <CardHeader>
@@ -126,8 +186,11 @@ function OrderCard({ order, isSelected }: { order: ExtendedOrder, isSelected: bo
           <div>Offers: {order.offersCount}</div>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex justify-between">
         <Button>View Details</Button>
+        <Button variant="outline" onClick={() => handleChat(order)}>
+          Chat
+        </Button>
       </CardFooter>
     </Card>
   );
@@ -424,7 +487,11 @@ export default function OrdersPage({ token }: { token: string }) {
                         key={order.orderId}
                         onClick={() => handleOrderSelect(order)}
                       >
-                        <OrderCard order={order} isSelected={order.orderId === selectedOrderId} />
+                        <OrderCard
+                          order={order}
+                          isSelected={order.orderId === selectedOrderId}
+                          idToken={token}
+                        />
                       </div>
                     ))
                   ) : (

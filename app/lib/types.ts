@@ -285,3 +285,20 @@ export type OfferDetails = {
   status: string;
   orderId: string;
 };
+
+export type RegisterData = {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+}
+
+export type ContractorRegisterData = {
+  companyName: string;
+  companyEmail: string;
+  companyPhone: string;
+  businessId: string;
+  companyDescription: string;
+  companyImageUrl: string;
+}

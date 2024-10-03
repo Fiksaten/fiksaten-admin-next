@@ -4,6 +4,7 @@ import "./globals.css";
 import PHProvider from './providers'
 import dynamic from 'next/dynamic'
 import { AuthProvider } from "@/components/AuthProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,10 +35,11 @@ export default function RootLayout({
     <html lang="en">
       <PHProvider>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`bg-white text-black ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <PostHogPageView />
         <AuthProvider>
+        <Toaster />
           {children}
         </AuthProvider>
       </body>
