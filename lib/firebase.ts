@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+/* import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 const firebaseConfig = {
@@ -12,6 +12,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
+    const messaging = getMessaging(app);
+}
 
-export { messaging, getToken, onMessage };
+export { messaging, getToken, onMessage }; */

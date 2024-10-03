@@ -23,7 +23,6 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/components/AuthProvider";
 import Unauthorized from "@/components/Unauthorized";
-import NotificationComponent from "@/components/Notification";
 
 export default function AdminPanel({
   children,
@@ -156,7 +155,6 @@ export default function AdminPanel({
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto p-6">
-          <NotificationComponent />
           {children}
         </main>
       </div>

@@ -1,13 +1,12 @@
 'use client'
 
 import { Suspense, useState, useEffect } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import ChatList from './ChatList'
 import ChatComponent from './ChatComponent'
 import { getIdToken } from '@/app/lib/actions'
-import {getNonAdminChats} from '@/app/lib/chatActions'
-
-
+import { getNonAdminChats } from '@/app/lib/chatActions'
+import SearchParamsWrapper from './searchParamWrapper'
 
 type OtherUser = {
   firstname: string
@@ -16,7 +15,7 @@ type OtherUser = {
   contractorName: string | null
   contractorImageUrl: string | null
 }
- 
+
 type Chat = {
   id: string
   user1Id: string
@@ -27,10 +26,8 @@ type Chat = {
   updated_at: string
   otherUser: OtherUser
 }
- 
 
 export default function ChatsPage() {
-  const searchParams = useSearchParams()
   const router = useRouter()
   const [chats, setChats] = useState<Chat[]>([])
   const [idToken, setIdToken] = useState('')
@@ -46,9 +43,6 @@ export default function ChatsPage() {
     fetchData()
   }, [])
 
-  const chatId = searchParams.get('chatId')
-  const partnerId = searchParams.get('partnerId')
-
   const handleSelectChat = (newChatId: string, newPartnerId: string) => {
     router.push(`/consumer/dashboard/chats?chatId=${newChatId}&partnerId=${newPartnerId}`)
   }
@@ -61,12 +55,16 @@ export default function ChatsPage() {
         </Suspense>
       </div>
       <div className="w-2/3">
-        <Suspense fallback={<div className="p-4">Select a chat to start messaging</div>}>
-          {chatId && partnerId ? (
-            <ChatComponent chatId={chatId} partnerId={partnerId} idToken={idToken} />
-          ) : (
-            <div className="p-4">Select a chat to start messaging</div>
-          )}
+        <Suspense fallback={<div className="p-4">Loading chat...</div>}>
+          <SearchParamsWrapper>
+            {({ chatId, partnerId }) => (
+              chatId && partnerId ? (
+                <ChatComponent chatId={chatId} partnerId={partnerId} idToken={idToken} />
+              ) : (
+                <div className="p-4">Select a chat to start messaging</div>
+              )
+            )}
+          </SearchParamsWrapper>
         </Suspense>
       </div>
     </div>
