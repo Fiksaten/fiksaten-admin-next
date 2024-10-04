@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { useAuth } from "@/components/AuthProvider"
 import Image from "next/image"
-import LoginImage from "@/public/images/login.webp"
+
 
 export default function Login() {
   const [email, setEmail] = useState("")
@@ -59,7 +59,7 @@ export default function Login() {
         </div>
       </div>
       <div className="w-1/2">
-        <Image src={LoginImage} alt="Login" className="w-full h-full object-cover" />
+        <Image src={"/images/login.webp"} width={1000} height={1000} alt="Login" className="w-full h-full object-cover" />
       </div>
     </div>
   );
