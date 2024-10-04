@@ -1,66 +1,40 @@
-'use client'
-
-import Link from "next/link"
-import { useState } from "react"
-import { useAuth } from "@/components/AuthProvider"
-import Image from "next/image"
-
+import Image from "next/image";
+import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import LoginForm from "./LoginForm";
+import Link from "next/link";
+import Navigation from "@/components/lander/Navigation";
+import PromotionHeader from "@/components/lander/PromotionHeader";
+import Footer from "@/components/lander/Footer";
 
 export default function Login() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth()
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    setLoading(true)
-    e.preventDefault()
-    try {
-      await login(email, password)
-    } catch (err) {
-      console.error('Login failed. Please check your credentials.')
-    } finally{
-      setLoading(false)
-    }
-  }
   return (
-    <div className="flex h-screen bg-white">
-      <div className="w-1/2 flex flex-col justify-center p-12 space-y-6">
-        <h1 className="text-3xl font-bold text-[#F3D416]">Fiksaten</h1>
-        <p className="text-sm text-black">Kirjaudu Fiksaten sovellukseen</p>
-        <input
-          className="border p-2"
-          type="text"
-          placeholder="Sähköposti"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="border p-2"
-          type="password"
-          placeholder="Salasana"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          className="bg-yellow-500 text-white p-3 font-semibold"
-          onClick={handleSubmit}
-          disabled={loading}
-        >
-          Kirjaudu sisään
-        </button>
-        <div className="flex justify-between">
-        <Link href={"/register"}>
-          <h3 className="text-blue-500 underline">Eikö sinulla ole vielä tiliä?</h3>
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-white shadow-sm">
+        <PromotionHeader />
+        <Navigation />
+      </header>
+      <div className="flex justify-end p-4">
+        <Link href="/register" className="text-blue-500 underline">
+          Eikö sinulla ole vielä tiliä?
         </Link>
-        <Link href={"/forgot-password"}>
-          <h3 className="text-blue-500 underline">Unohtuiko salasanasi?</h3>
-        </Link>
+      </div>
+      <main className="flex-grow flex flex-col lg:flex-row bg-white p-4 sm:p-8 lg:p-12 items-center justify-center">
+        <div className="w-full lg:w-1/3 hidden lg:block">
+          <AspectRatio ratio={9 / 16}>
+            <Image
+              src="/images/login.webp"
+              width={1000}
+              height={1000}
+              alt="Login"
+              className="w-full h-full object-cover"
+            />
+          </AspectRatio>
         </div>
-      </div>
-      <div className="w-1/2">
-        <Image src={"/images/login.webp"} width={1000} height={1000} alt="Login" className="w-full h-full object-cover" />
-      </div>
+        <div className="w-full lg:w-2/5 p-4 sm:p-8 lg:p-12">
+          <LoginForm />
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
