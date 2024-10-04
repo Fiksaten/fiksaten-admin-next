@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Settings,
   Bell,
-  Search,
   ListOrdered,
   PlusCircle,
 } from "lucide-react";
@@ -18,7 +17,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/components/AuthProvider";
 import Unauthorized from "@/components/Unauthorized";
@@ -236,14 +234,6 @@ export default function AdminPanel({
                 </nav>
               </SheetContent>
             </Sheet>
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-              <Input
-                className="w-full appearance-none pl-8 text-sm leading-6"
-                type="search"
-                placeholder="Search..."
-              />
-            </div>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon">
