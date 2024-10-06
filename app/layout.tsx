@@ -5,6 +5,9 @@ import PHProvider from './providers'
 import dynamic from 'next/dynamic'
 import { AuthProvider } from "@/components/AuthProvider";
 import { Toaster } from "@/components/ui/toaster";
+import CookieBanner from "@/components/CookieBanner";
+import { AvailableLocale, getDictionary } from "./[lang]/dictionaries";
+import LanguageSelector from "@/components/LanguageSelector";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,19 +29,24 @@ const PostHogPageView = dynamic(() => import('./PostHogPageView'), {
   ssr: false,
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params: { lang }
 }: Readonly<{
   children: React.ReactNode;
+  params: { lang: AvailableLocale };
 }>) {
+  const dict = await getDictionary(lang);
   return (
-    <html lang="en">
+    <html lang={lang || 'fi'}>
       <PHProvider>
       <body
         className={`bg-white text-black ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <CookieBanner />
         <PostHogPageView />
         <AuthProvider>
+        <LanguageSelector currentLang={lang || 'fi'} />
         <Toaster />
           {children}
         </AuthProvider>
