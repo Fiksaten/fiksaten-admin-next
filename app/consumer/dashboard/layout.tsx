@@ -3,20 +3,13 @@
 import Link from "next/link";
 import {
   Menu,
-  ChevronDown,
   LayoutDashboard,
   Settings,
-  Bell,
   ListOrdered,
   PlusCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/components/AuthProvider";
 import Unauthorized from "@/components/Unauthorized";
@@ -25,6 +18,7 @@ import { useCallback, useEffect, useState } from "react";
 import { buildApiUrl } from "@/app/lib/utils";
 import Cookies from "js-cookie";
 import { toast } from "@/hooks/use-toast";
+import { Navigation } from "@/components/lander";
 
 export default function AdminPanel({
   children,
@@ -155,41 +149,7 @@ export default function AdminPanel({
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
-      {/* Sidebar */}
-      <aside className="hidden w-64 overflow-y-auto border-r bg-white lg:block">
-        <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center justify-center border-b">
-            <h1 className="text-2xl font-bold text-yellow-400">Fiksaten</h1>
-          </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
-            <NavLink
-              href="/consumer/dashboard"
-              icon={<LayoutDashboard className="mr-3 h-5 w-5" />}
-              text="Dashboard"
-              countKey="dashboard"
-            />
-            <NavLink
-              href="/consumer/dashboard/new-request"
-              icon={<PlusCircle className="mr-3 h-5 w-5" />}
-              text="New Request"
-              countKey="newRequest"
-            />
-            <NavLink
-              href="/consumer/dashboard/orders"
-              icon={<ListOrdered className="mr-3 h-5 w-5" />}
-              text="Orders"
-              countKey="orders"
-            />
-            <NavLink
-              href="/consumer/dashboard/settings"
-              icon={<Settings className="mr-3 h-5 w-5" />}
-              text="Settings"
-              countKey="settings"
-            />
-          </nav>
-        </div>
-      </aside>
-
+      
       {/* Main Content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Header */}
@@ -235,28 +195,10 @@ export default function AdminPanel({
               </SheetContent>
             </Sheet>
           </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <Bell className="h-5 w-5" />
-              <span className="sr-only">View notifications</span>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2">
-                  <span className="hidden text-sm font-medium text-gray-700 lg:block">{`${user?.firstname} ${user?.lastname}`}</span>
-                  <ChevronDown className="h-4 w-4 text-gray-500" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <Link href="/consumer/dashboard/settings">Settings</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/logout">Logout</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <Navigation />
+          
+            
+          
         </header>
 
         {/* Main content area */}
