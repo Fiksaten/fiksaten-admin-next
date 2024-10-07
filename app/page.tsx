@@ -11,10 +11,10 @@ import {
   CallToActionDownload,
   Footer,
 } from "@/components/lander";
-import { getDictionary, AvailableLocale } from "./[lang]/dictionaries";
+import { getDictionary } from "@/lib/dictionaries";
 
-export default async function Page({ params: { lang } }: { params: { lang: string } }) {
-  const dict = await getDictionary(lang as AvailableLocale);
+export default async function Page() {
+  const dict = await getDictionary('fi'); // Default to Finnish
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-white shadow-sm">

@@ -4,12 +4,11 @@ import { match } from "@formatjs/intl-localematcher"
 import Negotiator from "negotiator"
 
 const locales = ['en', 'fi', 'sv']
-const defaultLocale = 'en'
+const defaultLocale = 'fi'
 
 function getLocale(request: NextRequest): string {
   const negotiator = new Negotiator({ headers: { 'accept-language': request.headers.get('accept-language') } })
   const languages = negotiator.languages()
-  console.log("languages", languages)
   return match(languages, locales, defaultLocale)
 }
 
@@ -23,13 +22,16 @@ export function middleware(request: NextRequest) {
   }
 
   // Locale handling
-  if (!locales.some((locale) => pathname.startsWith(`/${locale}/`))) {
+  if (
+    !locales.some((locale) => 
+      pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+    ) && 
+    !pathname.startsWith('/_next') &&
+    !pathname.includes('/api/')
+  ) {
     const locale = getLocale(request)
-    console.log("locale", locale)
     const url = request.nextUrl.clone()
-    console.log("url", url)
     url.pathname = `/${locale}${pathname}`
-    console.log("url", url)
     return NextResponse.redirect(url)
   }
 

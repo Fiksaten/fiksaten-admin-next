@@ -12,10 +12,6 @@ const nextConfig = {
             },
         ],
     },
-    i18n: {
-        locales: ['fi', 'en', 'sv'], // Finnish, English, Swedish
-        defaultLocale: 'fi', // Default to Finnish
-    },
 };
 
 export default nextConfig;

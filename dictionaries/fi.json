@@ -1,3 +1,84 @@
 {
-    "greeting": "Hei"
-}
+    "lander": {
+      "callToActionDownload": {
+        "title": "Lataa Fiksaten mobiilisovellus",
+        "description": "Fiksaten mobiilisovelluksella lähetät avuntarvepyynnön helposti. Apulaiset lähellä sinua vastaavat tarjouspyynnöillä ja voit valita juuri sinulle sopivan tarjouksen."
+      },
+      "heroSection": {
+        "title": "Löydä kodin apulainen helposti ja nopeasti",
+        "description": "Tarvitsetko apua uuden vaatekaapin asennukselle tai vaikkapa TV:n asennukselle seinään? Fiksaten avulla löydät luotettavan tekijän helposti, jopa samana päivänä.",
+        "actionPrimary": "Ilmoita avuntarve",
+        "actionSecondary": "Katso miten Fiksaten toimii"
+      },
+      "secondaryHero": {
+        "title": "Kilpailuta helposti mikä tahansa työ",
+        "description": "Voit kilpailuttaa pienenkin työn helposti ja nopeasti. Lähetä vain avuntarvepyyntö työstäsi ja valitse sopiva tarjous palveluista. Kotona tehtävä työ on kotitalousvähennyskelpoinen.",
+        "actionPrimary": "Ilmoita avuntarve"
+      },
+      "contractorLogoCarousel": {
+        "title": "Yhteistyössä"
+      },
+      "findNearYouSection": {
+        "title": "Löydä tekijä läheltä sinua",
+        "description": "Voit kilpailuttaa pienenkin työn helposti ja nopeasti. Lähetä vain avuntarvepyyntö työstäsi ja valitse sopiva tarjous apulaiselta. Kotona tehtävä työ on kotitalousvähennyskelpoinen."
+      },
+      "yourSupportSection": {
+        "title": "Fiksaten on tukenasi",
+        "description": "Asiakaspalvelumme auttaa tarvittaessa missä tahansa kysymyksissä. Voit olla yhteydessä asiakaspalveluumme sähköpostitse tai kätevästi chatin välityksellä.",
+        "additionalDescription": "Asiakaspalvelu palvelee arkisin 9-18 välisenä aikana.",
+        "actionPrimary": "Liity apulaiseksi",
+        "imageTitle": "Haluatko liittyä apulaiseksi?",
+        "imageDescription": "Fiksaten tarjoaa kätevän ja helpon tavan löytää asiakkaat läheltä sinua. Saat käyttöösi kaikki tarvittavat ohjelmisto-työkalut ja vapauden päättää omat työajat. Näet myös raportit tekemistä töistä ja tilityksistä."
+      },
+      "recomendedSection": {
+        "title": "“Fiksatenin avulla sain uuden TV:n seinään jopa muutamassa tunnissa ilmoituksen jättämisestä. Tulen käyttämään jatkossakin”",
+        "description": "Pekka Puupää",
+        "additionalDescription": "Sun mutsi",
+        "actionPrimary": "Katso trustpilot"
+      },
+      "faqSection": {
+        "title": "Usein kysytyt kysymykset",
+        "description": "Vastaamme kaikkiin kysymyksiisi",
+        "faq1": {
+          "question": "Miten Fiksaten toimii?",
+          "answer": "En kerro :D"
+        },
+        "faq2": {
+          "question": "Miten tarjouspyynnön lähettäminen toimii?",
+          "answer": "En kerro :D"
+        },
+        "faq3": {
+          "question": "Mikä on asiakkaan budjetti?",
+          "answer": "En kerro :D"
+        },
+        "faq4": {
+          "question": "Työpyyntö peruuntui, kuinka toimin?",
+          "answer": "En kerro :D"
+        },
+        "faq5": {
+          "question": "Apulainen ei ilmestynyt paikalle, mitä teen?",
+          "answer": "Mikäli apulainen  ei saapunut paikalle sovittuna aikana ja työpyyntö oli avoimena, otathan yhteyttä Fiksatenin asiakaspalveluun. Tiimimme auttaa selvittämään mikä on mennyt pieleen ja tarvittaessa voimme auttaa etsimään toisen apulaisen haluamallesi työlle."
+        },
+        "faq6": {
+          "question": "Mitä maksutapoja teillä on käytössä?",
+          "answer": "En kerro :D"
+        },
+        "faq7": {
+          "question": "Miten voin liittyä apulaiseksi?",
+          "answer": "En kerro :D"
+        }
+      }
+    },
+    "navigation": {
+      "dashboard": "Etusivu",
+      "newRequest": "Uusi pyyntö",
+      "orders": "Tilaukset",
+      "settings": "Asetukset",
+      "logout": "Kirjaudu ulos",
+      "sendRequest": "Ilmoita avuntarve",
+      "aboutUs": "Mikä on Fiksaten",
+      "joinUs": "Liity apulaiseksi",
+      "customerService": "Asiakaspalvelu"
+    },
+    "promotionHeader": "Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti."
+  }

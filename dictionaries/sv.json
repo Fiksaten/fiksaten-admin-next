@@ -1,3 +1,85 @@
 {
-    "greeting": "Hej"
-}
+    "lander": {
+      "callToActionDownload": {
+        "title": "Ladda ner Fiksaten mobilapp",
+        "description": "Med Fiksaten mobilapp kan du enkelt skicka en hjälpbegäran. Hjälpare nära dig svarar med erbjudanden, och du kan välja det som passar dig bäst."
+      },
+      "heroSection": {
+        "title": "Hitta hemhjälp enkelt och snabbt",
+        "description": "Behöver du hjälp med att montera en ny garderob eller kanske sätta upp en TV på väggen? Med Fiksaten kan du enkelt hitta en pålitlig hantverkare, även samma dag.",
+        "actionPrimary": "Skicka en hjälpbegäran",
+        "actionSecondary": "Se hur Fiksaten fungerar"
+      },
+      "secondaryHero": {
+        "title": "Jämför enkelt vilket jobb som helst",
+        "description": "Du kan enkelt och snabbt jämföra även små jobb. Skicka bara en hjälpbegäran för ditt arbete och välj det bästa erbjudandet från tjänsterna. Hemarbeten är berättigade till skatteavdrag.",
+        "actionPrimary": "Skicka en hjälpbegäran"
+      },
+      "contractorLogoCarousel": {
+        "title": "I samarbete"
+      },
+      "findNearYouSection": {
+        "title": "Hitta en hantverkare nära dig",
+        "description": "Du kan enkelt och snabbt jämföra även små jobb. Skicka bara en hjälpbegäran för ditt arbete och välj det bästa erbjudandet från en hjälpare. Hemarbeten är berättigade till skatteavdrag."
+      },
+      "yourSupportSection": {
+        "title": "Fiksaten står till din tjänst",
+        "description": "Vår kundtjänst hjälper dig med alla frågor du kan ha. Du kan kontakta oss via e-post eller bekvämt via chatten.",
+        "additionalDescription": "Kundtjänsten är öppen på vardagar mellan kl 9-18.",
+        "actionPrimary": "Bli en hjälpare",
+        "imageTitle": "Vill du bli en hjälpare?",
+        "imageDescription": "Fiksaten erbjuder ett bekvämt och enkelt sätt att hitta kunder nära dig. Du får tillgång till alla nödvändiga programverktyg och friheten att bestämma dina egna arbetstider. Du kan också se rapporter om utförda arbeten och betalningar."
+      },
+      "recomendedSection": {
+        "title": "“Med Fiksaten fick jag min nya TV uppsatt på väggen inom några timmar efter att ha skickat min begäran. Jag kommer definitivt att använda det igen.”",
+        "description": "Johan Svensson",
+        "additionalDescription": "Din mamma",
+        "actionPrimary": "Se trustpilot"
+      },
+      "faqSection": {
+        "title": "Vanliga frågor",
+        "description": "Vi svarar på alla dina frågor",
+        "faq1": {
+          "question": "Hur fungerar Fiksaten?",
+          "answer": "Säger inte :D"
+        },
+        "faq2": {
+          "question": "Hur fungerar det att skicka en begäran?",
+          "answer": "Säger inte :D"
+        },
+        "faq3": {
+          "question": "Vad är kundens budget?",
+          "answer": "Säger inte :D"
+        },
+        "faq4": {
+          "question": "Jobbet blev inställt, vad gör jag?",
+          "answer": "Säger inte :D"
+        },
+        "faq5": {
+          "question": "Hjälparen dök inte upp, vad gör jag?",
+          "answer": "Om hjälparen inte dök upp vid den överenskomna tiden och jobbet fortfarande var öppet, vänligen kontakta Fiksatens kundtjänst. Vårt team hjälper dig att ta reda på vad som gick fel och kan vid behov hjälpa dig att hitta en annan hjälpare för ditt jobb."
+        },
+        "faq6": {
+          "question": "Vilka betalningsmetoder accepterar ni?",
+          "answer": "Säger inte :D"
+        },
+        "faq7": {
+          "question": "Hur kan jag bli en hjälpare?",
+          "answer": "Säger inte :D"
+        }
+      }
+    },
+    "navigation": {
+      "dashboard": "Hem",
+      "newRequest": "Ny begäran",
+      "orders": "Beställningar",
+      "settings": "Inställningar",
+      "logout": "Logga ut",
+      "sendRequest": "Skicka en hjälpbegäran",
+      "aboutUs": "Vad är Fiksaten",
+      "joinUs": "Bli en hjälpare",
+      "customerService": "Kundtjänst"
+    },
+    "promotionHeader": "Fiksatens mobilapp är nu ute! Ladda ner appen och skicka enkelt din hjälpbegäran."
+  }
+  
