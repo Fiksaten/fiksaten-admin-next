@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { ContractorRegisterData, RegisterData } from "@/app/lib/types";
 import { buildApiUrl } from "@/app/lib/utils";
+import { toast } from "@/hooks/use-toast";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 type User = {
@@ -72,6 +73,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         next: { revalidate: 60 }, // Cache for 1 minutes
       });
+      if (!userResponse.ok) {
+        toast({
+          title: "Kirjaudu uudelleen",
+          description: "Kirjaudu uudelleen",
+          variant: "destructive",
+        });
+        router.replace("/login");
+      }
       const userData: User = await userResponse.json();
       console.log("userData", userData);
       setUser(userData);

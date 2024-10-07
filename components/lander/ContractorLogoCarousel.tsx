@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import * as AspectRatio from '@radix-ui/react-aspect-ratio'
+import { Dictionary } from '@/lib/dictionaries'
 
 const logos = [
   { src: '/images/logos/cliifax.png', alt: 'Company 1' },
@@ -10,11 +11,11 @@ const logos = [
   { src: '/images/logos/roudarit.png', alt: 'Company 6' },
 ]
 
-export default function LogoCarousel() {
+export default function ContractorLogoCarousel({dict}: {dict: Dictionary}) {
   return (
     <div className="w-full overflow-hidden bg-white py-10">
         <div className="my-2 flex justify-center">  
-            <p className="text-xl text-black font-bold">Yhteistyössä</p>
+            <p className="text-xl text-black font-bold">{dict.lander.contractorLogoCarousel.title}</p>
         </div>
       <div className="flex animate-carousel">
         {[...logos, ...logos].map((logo, index) => (

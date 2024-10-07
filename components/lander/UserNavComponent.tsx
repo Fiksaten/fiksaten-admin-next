@@ -11,7 +11,7 @@ const UserNavComponent: React.FC = () => {
         {user ? (
             <>
                 <span className="hidden lg:inline-flex text-black font-semibold">
-                    Moikka {user.firstname} {user.lastname.charAt(0)}!
+                    Moikka {user?.firstname} {user?.lastname?.charAt(0) || ""}!
                 </span>
                 <Button
                     variant="outline"
@@ -35,7 +35,7 @@ const UserNavComponent: React.FC = () => {
         
         {/* Mobile view */}
         <Link href={user ? "/profile" : "/login"} className="lg:hidden flex flex-row items-center gap-2">
-            <p className="text-black">{user ? `${user.firstname} ${user.lastname.charAt(0)}.` : "Kirjaudu sisään"}</p>
+            <p className="text-black">{user ? `${user?.firstname} ${user?.lastname?.charAt(0) || ""}.` : "Kirjaudu sisään"}</p>
             <Button variant="outline" size="icon" className="lg:hidden">
                 <ArrowRight className="text-black h-4 w-4" />
             </Button>

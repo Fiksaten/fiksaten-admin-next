@@ -1,9 +1,10 @@
+import { Dictionary } from "@/lib/dictionaries";
 
-export default function PromotionHeader() {
+export default function PromotionHeader({dict}: {dict: Dictionary}) {
   return (
     <div className="bg-[#007AFF] text-white py-2">
       <p className="text-center text-sm font-thin">
-        Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti.
+        {dict.promotionHeader}
       </p>
     </div>
   )
