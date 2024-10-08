@@ -1,5 +1,4 @@
 import {
-  Navigation,
   PromotionHeader,
   HeroSection,
   SecondaryHero,
@@ -11,6 +10,7 @@ import {
   CallToActionDownload,
   Footer,
 } from "@/components/lander";
+import Navigation from "@/components/lander/Navigation";
 import { getDictionary, AvailableLocale } from "@/lib/dictionaries";
 
 export default async function Page({ params: { lang } }: { params: { lang: string } }) {

@@ -3,8 +3,10 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { ArrowRight, LogOut } from "lucide-react";
 import { useAuth } from "../AuthProvider";
+import { AvailableLocale } from "@/lib/dictionaries";
+import LanguageSelector from "../LanguageSelector";
 
-const UserNavComponent: React.FC = () => {
+const UserNavComponent = ({ lang }: { lang: AvailableLocale }) => {
     const { user, logout } = useAuth();
     return (
         <div className="flex items-center gap-4">
@@ -30,6 +32,7 @@ const UserNavComponent: React.FC = () => {
                 <Link href="/register">
                     <Button variant="default" className="hidden bg-[#007AFF] text-white font-semibold lg:inline-flex">Rekisteröidy</Button>
                 </Link>
+                <LanguageSelector currentLang={lang as AvailableLocale || 'fi'} />
             </>
         )}
         

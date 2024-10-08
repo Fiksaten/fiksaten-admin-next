@@ -7,12 +7,12 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { lang: AvailableLocale };
 }>) {
+  console.log("sefsef")
   return (
     <html lang={lang}>
-      
-        <body>
-            {children}
-        </body>
+      <body>
+        {children}
+      </body>
     </html>
   );
 }

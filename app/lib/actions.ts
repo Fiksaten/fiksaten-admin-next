@@ -4,7 +4,7 @@ import { buildApiUrl } from "./utils";
 import { DashboardStatsResponse } from "./types";
 import { Chat } from "@/components/CustomerServiceChat";
 import { cookies } from "next/headers";
-import { CreateCategory } from "../admin/dashboard/settings/categories/category-form";
+import { CreateCategory } from "../[lang]/admin/dashboard/settings/categories/category-form";
 
 export async function getIdToken(): Promise<string> {
   const cookieStore = cookies();

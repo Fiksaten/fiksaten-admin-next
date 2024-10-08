@@ -7,7 +7,8 @@ const locales = ['en', 'fi', 'sv']
 const defaultLocale = 'fi'
 
 function getLocale(request: NextRequest): string {
-  const negotiator = new Negotiator({ headers: { 'accept-language': request.headers.get('accept-language') } })
+  const acceptLanguage = request.headers.get('accept-language') || ''
+  const negotiator = new Negotiator({ headers: { 'accept-language': acceptLanguage } })
   const languages = negotiator.languages()
   return match(languages, locales, defaultLocale)
 }

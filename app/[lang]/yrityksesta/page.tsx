@@ -1,13 +1,15 @@
 import { Navigation, PromotionHeader, Footer } from "@/components/lander";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
 
-export default function Page() {
+export default async function Page({ params: { lang } }: { params: { lang: AvailableLocale } }) {
+  const dict = await getDictionary(lang);
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-white shadow-sm">
-        <PromotionHeader />
-        <Navigation />
+        <PromotionHeader dict={dict} />
+        <Navigation dict={dict} />
       </header>
 
       <main className="flex-grow xl:px-24 lg:px-0 md:px-12 bg-white">

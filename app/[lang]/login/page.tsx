@@ -5,13 +5,15 @@ import Link from "next/link";
 import Navigation from "@/components/lander/Navigation";
 import PromotionHeader from "@/components/lander/PromotionHeader";
 import Footer from "@/components/lander/Footer";
+import { getDictionary } from "@/lib/dictionaries";
 
-export default function Login() {
+export default async function Login() {
+  const dict = await getDictionary('fi');
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <header className="bg-white shadow-sm">
-        <PromotionHeader />
-        <Navigation />
+        <PromotionHeader dict={dict} />
+        <Navigation dict={dict} />
       </header>
       <div className="flex justify-end p-4">
         <Link href="/register" className="text-blue-500 underline">

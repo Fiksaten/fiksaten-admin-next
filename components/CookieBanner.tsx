@@ -5,26 +5,35 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { CookieIcon, ChartPieIcon, KeyIcon, XIcon } from 'lucide-react'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 
 export default function FunCookieBanner() {
   const [isVisible, setIsVisible] = useState(false)
-  const [analyticsEnabled, setAnalyticsEnabled] = useState(true)
-  const [userTokenEnabled, setUserTokenEnabled] = useState(true)
+  const [cookiePreferences, setCookiePreferences] = useLocalStorage('cookiePreferences', {
+    analyticsEnabled: true,
+    userTokenEnabled: true,
+  })
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 1000)
+    const timer = setTimeout(() => {
+      if (!cookiePreferences) setIsVisible(true)
+    }, 1000)
     return () => clearTimeout(timer)
-  }, [])
+  }, [cookiePreferences])
 
   const handleAccept = () => {
-    console.log('Cookies accepted:', { analyticsEnabled, userTokenEnabled })
+    setCookiePreferences({
+      analyticsEnabled: cookiePreferences.analyticsEnabled,
+      userTokenEnabled: cookiePreferences.userTokenEnabled,
+    })
     setIsVisible(false)
   }
 
   const handleDecline = () => {
-    setAnalyticsEnabled(false)
-    setUserTokenEnabled(false)
-    console.log('Cookies declined')
+    setCookiePreferences({
+      analyticsEnabled: false,
+      userTokenEnabled: true, // Keep this true as it's necessary for site function
+    })
     setIsVisible(false)
   }
 
@@ -56,8 +65,8 @@ export default function FunCookieBanner() {
                 <span>Analytics (for counting cookie crumbs)</span>
               </div>
               <Switch
-                checked={analyticsEnabled}
-                onCheckedChange={setAnalyticsEnabled}
+                checked={cookiePreferences.analyticsEnabled}
+                onCheckedChange={(checked) => setCookiePreferences({...cookiePreferences, analyticsEnabled: checked})}
                 aria-label="Enable analytics cookies"
               />
             </div>
@@ -67,8 +76,8 @@ export default function FunCookieBanner() {
                 <span>User Tokens, needed for the site to function (your secret cookie recipe)</span>
               </div>
               <Switch
-                checked={userTokenEnabled}
-                onCheckedChange={setUserTokenEnabled}
+                checked={cookiePreferences.userTokenEnabled}
+                onCheckedChange={(checked) => setCookiePreferences({...cookiePreferences, userTokenEnabled: checked})}
                 aria-label="Enable user token cookies"
               />
             </div>

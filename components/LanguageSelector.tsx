@@ -1,16 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Check, Globe } from 'lucide-react'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useRouter, usePathname } from 'next/navigation'
 
 type AvailableLocale = 'fi' | 'en' | 'sv'
 
 const languages: Record<AvailableLocale, string> = {
-  fi: 'Suomi',
-  en: 'English',
-  sv: 'Svenska'
+  fi: '🇫🇮',
+  en: '🇬🇧',
+  sv: '🇸🇪'
 }
 
 export default function LanguageSelector({ currentLang }: { currentLang: AvailableLocale }) {
@@ -32,10 +31,9 @@ export default function LanguageSelector({ currentLang }: { currentLang: Availab
   }
 
   return (
-    <div className="flex items-center space-x-2">
-      <Globe className="h-4 w-4 text-muted-foreground" />
+    <div className="flex">
       <Select value={selectedLanguage} onValueChange={handleLanguageChange}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Select language" />
         </SelectTrigger>
         <SelectContent>
@@ -44,8 +42,7 @@ export default function LanguageSelector({ currentLang }: { currentLang: Availab
             {Object.entries(languages).map(([code, name]) => (
               <SelectItem key={code} value={code}>
                 <div className="flex items-center justify-between">
-                  <span>{name}</span>
-                  {code === selectedLanguage && <Check className="h-4 w-4 text-primary" />}
+                  <span className="text-black">{name}</span>
                 </div>
               </SelectItem>
             ))}
