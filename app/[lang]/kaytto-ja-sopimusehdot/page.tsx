@@ -1,11 +1,12 @@
 import { Footer, Navigation, PromotionHeader } from "@/components/lander";
-
-export default function Page() {
+import { getDictionary } from "@/lib/dictionaries";
+export default async function Page() {
+  const dict = await getDictionary('fi');
   return (
     <div className="flex flex-col min-h-screen ">
       <header className="bg-white shadow-sm">
-        <PromotionHeader />
-        <Navigation />
+        <PromotionHeader dict={dict} />
+        <Navigation dict={dict} />
       </header>
       <div className="flex flex-col px-32 py-12 ">
         <h1 className="text-7xl  font-bold text-center">

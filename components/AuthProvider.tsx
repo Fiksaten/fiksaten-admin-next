@@ -7,7 +7,7 @@ import { buildApiUrl } from "@/app/lib/utils";
 import { toast } from "@/hooks/use-toast";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-type User = {
+export type UserMe = {
   id: string;
   sub: string;
   firstname: string;
