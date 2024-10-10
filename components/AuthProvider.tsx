@@ -38,7 +38,7 @@ type Tokens = {
 };
 
 type AuthContextType = {
-  user: User;
+  user: UserMe;
   tokens: Tokens | null;
   login: (email: string, password: string) => Promise<void>;
   register: (
@@ -52,7 +52,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User>(null);
+  const [user, setUser] = useState<UserMe>(null);
   const [tokens, setTokens] = useState<Tokens | null>(null);
   const router = useRouter();
 
@@ -81,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         router.replace("/login");
       }
-      const userData: User = await userResponse.json();
+      const userData: UserMe = await userResponse.json();
       console.log("userData", userData);
       setUser(userData);
       return userData;
