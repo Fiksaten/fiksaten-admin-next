@@ -1,24 +1,122 @@
 "use client"
-import { useEffect, useRef } from "react"
-import { Chat, Message } from "./CustomerServiceChat"
-import { Avatar } from "./ui/avatar"
-import { Button } from "./ui/button"
+import { useEffect, useRef, useState } from "react"
+import { Chat, Conversation, Message } from "./CustomerServiceChat"
+import { Avatar } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import { MessageCircle, Paperclip, Send } from "lucide-react"
-import { ScrollArea } from "./ui/scroll-area"
-import { Input } from "./ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Input } from "@/components/ui/input"
 import { formatMessageDate } from "@/app/lib/utils"
 import Image from "next/image"
+import { io, Socket } from "socket.io-client"
 
-const CustomerServiceChatWindow = ({ messages, inputMessage, handleInputChange, handleSendMessage, isTyping, selectedChat }: { selectedChat: Chat | undefined, messages: Message[], inputMessage: string, handleInputChange: (value: string) => void, handleSendMessage: () => void, isTyping: boolean }) => {
-
+const CustomerServiceChatWindow = ({ 
+  selectedChat, 
+  userId, 
+  idToken 
+}: { 
+  selectedChat: Chat | undefined, 
+  userId: string, 
+  idToken: string | undefined
+}) => {
+  const [messages, setMessages] = useState<any[]>([]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const [typingSent, setTypingSent] = useState(false);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  const handleInputChange = (value: string) => {
+    setInputMessage(value);
+    if (!typingSent) {
+      try {
+        socketRef.current?.emit("typing", {
+          conversationId: selectedChat?.id,
+          userId,
+          isTyping: value.length > 0,
+        });
+        setTypingSent(true);
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (value.length === 0) {
+      socketRef.current?.emit("typing", {
+        conversationId: selectedChat?.id,
+        userId,
+        isTyping: false,
+      });
+      setTypingSent(false);
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (!inputMessage.trim() || !socketRef.current || !selectedChat) return;
+    try {
+      socketRef.current?.emit("supportMessage", {
+        userId, content: inputMessage, isSenderSupport: true, isImage: false
+      });
+      socketRef.current?.emit("typing", {
+        conversationId: selectedChat.id,
+        userId,
+        isTyping: false,
+      });
+      setTypingSent(false);
+      setInputMessage("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   useEffect(() => {
+    if (!idToken) return
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, []);
+
+  const API_URL = process.env.NEXT_PUBLIC_WS_URL!
+
+  useEffect(() => {
+    console.log("Userid", userId)
+    const newSocket = io(API_URL!, {
+      query: { userId: userId },
+      auth: { token: idToken },
+    });
+
+    newSocket.on('connect', () => {
+      console.log('Connected to socket server');
+    });
+
+    if(!selectedChat || !userId) return;
+    console.log("Joining chat", selectedChat.id)
+    newSocket.emit("join", { userId: userId, conversationId: selectedChat?.id, isSupportChat: true });
+
+    newSocket.on("chatHistory", (fetchedMessages: Conversation[]) => {
+      console.log("history received", fetchedMessages)
+      if (fetchedMessages.length > 1) {
+        console.log("Chat history received:", fetchedMessages);
+      }
+      setMessages(fetchedMessages);
+    });
+
+    newSocket.on("userTyping", ({ conversationId, userId: typingUserId, isTyping }) => {
+      console.log("User typing:", { conversationId, userId: typingUserId, isTyping });
+      if (userId !== typingUserId) {
+        console.log("userid not equal to user.id", userId, typingUserId);
+        setIsTyping(isTyping);
+      }
+    });
+
+    newSocket.on("newSupportMessage", (message) => {
+      console.log("New support message received:", message);
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    socketRef.current = newSocket;
+
+  }, [selectedChat]);
 
 
   return (
@@ -39,7 +137,7 @@ const CustomerServiceChatWindow = ({ messages, inputMessage, handleInputChange, 
           <ScrollArea className="flex-1 p-4" ref={scrollRef}>
             {messages.map(message => (
               <div
-                key={message.id}
+                key={message.sentAt}
                 className={`flex ${message.isSenderSupport ? 'justify-end' : 'justify-start'
                   } mb-4`}
               >

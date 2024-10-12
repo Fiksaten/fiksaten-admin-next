@@ -28,7 +28,7 @@ export function middleware(request: NextRequest) {
       pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
     ) && 
     !pathname.startsWith('/_next') &&
-    !pathname.includes('/api/')
+    !pathname.includes('/api/') 
   ) {
     const locale = getLocale(request)
     const url = request.nextUrl.clone()

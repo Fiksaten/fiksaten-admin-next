@@ -1,6 +1,6 @@
 import { formatMessageDate } from "@/app/lib/utils"
-import { Avatar } from "./ui/avatar"
-import { ScrollArea } from "./ui/scroll-area"
+import { Avatar } from "@/components/ui/avatar"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Chat } from "./CustomerServiceChat"
 
 const ChatList = ({ chats, selectedChat, handleChatSelect }: { chats: Chat[], selectedChat: Chat | undefined, handleChatSelect: (chat: Chat) => void }) => {

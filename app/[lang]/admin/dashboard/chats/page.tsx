@@ -1,7 +1,9 @@
-import CustomerServiceChat from '@/components/CustomerServiceChat';
+import { getIdToken } from '@/app/lib/actions';
+import CustomerServiceChat from './CustomerServiceChat';
 
-export default function CustomerServicePage() {
+export default async function CustomerServicePage() {
+  const idToken = await getIdToken();
   return (
-      <CustomerServiceChat />
+      <CustomerServiceChat idToken={idToken} />
   );
 }

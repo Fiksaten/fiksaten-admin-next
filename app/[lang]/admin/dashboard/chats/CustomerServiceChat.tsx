@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { useAuth } from './AuthProvider';
+import { useAuth } from '@/components/AuthProvider';
 import { getChats } from '@/app/lib/actions';
 import CustomerServiceChatWindow from './CustomerServiceChatWindow';
 import ChatList from './ChatList';
@@ -41,9 +41,9 @@ export type Conversation = {
 	isImage: boolean;
   };
 
-const CustomerServiceChat: React.FC = () => {
+const CustomerServiceChat = ({idToken}: {idToken: string}) => {
   const [chats, setChats] = useState<Chat[]>([]);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+
   const [selectedChat, setSelectedChat] = useState<Chat>(); 
   const [userId, setUserId] = useState("");
   const [selectedChatMessages, setSelectedChatMessages] = useState<Message[]>([])
@@ -57,7 +57,7 @@ const CustomerServiceChat: React.FC = () => {
   
   const { user, tokens } = useAuth();
   
-  const API_URL = process.env.NEXT_PUBLIC_WS_URL
+const API_URL = process.env.NEXT_PUBLIC_WS_URL
 
   const socketRef = useRef<Socket>();
 
@@ -70,7 +70,7 @@ const CustomerServiceChat: React.FC = () => {
     
     const newSocket = io(API_URL!, {
       query: { userId: user.id },
-      auth: { token: tokens?.idToken },
+      auth: { token: idToken },
     });
 
     newSocket.on('connect', () => {
@@ -112,12 +112,7 @@ const CustomerServiceChat: React.FC = () => {
       }
     });
 
-    newSocket.on("chatHistory", (fetchedMessages: Conversation[]) => {
-      if(fetchedMessages.length > 1){
-      console.log("Chat history received:", fetchedMessages);
-      }
-      setConversations([fetchedMessages[fetchedMessages.length - 1], ...conversations]);
-    });
+
 
     socketRef.current = newSocket;
 
@@ -125,7 +120,7 @@ const CustomerServiceChat: React.FC = () => {
       socketRef.current?.disconnect();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (socketRef.current && chats.length > 0) {
@@ -133,7 +128,7 @@ const CustomerServiceChat: React.FC = () => {
         socketRef.current?.emit("join", { userId: user?.id, conversationId: chat.id, isSupportChat: true });
       });
     }
-  }, [socketRef, chats, user?.id]);
+  }, [socketRef, chats, user?.id]); 
 
   useEffect(() => {
     (async () => {
@@ -153,65 +148,13 @@ const CustomerServiceChat: React.FC = () => {
     );
   };
 
-  const handleSendMessage = () => {
-    if (!inputMessage.trim() || !socketRef.current || !selectedChat) return;
-    try {
-      const newMessage = {
-        id: Date.now().toString(), // Temporary ID
-        content: inputMessage,
-        senderId: userId,
-        receiverId: selectedChat.id,
-        sentAt: new Date().toISOString(),
-        read: false,
-        isImage: false,
-        isSenderSupport: true
-      };
-      socketRef.current?.emit("supportMessage", {
-        userId: selectedChat.id,
-        content: inputMessage,
-        isSenderSupport: true,
-        isImage: false
-      });
-      updateLastMessage(newMessage);
-      socketRef.current?.emit("typing", {
-        conversationId: selectedChat.id,
-        userId,
-        isTyping: false,
-      });
-      setTypingSent(false);
-      setInputMessage("");
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleChatSelect = (chat: Chat) => {
     setSelectedChat(chat);
     setSelectedChatMessages([]);
   };
 
-  const handleInputChange = (value: string) => {
-    setInputMessage(value);
-    if (!typingSent) {
-      try {
-        socketRef.current?.emit("typing", {
-          conversationId: selectedChat?.id,
-          userId,
-          isTyping: value.length > 0,
-        });
-        setTypingSent(true);
-      } catch (error) {
-        console.error(error);
-      }
-    } else if (value.length === 0) {
-      socketRef.current?.emit("typing", {
-        conversationId: selectedChat?.id,
-        userId,
-        isTyping: false,
-      });
-      setTypingSent(false);
-    }
-  };
+
 
   return (
     <div className="flex bg-gray-100">
@@ -223,12 +166,9 @@ const CustomerServiceChat: React.FC = () => {
 
       {/* Chat area */}
       <CustomerServiceChatWindow 
-      selectedChat={selectedChat} 
-      messages={selectedChatMessages} 
-      inputMessage={inputMessage} 
-      handleInputChange={handleInputChange} 
-      handleSendMessage={handleSendMessage} 
-      isTyping={isTyping}
+      selectedChat={selectedChat}
+      userId={userId}
+      idToken={idToken}
       />
     </div>
   );

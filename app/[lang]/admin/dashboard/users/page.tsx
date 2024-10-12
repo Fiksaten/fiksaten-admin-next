@@ -14,11 +14,13 @@ export default async function Home({ searchParams }: UserProps) {
   const usersData = await getUsers(limit, page, search);
   
   return (
+    <div className="p-6">
     <UsersPage 
-      usersData={usersData} 
+      usersData={usersData}
       limit={limit} 
       page={page} 
       search={search} 
     />
+    </div>
   );
 }

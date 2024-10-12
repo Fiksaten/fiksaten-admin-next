@@ -66,7 +66,7 @@ export default function AdminPanel({
               Settings
             </Link>
             <Link
-              href="/admin/dashboard/chat"
+              href="/admin/dashboard/chats"
               className="flex items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               <MessageSquare className="mr-3 h-5 w-5" />
@@ -154,7 +154,7 @@ export default function AdminPanel({
         </header>
 
         {/* Main content area */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto ">
           {children}
         </main>
       </div>

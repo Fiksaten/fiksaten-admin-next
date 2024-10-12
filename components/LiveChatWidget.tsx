@@ -39,13 +39,11 @@ export default function LiveChatWidget() {
 
     if (!socketRef.current) {
       socketRef.current = io(process.env.NEXT_PUBLIC_WS_URL!);
-
-      socketRef.current.emit("join", { userId: user.id, isSupportChat: true });
+      socketRef.current.emit("join", { userId: user.id, conversationId: user.id, isSupportChat: true });
 
       socketRef.current.on(
         "chatHistory",
         (newMessages: SupportChatMessage[]) => {
-          console.log("TYPE THIS", newMessages);
           setMessages(newMessages);
         }
       );
@@ -53,7 +51,6 @@ export default function LiveChatWidget() {
       socketRef.current.on(
         "newSupportMessage",
         (newMessage: SupportChatMessage) => {
-          console.log("newMessage TYPE THIS", newMessage);
           setMessages((prevMessages: SupportChatMessage[]) => [
             ...prevMessages,
             newMessage,
@@ -86,14 +83,21 @@ export default function LiveChatWidget() {
       console.error("Socket not initialized");
       return;
     }
-
+    if(!user) {
+      console.error("User not found");
+      return;
+    }
     socketRef.current.emit("supportMessage", {
       userId: user?.id,
       content: msgContent,
       isSenderSupport: false,
       isImage: false,
     });
-
+    socketRef.current?.emit("typing", {
+      conversationId: user.id,
+      userId: user.id,
+      isTyping: false,
+    });
     setInputMessage("");
   };
 
