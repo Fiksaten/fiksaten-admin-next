@@ -255,7 +255,7 @@ export default function AdminPanel({
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto p-6">
-          <LiveChatWidget />
+          <LiveChatWidget idToken={idToken!} />
           {children}
         </main>
       </div>

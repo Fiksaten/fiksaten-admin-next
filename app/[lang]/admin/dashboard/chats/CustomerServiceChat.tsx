@@ -70,17 +70,22 @@ const CustomerServiceChat = ({ idToken }: { idToken: string }) => {
   };
 
   return (
-    <div className="flex bg-gray-100">
-      <ChatList
-        chats={chats}
-        selectedChat={selectedChat}
-        handleChatSelect={handleChatSelect}
-      />
-      <CustomerServiceChatWindow
-        selectedChat={selectedChat}
-        userId={userId}
-        idToken={idToken}
-      />
+    <div className="flex h-screen bg-gray-100">
+        
+          <ChatList
+            chats={chats}
+            selectedChat={selectedChat}
+            handleChatSelect={handleChatSelect}
+          />
+       
+      
+      <div className="w-full flex flex-col">
+        <CustomerServiceChatWindow
+          selectedChat={selectedChat}
+          userId={userId}
+          idToken={idToken}
+        />
+      </div>
     </div>
   );
 };
