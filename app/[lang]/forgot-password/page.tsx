@@ -11,7 +11,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
-import { buildApiUrl } from '../lib/utils';
+import { buildApiUrl } from '@/app/lib/utils';
 
 type EmailFormData = {
   email: string
