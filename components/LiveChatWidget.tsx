@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,7 +15,7 @@ import { MessageCircle, Send, X } from "lucide-react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "./AuthProvider";
 
-export default function LiveChatWidget() {
+export default function LiveChatWidget({ idToken }: { idToken: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<SupportChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -34,47 +34,87 @@ export default function LiveChatWidget() {
     sentAt: string;
   };
 
+  const viewportRef = useRef<HTMLDivElement>(null); // Ref for ScrollArea Viewport
+
+  const API_URL = process.env.NEXT_PUBLIC_WS_URL!;
+
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      console.log("user not found");
+      return;
+    }
 
     if (!socketRef.current) {
-      socketRef.current = io(process.env.NEXT_PUBLIC_WS_URL!);
+      console.log("socket not initialized");
+      const newSocket = io(API_URL, {
+        query: { userId: user.id },
+        auth: { token: idToken },
+      });
 
-      socketRef.current.emit("join", { userId: user.id, isSupportChat: true });
+      newSocket.on("connect", () => {
+        console.log(
+          "Connected to socket server with id",
+          newSocket.id,
+          "user",
+          user.id
+        );
+      });
 
-      socketRef.current.on(
-        "chatHistory",
-        (newMessages: SupportChatMessage[]) => {
-          console.log("TYPE THIS", newMessages);
-          setMessages(newMessages);
+      console.log("Joining chat", "userId: ", user.id, "isSupportChat: ", true);
+      newSocket.emit("join", { userId: user.id, isSupportChat: true });
+
+      newSocket.on("chatHistory", (newMessages: SupportChatMessage[]) => {
+        console.log("got chatHistory", newMessages);
+        setMessages(newMessages);
+        scrollToBottom(); // Scroll to bottom after loading history
+      });
+
+      newSocket.on("newSupportMessage", (newMessage: SupportChatMessage) => {
+        setMessages((prevMessages: SupportChatMessage[]) => [
+          ...prevMessages,
+          newMessage,
+        ]);
+        if (newMessage.isSenderSupport && !isOpen) {
+          setUnseenMessages((prev) => prev + 1);
         }
-      );
+        // Removed scrollToBottom() here; handled by useLayoutEffect
+      });
 
-      socketRef.current.on(
-        "newSupportMessage",
-        (newMessage: SupportChatMessage) => {
-          console.log("newMessage TYPE THIS", newMessage);
-          setMessages((prevMessages: SupportChatMessage[]) => [
-            ...prevMessages,
-            newMessage,
-          ]);
-          if (newMessage.isSenderSupport && !isOpen) {
-            setUnseenMessages((prev) => prev + 1);
-          }
-        }
-      );
+      // Add typing event listener
+      newSocket.on("userTyping", ({ userId, isTyping }) => {
+        // Handle typing indicator
+        // You might want to add a state for this and display it in the UI
+      });
+
+      socketRef.current = newSocket;
+    } else {
+      console.log("socket already initialized");
     }
 
     return () => {
       if (socketRef.current) {
+        console.log("disconnecting socket");
         socketRef.current.disconnect();
         socketRef.current = null;
       } else {
         console.error("Socket not initialized");
-        return undefined;
       }
     };
-  }, [user, isOpen]);
+  }, [user, isOpen, API_URL, idToken]);
+
+  // Use useLayoutEffect to ensure scrolling happens after DOM mutations
+  useLayoutEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    if (viewportRef.current) {
+      viewportRef.current.scrollTo({
+        top: viewportRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const handleSendMessage = (msgContent: string) => {
     if (!msgContent) {
@@ -86,14 +126,22 @@ export default function LiveChatWidget() {
       console.error("Socket not initialized");
       return;
     }
-
+    if (!user) {
+      console.error("User not found");
+      return;
+    }
     socketRef.current.emit("supportMessage", {
-      userId: user?.id,
+      userId: user.id,
       content: msgContent,
       isSenderSupport: false,
       isImage: false,
     });
-
+    socketRef.current?.emit("typing", {
+      conversationId: user.id,
+      userId: user.id,
+      isTyping: false,
+      isSupportChat: true,
+    });
     setInputMessage("");
   };
 
@@ -116,8 +164,11 @@ export default function LiveChatWidget() {
               <X className="h-4 w-4" />
             </Button>
           </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[300px] w-full pr-4">
+          <CardContent className="">
+            <ScrollArea
+              className="h-[300px] w-full pr-4"
+              viewportRef={viewportRef} // Pass viewportRef here
+            >
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -126,7 +177,7 @@ export default function LiveChatWidget() {
                   }`}
                 >
                   <span
-                    className={`inline-block rounded-lg px-3 py-2 text-sm ${
+                    className={`inline-block break-all rounded-lg px-3 py-2 text-sm ${
                       message.isSenderSupport
                         ? "bg-muted"
                         : "bg-primary text-primary-foreground"

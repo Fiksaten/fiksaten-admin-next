@@ -302,3 +302,30 @@ export type ContractorRegisterData = {
   companyDescription: string;
   companyImageUrl: string;
 }
+
+export type ContractorResponse = {
+  userId: string;
+  contractorName: string;
+  contractorDescription: string;
+  contractorWebsite: string;
+  contractorEmail: string;
+  contractorPhone: string;
+  contractorAddressStreet: string;
+  contractorAddressDetail: string;
+  contractorAddressZip: string;
+  contractorAddressCountry: string;
+  contractorImageUrl: string;
+  contractorReviewAverage: string;
+  contractorReviewCount: number;
+  contractorVerified: boolean;
+  contractorBusinessId: string;
+  contractorCategoryId: string;
+  contractorHeaderImageUrl: string;
+  contractorIban: string | null;
+  contractorBic: string | null;
+  approvalStatus: string;
+  created_at: string;
+  updated_at: string;
+  firstname: string;
+  lastname: string;
+};

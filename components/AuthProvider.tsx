@@ -4,9 +4,10 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { ContractorRegisterData, RegisterData } from "@/app/lib/types";
 import { buildApiUrl } from "@/app/lib/utils";
+import { toast } from "@/hooks/use-toast";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-type User = {
+export type UserMe = {
   id: string;
   sub: string;
   firstname: string;
@@ -37,7 +38,7 @@ type Tokens = {
 };
 
 type AuthContextType = {
-  user: User;
+  user: UserMe;
   tokens: Tokens | null;
   login: (email: string, password: string) => Promise<void>;
   register: (
@@ -51,7 +52,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User>(null);
+  const [user, setUser] = useState<UserMe>(null);
   const [tokens, setTokens] = useState<Tokens | null>(null);
   const router = useRouter();
 
@@ -72,7 +73,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         next: { revalidate: 60 }, // Cache for 1 minutes
       });
-      const userData: User = await userResponse.json();
+      if (!userResponse.ok) {
+        toast({
+          title: "Kirjaudu uudelleen",
+          description: "Kirjaudu uudelleen",
+          variant: "destructive",
+        });
+        router.replace("/login");
+      }
+      const userData: UserMe = await userResponse.json();
       console.log("userData", userData);
       setUser(userData);
       return userData;
