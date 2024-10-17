@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { ContractorRegisterData, RegisterData } from "@/app/lib/types";
@@ -56,14 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [tokens, setTokens] = useState<Tokens | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const idToken = Cookies.get("idToken");
-    if (idToken) {
-      fetchUserData(idToken);
-    }
-  }, []);
-
-  const fetchUserData = async (idToken: string) => {
+  const fetchUserData = useCallback(async (idToken: string) => {
     try {
       const userResponse = await fetch(`${API_URL}/api/v1/users/me`, {
         method: "GET",
@@ -88,7 +81,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    const idToken = Cookies.get("idToken");
+    if (idToken) {
+      fetchUserData(idToken);
+    }
+  }, [fetchUserData]);
 
   const login = async (email: string, password: string) => {
     try {

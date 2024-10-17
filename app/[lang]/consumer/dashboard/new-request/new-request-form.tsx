@@ -11,7 +11,7 @@ import BudgetAndImages from "./BudgetAndImages";
 import AddressAndPayment from "./AddressAndPayment";
 import ReviewAndSubmit from "./ReviewAndSubmit";
 import InitialRequestStage from "./InitialRequestStage";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export enum ScheduleOption {
   AsSoonAsPossible = "ASAP",
