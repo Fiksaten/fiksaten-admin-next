@@ -15,13 +15,11 @@ const ImageContainer = ({ imageName }: { imageName: string }) => (
 );
 
 const TextContainer = ({
-  dict,
   title,
   description,
   callToAction,
   callToActionHref,
 }: {
-  dict: Dictionary;
   title: string;
   description: string;
   callToAction?: string;
@@ -58,14 +56,15 @@ export default function HeadBox({
   callToAction?: string;
   callToActionHref?: string;
 }) {
+  if(!dict) return null;
   return (
     <section className="flex flex-col lg:flex-row items-center justify-center py-8 lg:py-12">
       <div className="w-full lg:w-1/2 h-[300px] lg:h-[400px] mb-8 lg:mb-0">
         <ImageContainer imageName={imageName} />
       </div>
       <div className="w-full lg:w-1/2 h-[300px] lg:h-[400px]">
+        
         <TextContainer
-          dict={dict}
           title={title}
           description={description}
           callToAction={callToAction}

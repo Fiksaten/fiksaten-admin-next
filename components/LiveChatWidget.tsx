@@ -82,6 +82,7 @@ export default function LiveChatWidget({ idToken }: { idToken: string }) {
 
       // Add typing event listener
       newSocket.on("userTyping", ({ userId, isTyping }) => {
+        console.log("Sending ", userId, isTyping)
         // Handle typing indicator
         // You might want to add a state for this and display it in the UI
       });

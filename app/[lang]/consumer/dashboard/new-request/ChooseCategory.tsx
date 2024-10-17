@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Category } from "@/app/lib/types";
 import Image from "next/image";
 import HeadBox from "./HeadBox";
