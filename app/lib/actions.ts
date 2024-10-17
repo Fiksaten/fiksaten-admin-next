@@ -2,9 +2,9 @@
 
 import { buildApiUrl } from "./utils";
 import { DashboardStatsResponse } from "./types";
-import { Chat } from "@/components/CustomerServiceChat";
 import { cookies } from "next/headers";
 import { CreateCategory } from "../[lang]/admin/dashboard/settings/categories/category-form";
+import { Chat } from "../[lang]/admin/dashboard/chats/CustomerServiceChat";
 
 export async function getIdToken(): Promise<string> {
   const cookieStore = cookies();
@@ -281,6 +281,22 @@ export const getContractorById = async (id: string) => {
       Authorization: `Bearer ${idToken}`,
     },
     next: { revalidate: 60 }, // Cache for 1 minutes
+  });
+  if (!response.ok) {
+    throw new Error(await response.json());
+  }
+  return await response.json();
+};
+
+export const getContractorRequests = async () => {
+  const idToken = await getIdToken();
+  const url = buildApiUrl("/admin/contractors/requests");
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
   });
   if (!response.ok) {
     throw new Error(await response.json());

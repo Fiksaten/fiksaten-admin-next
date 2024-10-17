@@ -7,9 +7,9 @@ import { useRouter, usePathname } from 'next/navigation'
 type AvailableLocale = 'fi' | 'en' | 'sv'
 
 const languages: Record<AvailableLocale, string> = {
-  fi: '🇫🇮',
-  en: '🇬🇧',
-  sv: '🇸🇪'
+  fi: '🇫🇮 Suomi',
+  en: '🇬🇧 English',
+  sv: '🇸🇪 Svenska'
 }
 
 export default function LanguageSelector({ currentLang }: { currentLang: AvailableLocale }) {
@@ -33,14 +33,14 @@ export default function LanguageSelector({ currentLang }: { currentLang: Availab
   return (
     <div className="flex">
       <Select value={selectedLanguage} onValueChange={handleLanguageChange}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full cursor-pointer text-black">
           <SelectValue placeholder="Select language" />
         </SelectTrigger>
         <SelectContent>
-          <SelectGroup>
+          <SelectGroup className="cursor-pointer text-black">
             <SelectLabel>Languages</SelectLabel>
             {Object.entries(languages).map(([code, name]) => (
-              <SelectItem key={code} value={code}>
+              <SelectItem key={code} value={code} className="cursor-pointer text-black">
                 <div className="flex items-center justify-between">
                   <span className="text-black">{name}</span>
                 </div>
