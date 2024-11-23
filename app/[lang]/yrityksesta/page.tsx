@@ -2,8 +2,15 @@ import { Navigation, PromotionHeader, Footer } from "@/components/lander";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
+import wowLookAtRoof from "@/public/images/wow-look-at-roof.webp";
 
-export default async function Page({ params: { lang } }: { params: { lang: AvailableLocale } }) {
+export default async function Page(props: { params: Promise<{ lang: AvailableLocale }> }) {
+  const params = await props.params;
+
+  const {
+    lang
+  } = params;
+
   const dict = await getDictionary(lang);
   return (
     <div className="flex flex-col min-h-screen">
@@ -24,7 +31,7 @@ export default async function Page({ params: { lang } }: { params: { lang: Avail
             Halusimme helpottaa kodin palveluiden tilaamista kaikille.
           </h3>
           <Image
-            src="/images/wow-look-at-roof.webp"
+            src={wowLookAtRoof}
             alt="Wow look at roof"
             width={1000}
             height={1000}

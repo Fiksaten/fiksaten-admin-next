@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { useIntersectionObserver } from "./Observer";
 import { Dictionary } from "@/lib/dictionaries";
+import contractorLander from "@/public/images/contractor-lander.webp";
 
 interface HeroSectionProps {
   dict: Dictionary;
@@ -11,7 +12,7 @@ interface HeroSectionProps {
 const ImageContainer = () => (
   <div className="flex-shrink-0 mt-8 lg:mt-0">
     <Image
-      src={"/images/contractor-lander.webp"}
+      src={contractorLander}
       alt="Contractor Lander"
       width={700}
       height={700}

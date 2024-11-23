@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import womanPhone from "@/public/images/woman-phone-lander.webp";
 
 const ImageContainer = () => (
   <div className="w-full h-full">
     <Image
-      src={"/images/woman-phone-lander.webp"}
+      src={womanPhone}
       alt="Woman on her phone"
       width={700}
       height={700}

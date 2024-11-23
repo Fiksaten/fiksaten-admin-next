@@ -4,16 +4,18 @@ import { Suspense } from 'react';
 import UserOrders from './userOrders';
 
 type UserInfoProps = {
-  params: { id: string  }
-  searchParams: { page: string, limit: string }
+  params: Promise<{ id: string  }>
+  searchParams: Promise<{ page: string, limit: string }>
 };
 
-export default async function Home({ params, searchParams }: UserInfoProps) {
-    const userData = await getUser(params.id);
-    const page = parseInt(searchParams.page) || 1;
-    const limit = parseInt(searchParams.limit) || 5;
-    const userOrders = await getUserOrders(params.id, page, limit);
-    console.log("userOrders", userOrders);
+export default async function Home(props: UserInfoProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+  const userData = await getUser(params.id);
+  const page = parseInt(searchParams.page) || 1;
+  const limit = parseInt(searchParams.limit) || 5;
+  const userOrders = await getUserOrders(params.id, page, limit);
+  console.log("userOrders", userOrders);
   return (
     <>
       <UserInfo userData={userData}/>

@@ -2,7 +2,13 @@ import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
 import { UserBox } from "./user-box";
 import { DashboardCard } from "./dashboard-card";
 
-export default async function Page({ params: { lang } }: { params: { lang: string } }) {
+export default async function Page(props: { params: Promise<{ lang: string }> }) {
+  const params = await props.params;
+
+  const {
+    lang
+  } = params;
+
   const dict = await getDictionary(lang as AvailableLocale);
   return (
     <div className="space-y-6 px-24">

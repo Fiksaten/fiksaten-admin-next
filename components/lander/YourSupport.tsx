@@ -4,11 +4,12 @@ import { Button } from "../ui/button";
 import { useIntersectionObserver } from "./Observer";
 import Link from "next/link";
 import { Dictionary } from "@/lib/dictionaries";
+import manFixingWasher from "@/public/images/man-fixing-washer.webp";
 
 const ImageContainer = ({dict}: {dict: Dictionary}) => (
   <div className="w-full h-full relative">
     <Image
-      src={"/images/man-fixing-washer.webp"}
+      src={manFixingWasher}
       alt="Man fixing washer"
       width={700}
       height={700}

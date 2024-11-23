@@ -6,6 +6,7 @@ import Navigation from "@/components/lander/Navigation";
 import PromotionHeader from "@/components/lander/PromotionHeader";
 import Footer from "@/components/lander/Footer";
 import { getDictionary } from "@/lib/dictionaries";
+import login from "@/public/images/login.webp";
 
 export default async function Login() {
   const dict = await getDictionary('fi');
@@ -24,7 +25,7 @@ export default async function Login() {
         <div className="w-full lg:w-1/3 hidden lg:block">
           <AspectRatio ratio={9 / 16}>
             <Image
-              src="/images/login.webp"
+              src={login}
               width={1000}
               height={1000}
               alt="Login"

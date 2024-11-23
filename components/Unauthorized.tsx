@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import posthog from 'posthog-js';
+import bouncer from "@/public/images/bouncer.webp";
 
 const quotes = [
   "Ever feel like the last one to find out the joke?",
@@ -34,7 +35,7 @@ const Unauthorized = () => {
           Looks like you&apos;ve tried to access an exclusive area of the site. Unfortunately, only authorized agents, ninjas, or hackers are allowed beyond this point
         </p>
         <Image 
-          src={"/images/bouncer.webp"} 
+          src={bouncer} 
           alt="Bouncer turning away a cat in disguise"
           className="my-6"
           width={400} 

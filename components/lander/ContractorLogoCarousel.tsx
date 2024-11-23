@@ -1,14 +1,19 @@
 import Image from 'next/image'
 import * as AspectRatio from '@radix-ui/react-aspect-ratio'
 import { Dictionary } from '@/lib/dictionaries'
-
+import cliifax from "@/public/images/logos/cliifax.png";
+import eld from "@/public/images/logos/eld.png";
+import jks from "@/public/images/logos/jks.png";
+import jtk from "@/public/images/logos/jtk-sahko.png";
+import kunnon from "@/public/images/logos/kunnon-muutto.png";
+import roudarit from "@/public/images/logos/roudarit.png";
 const logos = [
-  { src: '/images/logos/cliifax.png', alt: 'Company 1' },
-  { src: '/images/logos/eld.png', alt: 'Company 2' },
-  { src: '/images/logos/jks.png', alt: 'Company 3' },
-  { src: '/images/logos/jtk-sahko.png', alt: 'Company 4' },
-  { src: '/images/logos/kunnon-muutto.png', alt: 'Company 5' },
-  { src: '/images/logos/roudarit.png', alt: 'Company 6' },
+  { src: cliifax, alt: 'Company 1' },
+  { src: eld, alt: 'Company 2' },
+  { src: jks, alt: 'Company 3' },
+  { src: jtk, alt: 'Company 4' },
+  { src: kunnon, alt: 'Company 5' },
+  { src: roudarit, alt: 'Company 6' },
 ]
 
 export default function ContractorLogoCarousel({dict}: {dict: Dictionary}) {

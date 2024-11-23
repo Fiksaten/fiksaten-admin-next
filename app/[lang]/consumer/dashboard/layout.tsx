@@ -3,13 +3,22 @@ import Navigation from "@/components/lander/Navigation";
 import LiveChatWidget from "@/components/LiveChatWidget";
 import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
 
-export default async function ConsumerDashboard({
-  children,
-  params: { lang },
-}: Readonly<{
-  children: React.ReactNode;
-  params: { lang: AvailableLocale };
-}>) {
+export default async function ConsumerDashboard(
+  props: Readonly<{
+    children: React.ReactNode;
+    params: { lang: AvailableLocale };
+  }>
+) {
+  const params = await props.params;
+
+  const {
+    lang
+  } = params;
+
+  const {
+    children
+  } = props;
+
   const dict = await getDictionary(lang);
   const idToken = await getIdToken();
   return (

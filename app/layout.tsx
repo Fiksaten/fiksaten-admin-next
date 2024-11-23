@@ -18,23 +18,27 @@ export const metadata: Metadata = {
   description: "Fiksaten",
 };
 
-const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
-  ssr: false,
-});
+export default async function RootLayout(
+  props: Readonly<{
+    children: React.ReactNode;
+    params: { lang: AvailableLocale };
+  }>
+) {
+  const params = await props.params;
 
-export default async function RootLayout({
-  children,
-  params: { lang },
-}: Readonly<{
-  children: React.ReactNode;
-  params: { lang: AvailableLocale };
-}>) {
+  const {
+    lang
+  } = params;
+
+  const {
+    children
+  } = props;
+
   return (
     <html lang={lang || "fi"} className={inter.className}>
       <PHProvider>
         <body className={`bg-white text-black ${inter.className} antialiased`}>
           <CookieBanner />
-          <PostHogPageView />
           <AuthProvider>
             <Toaster />
             {children}

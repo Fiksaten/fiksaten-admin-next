@@ -6,6 +6,7 @@ import { buildApiUrl } from "@/app/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { ContractorResponse } from "@/app/lib/types";
+import fallbackImage from "@/public/icon.png";
 
 interface InfoItemProps {
   title: string;
@@ -80,7 +81,7 @@ export const HelpersTableModal: React.FC<HelpersTableModalProps> = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
-            <Image src={item.contractorImageUrl !== "Unknown" ? item.contractorImageUrl : "/images/icon.png"} alt="logo" className="w-8 h-8" width={32} height={32} />
+            <Image src={item.contractorImageUrl !== "Unknown" ? item.contractorImageUrl : fallbackImage} alt="logo" className="w-8 h-8" width={32} height={32} />
             <span>{item.contractorName}</span>
           </DialogTitle>
         </DialogHeader>
