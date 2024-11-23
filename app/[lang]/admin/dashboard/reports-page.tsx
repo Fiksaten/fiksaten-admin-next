@@ -1,8 +1,6 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { BarChart, Bar, Legend } from 'recharts'
 import { DashboardStatsResponse } from "@/app/lib/types"
 
 export function ReportsPage({reports}: {reports: DashboardStatsResponse}) {
@@ -54,42 +52,7 @@ export function ReportsPage({reports}: {reports: DashboardStatsResponse}) {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 mt-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>New Users Over Time</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={reports?.newUsersOverTime}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="newUsers" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>Top Categories by Orders</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={reports?.topCategoriesByOrders}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="categoryName" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="orderCount" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+     
     </div>
   )
 }

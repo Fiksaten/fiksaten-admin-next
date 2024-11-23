@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import PHProvider from "./providers";
-import dynamic from "next/dynamic";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Toaster } from "@/components/ui/toaster";
 import CookieBanner from "@/components/CookieBanner";

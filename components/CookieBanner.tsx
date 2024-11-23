@@ -44,51 +44,53 @@ export default function FunCookieBanner() {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-4 left-4 right-4 bg-primary text-primary-foreground p-6 rounded-lg shadow-lg md:max-w-2xl md:mx-auto z-50"
+
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <CookieIcon className="h-8 w-8" />
-              <h2 className="text-2xl font-bold">Cookie Monster Alert! 🍪</h2>
-            </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsVisible(false)}>
-              <XIcon className="h-4 w-4" />
-            </Button>
-          </div>
-          <p className="mb-4">
-            Nom nom nom! We love cookies, and we bet you do too! But before we start munching, we wanted to let you know that we use some digital cookies to make your experience extra sweet.
-          </p>
-          <div className="space-y-2 mb-4">
-            <div className="flex items-center justify-between">
+          <div className="fixed bottom-4 left-4 right-4 bg-primary text-primary-foreground p-6 rounded-lg shadow-lg md:max-w-2xl md:mx-auto z-50">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
-                <ChartPieIcon className="h-5 w-5" />
-                <span>Analytics (for counting cookie crumbs)</span>
+                <CookieIcon className="h-8 w-8" />
+                <h2 className="text-2xl font-bold">Cookie Monster Alert! 🍪</h2>
               </div>
-              <Switch
-                checked={cookiePreferences.analyticsEnabled}
-                onCheckedChange={(checked) => setCookiePreferences({...cookiePreferences, analyticsEnabled: checked})}
-                aria-label="Enable analytics cookies"
-              />
+              <Button variant="ghost" size="icon" onClick={() => setIsVisible(false)}>
+                <XIcon className="h-4 w-4" />
+              </Button>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <KeyIcon className="h-5 w-5" />
-                <span>User Tokens, needed for the site to function (your secret cookie recipe)</span>
+            <p className="mb-4">
+              Nom nom nom! We love cookies, and we bet you do too! But before we start munching, we wanted to let you know that we use some digital cookies to make your experience extra sweet.
+            </p>
+            <div className="space-y-2 mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <ChartPieIcon className="h-5 w-5" />
+                  <span>Analytics (for counting cookie crumbs)</span>
+                </div>
+                <Switch
+                  checked={cookiePreferences.analyticsEnabled}
+                  onCheckedChange={(checked) => setCookiePreferences({ ...cookiePreferences, analyticsEnabled: checked })}
+                  aria-label="Enable analytics cookies"
+                />
               </div>
-              <Switch
-                checked={cookiePreferences.userTokenEnabled}
-                onCheckedChange={(checked) => setCookiePreferences({...cookiePreferences, userTokenEnabled: checked})}
-                aria-label="Enable user token cookies"
-              />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <KeyIcon className="h-5 w-5" />
+                  <span>User Tokens, needed for the site to function (your secret cookie recipe)</span>
+                </div>
+                <Switch
+                  checked={cookiePreferences.userTokenEnabled}
+                  onCheckedChange={(checked) => setCookiePreferences({ ...cookiePreferences, userTokenEnabled: checked })}
+                  aria-label="Enable user token cookies"
+                />
+              </div>
             </div>
-          </div>
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={handleDecline}>
-              Only neccesary cookies 😢
-            </Button>
-            <Button onClick={handleAccept}>
-              Let&apos;s get baking! 🍪
-            </Button>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={handleDecline}>
+                Only neccesary cookies 😢
+              </Button>
+              <Button onClick={handleAccept}>
+                Let&apos;s get baking! 🍪
+              </Button>
+            </div>
           </div>
         </motion.div>
       )}

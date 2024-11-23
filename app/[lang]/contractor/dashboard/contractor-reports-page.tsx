@@ -1,7 +1,6 @@
 "use client"
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Metrics } from '@/app/lib/types';
 
 const MetricCard = ({ title, value }: { title: string; value: string | number }) => (
@@ -32,38 +31,7 @@ const ContractorMetricsDashboard = ({ metrics }: { metrics: Metrics }) => {
         <MetricCard title="Retention Rate" value={`${(metrics.retentionRate * 100).toFixed(2)}%`} />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Most Common Categories by count</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={metrics.mostCommonCategories}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="categoryName" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="categoryCount" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Clients by revenue</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            {metrics.topClients.map((client) => (
-              <li key={client.userId} className="flex justify-between items-center">
-                <span>{client.name}</span>
-                <span className="font-semibold">${client.totalRevenue.toLocaleString()}</span>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
+      
     </div>
   );
 };

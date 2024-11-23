@@ -3,12 +3,12 @@ import UsersPage from "./users-page";
 import HelpersTable from "./HelpersTable";
 
 type UserProps = {
-  params: Promise<{ page:number, limit: number }>
-  searchParams: Record<string, string> | null | undefined;
+  params: Promise<{ page: number, limit: number }>,
+  searchParams: Promise<Record<string, string>> | undefined;
 };
 
 export default async function Home(props: UserProps) {
-  const searchParams = await props.searchParams;
+  const searchParams = await props.searchParams || {};
   const limit = searchParams?.limit ? parseInt(searchParams.limit, 10) : 10;
   const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1;
   const search = searchParams?.search || "";
