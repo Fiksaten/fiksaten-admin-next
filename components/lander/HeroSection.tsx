@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { Button } from "../ui/button";
 import { useIntersectionObserver } from "./Observer";
 import { Dictionary } from "@/lib/dictionaries";
@@ -8,17 +7,6 @@ interface HeroSectionProps {
   dict: Dictionary;
 }
 
-const ImageContainer = () => (
-  <div className="flex-shrink-0 mt-8 lg:mt-0">
-    <Image
-      src={"/images/contractor-lander.webp"}
-      alt="Contractor Lander"
-      width={700}
-      height={700}
-      className="rounded-lg w-full max-w-[500px] lg:max-w-[700px]"
-    />
-  </div>
-);
 
 const TextContainer = ({ dict }: HeroSectionProps) => (
   <div className="xl:pr-8">
@@ -55,7 +43,6 @@ export default function HeroSection({ dict }: HeroSectionProps) {
   return (
     <section ref={sectionRef} className="section transition-all transform duration-700 ease-out opacity-0 translate-y-10 flex flex-col xl:flex-row items-center justify-center py-8 xl:py-12 px-4 lg:px-8 bg-white">
       <TextContainer dict={dict} />
-      <ImageContainer />
     </section>
   );
 }

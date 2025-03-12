@@ -21,12 +21,14 @@ export default function ContractorLogoCarousel({dict}: {dict: Dictionary}) {
         {[...logos, ...logos].map((logo, index) => (
           <div key={index} className="flex-none w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 px-4">
             <AspectRatio.Root ratio={2 / 1}>
-              <Image
-                src={logo.src}
-                alt={logo.alt}
-                fill
-                className="object-contain"
-              />
+              <div className="relative w-full h-full">
+                <Image
+                  src={logo.src}
+                  alt={logo.alt}
+                  fill
+                  className="object-contain"
+                />
+              </div>
             </AspectRatio.Root>
           </div>
         ))}
