@@ -20,18 +20,14 @@ export const metadata: Metadata = {
 export default async function RootLayout(
   props: Readonly<{
     children: React.ReactNode;
-    params: { lang: AvailableLocale };
+    params: Promise<{ lang: AvailableLocale }>;
   }>
 ) {
   const params = await props.params;
 
-  const {
-    lang
-  } = params;
+  const { lang } = params;
 
-  const {
-    children
-  } = props;
+  const { children } = props;
 
   return (
     <html lang={lang || "fi"} className={inter.className}>

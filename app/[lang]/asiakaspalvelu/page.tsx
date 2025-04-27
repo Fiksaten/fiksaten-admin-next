@@ -1,13 +1,18 @@
 import ContactButtons from "./ContactButtons";
 import MediaContact from "./MediaContact";
-import {AvailableLocale, getDictionary} from "@/lib/dictionaries";
+import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
 
-export default async function Page({ params: { lang } }: { params: { lang: AvailableLocale } }) {
+type PageProps = {
+  params: Promise<{ lang: AvailableLocale }>;
+};
+
+export default async function Page({ params }: PageProps) {
+  const { lang } = await params;
   const dict = await getDictionary(lang);
   return (
-      <>
-        <ContactButtons dict={dict} />
-        <MediaContact dict={dict} />
+    <>
+      <ContactButtons dict={dict} />
+      <MediaContact dict={dict} />
     </>
   );
 }

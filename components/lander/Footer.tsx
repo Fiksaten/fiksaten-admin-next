@@ -1,17 +1,15 @@
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import Link from "next/link";
-import {Dictionary} from "@/lib/dictionaries";
 
-export default function Footer({dict}: {dict: Dictionary}) {
+export default function Footer() {
   return (
     <footer className="bg-[#007AFF] text-white py-8">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">Fiksaten</h3>
-            <p>Löydä kodin apulainen
-            helposti ja nopeasti.</p>
+            <p>Löydä kodin apulainen helposti ja nopeasti.</p>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Linkit</h3>
@@ -65,10 +63,17 @@ export default function Footer({dict}: {dict: Dictionary}) {
         </div>
         <div className="mt-8 text-center flex flex-row justify-center gap-4">
           <p>&copy; 2024 Fiksaten Group Oy. Kaikki oikeudet pidätetään.</p>
-          <Link href="/tietosuoja" className="hover:underline border-r border-l border-white px-6">Tietosuoja</Link>
-          <Link href="/kayttoehdot" className="hover:underline">Käyttöehdot</Link>
+          <Link
+            href="/tietosuoja"
+            className="hover:underline border-r border-l border-white px-6"
+          >
+            Tietosuoja
+          </Link>
+          <Link href="/kayttoehdot" className="hover:underline">
+            Käyttöehdot
+          </Link>
         </div>
       </div>
     </footer>
   );
-};
+}
