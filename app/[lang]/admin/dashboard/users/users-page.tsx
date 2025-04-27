@@ -140,7 +140,7 @@ export default function UsersPage({
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          onClick={() => router.push(`/dashboard/users/${user.id}`)}
+                          onClick={() => router.push(`/admin/dashboard/users/${user.id}`)}
                         >View user details</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
