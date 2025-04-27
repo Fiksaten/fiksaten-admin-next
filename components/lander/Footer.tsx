@@ -1,8 +1,9 @@
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import Link from "next/link";
+import {Dictionary} from "@/lib/dictionaries";
 
-const Footer = () => {
+export default function Footer({dict}: {dict: Dictionary}) {
   return (
     <footer className="bg-[#007AFF] text-white py-8">
       <div className="container mx-auto px-4">
@@ -42,7 +43,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          
+
           <div>
             <h3 className="text-lg font-semibold mb-4">Ota yhteyttä</h3>
             <p>info@fiksaten.fi</p>
@@ -71,5 +72,3 @@ const Footer = () => {
     </footer>
   );
 };
-
-export default Footer;

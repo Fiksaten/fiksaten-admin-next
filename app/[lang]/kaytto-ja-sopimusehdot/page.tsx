@@ -1,13 +1,9 @@
 import { Footer, Navigation, PromotionHeader } from "@/components/lander";
-import { getDictionary } from "@/lib/dictionaries";
-export default async function Page() {
-  const dict = await getDictionary('fi');
+import {AvailableLocale, getDictionary} from "@/lib/dictionaries";
+export default async function Page({ params: { lang } }: { params: { lang: AvailableLocale } }) {
+  const dict = await getDictionary(lang);
   return (
-    <div className="flex flex-col min-h-screen ">
-      <header className="bg-white shadow-sm">
-        <PromotionHeader dict={dict} />
-        <Navigation dict={dict} />
-      </header>
+      <>
       <div className="flex flex-col px-32 py-12 ">
         <h1 className="text-7xl  font-bold text-center">
           Fiksaten sopimus- ja käyttöehdot Kuluttajille
@@ -529,7 +525,6 @@ export default async function Page() {
           Osapuolia sitova.
         </p>
       </div>
-      <Footer />
-    </div>
+      </>
   );
 }

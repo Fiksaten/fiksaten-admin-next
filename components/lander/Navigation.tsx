@@ -75,10 +75,12 @@ export default function Navigation({ dict }: { dict: Dictionary }) {
   }, [idToken]);
 
   useEffect(() => {
-    const intervalId = setInterval(fetchUserBadges, 30000);
-    fetchUserBadges();
-    return () => clearInterval(intervalId);
-  }, [fetchUserBadges]);
+    if (user) {
+      const intervalId = setInterval(fetchUserBadges, 30000);
+      fetchUserBadges();
+      return () => clearInterval(intervalId);
+    }
+  }, [fetchUserBadges, user]);
 
   const resetUnreadCount = useCallback(
     (key: keyof typeof unreadCounts) => {
@@ -240,7 +242,7 @@ export default function Navigation({ dict }: { dict: Dictionary }) {
             </>
           )}
         </ul>
-        <UserNavComponent lang={(lang as AvailableLocale) || "fi"} />
+        <UserNavComponent dict={dict} lang={(lang as AvailableLocale) || "fi"} />
       </nav>
     </div>
   );

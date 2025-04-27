@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
-        next: { revalidate: 60 }, // Cache for 1 minutes
+        next: { revalidate: 600 }, // Cache for 10 minutes
       });
       if (!userResponse.ok) {
         toast({

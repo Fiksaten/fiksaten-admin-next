@@ -13,13 +13,7 @@ import {
 import Navigation from "@/components/lander/Navigation";
 import { getDictionary, AvailableLocale } from "@/lib/dictionaries";
 
-export default async function Page(props: { params: Promise<{ lang: string }> }) {
-  const params = await props.params;
-
-  const {
-    lang
-  } = params;
-
+export default async function Page({ params: { lang } }: { params: { lang: string } }) {
   const dict = await getDictionary(lang as AvailableLocale);
   return (
     <div className="flex flex-col min-h-screen">
@@ -37,7 +31,7 @@ export default async function Page(props: { params: Promise<{ lang: string }> })
         <FaqSection dict={dict} />
         <CallToActionDownload dict={dict} />
       </main>
-      <Footer />
+      <Footer dict={dict}/>
     </div>
   );
 }

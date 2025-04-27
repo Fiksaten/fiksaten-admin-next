@@ -20,6 +20,9 @@
 .DS_Store
 *.pem
 
+# God tier Webstorm which poor people can't afford
+.idea
+
 # debug
 npm-debug.log*
 yarn-debug.log*
@@ -27,6 +30,9 @@ yarn-error.log*
 
 # local env files
 .env*.local
+
+# main env
+.env
 
 # vercel
 .vercel
