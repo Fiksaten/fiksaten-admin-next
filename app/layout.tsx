@@ -45,7 +45,7 @@ export default async function RootLayout(
               <Toaster/>
               {children}
             </main>
-          <Footer dict={dict}/>
+          <Footer/>
         </div>
         </body>
       {/*</PHProvider> */}
