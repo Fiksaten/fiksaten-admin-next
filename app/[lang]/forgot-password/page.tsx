@@ -67,6 +67,7 @@ export default function ForgotPassword() {
       setCodeSent(true)
       setError(null)
     } catch (err) {
+      console.error("Error sending reset code:", err);
       setError('Failed to send reset code. Please check your email and try again.')
     }
   }
@@ -88,6 +89,7 @@ export default function ForgotPassword() {
 
       router.push('/login')
     } catch (err) {
+      console.error("Error resetting password:", err);
       setError('Failed to reset password. Please check your code and try again.')
     }
   }

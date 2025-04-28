@@ -120,6 +120,7 @@ export default function RegisterForm({
       });
       setIsVerifying(true);
     } catch (error) {
+      console.error("Error registering user:", error);
       toast({
         title: dict.verification.registerFailed,
         description: dict.verification.registerFailedDescription,
@@ -151,6 +152,7 @@ export default function RegisterForm({
         });
       }
     } catch (error) {
+      console.error("Error verifying phone:", error);
       toast({
         title: dict.verification.verificationFailed,
         description: dict.verification.verificationFailedDescription,

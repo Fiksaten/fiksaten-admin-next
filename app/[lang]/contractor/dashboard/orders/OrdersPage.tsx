@@ -356,6 +356,7 @@ export default function OrdersPage({ token }: { token: string }) {
       setOrders(data.orders);
       setTotalCount(data.totalCount);
     } catch (err) {
+      console.error("Error loading orders:", err);
       setError("Error loading orders");
     } finally {
       setIsLoading(false);

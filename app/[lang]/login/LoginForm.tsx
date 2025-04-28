@@ -31,6 +31,7 @@ const LoginForm: React.FC = () => {
     try {
       await login(data.email, data.password);
     } catch (err) {
+      console.error("Login failed:", err);
       toast({
         title: "Login failed. Please check your credentials.",
         variant: "destructive",
