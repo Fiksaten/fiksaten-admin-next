@@ -1,13 +1,13 @@
 import Image from "next/image";
 import AppleButton from "./AppleButton";
 import { Dictionary } from "@/lib/dictionaries";
-
+import youngWomanCouch from "@/public/images/young-woman-couch.webp";
 const CallToActionDownload: React.FC<{dict: Dictionary}> = ({dict}) => {
   return (
     <div className="w-full relative px-4 sm:px-12 mb-12">
       <div className="aspect-[16/9] h-full relative">
         <Image
-          src="/images/young-woman-couch.webp"
+          src={youngWomanCouch}
           alt="Young woman on couch"
           fill
           className="rounded-sm object-cover"

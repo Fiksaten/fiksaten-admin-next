@@ -78,8 +78,59 @@
       "sendRequest": "Skicka en hjälpbegäran",
       "aboutUs": "Vad är Fiksaten",
       "joinUs": "Bli en hjälpare",
-      "customerService": "Kundtjänst"
+      "customerService": "Kundtjänst",
+      "login": "Logga in",
+      "register": "Register"
     },
+  "register": {
+      "register": "Registrera dig",
+      "consumer": "Konsument",
+      "contractor": "Hjälpare",
+      "firstName": "Förnamn",
+      "lastName": "Efternamn",
+      "email": "E-post",
+      "password": "Lösenord",
+      "phone": "Telefonnummer",
+      "companyName": "Företagsnamn",
+      "companyEmail": "Företagets e-post",
+      "companyPhone": "Företagets telefonnummer",
+      "businessId": "Organisationsnummer",
+      "companyDescription": "Företagsbeskrivning"
+  },
+  "verification": {
+    "phone": "",
+    "enter": "",
+    "send": "",
+    "registerSuccess": "Registration Successful",
+    "registerSuccessDescription": "Please verify your phone number.",
+    "registerFailed": "Registration Failed",
+    "registerFailedDescription": "An error occurred during registration.",
+    "verificationSuccess": "Phone Verified",
+    "verificationSuccessDescription": "Your phone number has been successfully verified.",
+    "verificationFailed": "Verification Failed",
+    "verificationFailedDescription": "Please check the code and try again."
+  },
+  "validation": {
+    "required": " är obligatoriskt",
+    "invalid": " är ogiltigt",
+    "password": {
+      "lowercase": "Lösenordet måste innehålla små bokstäver",
+      "uppercase": "Lösenordet måste innehålla stora bokstäver",
+      "number": "Lösenordet måste innehålla minst en siffra",
+      "special": "Lösenordet måste innehålla specialtecken (!@#$%^&*+:)",
+      "min": "Lösenordet måste vara minst {{min}} tecken långt"
+    }
+  },
+  "media": {
+    "toMedia": "",
+    "description": "",
+    "emailFor": ""
+  },
+  "contact": {
+    "title": "",
+    "description": "",
+    "emailFor": "",
+    "callFor": ""
+  },
     "promotionHeader": "Fiksatens mobilapp är nu ute! Ladda ner appen och skicka enkelt din hjälpbegäran."
   }
-  

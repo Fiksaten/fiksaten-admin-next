@@ -1,189 +1,124 @@
-import { Footer, Navigation, PromotionHeader } from "@/components/lander";
-import { getDictionary } from "@/lib/dictionaries";
+import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
 
-export default async function Page() {
-  const dict = await getDictionary('fi');
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ lang: AvailableLocale }>;
+}) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang);
+
   return (
-    <div className="flex flex-col min-h-screen ">
-      <header className="bg-white shadow-sm">
-        <PromotionHeader dict={dict} />
-        <Navigation dict={dict} />
-      </header>
-    <div className="flex flex-col px-32 py-12 ">
-      <h1 className="text-7xl  font-bold text-center">
-        Tietosuoja- ja evästekäytännöt
-      </h1>
-      <p className="text-center mt-12">11.7.2024 — Fiksaten Group Oy</p>
-      <h1 className="text-6xl font-bold mt-24 mb-12">
-        Fiksaten henkilötietojesi rekisterinpitäjänä
-      </h1>
-      <p className="mt-4">
-        Fiksatenin liiketoiminnan keskeisenä tarkoituksena on pyrkiä
-        tuotteillaan ja palveluillaan tarjoamaan voimaannuttavia kokemuksia
-        asiakkailleen. Käytämme dataa tämän tarkoituksen täyttämiseksi eri
-        sivustoillamme, tuotteissamme ja palveluissamme Fiksaten Suomen
-        valvonnassa ja vastuulla. Jotta käyttäjämme luottaisivat meihin ja
-        palveluihimme nyt ja jatkossa, on meille ensiarvoisen tärkeää, että
-        heidän henkilötietojaan käsitellään turvallisella tavalla.
-      </p>
-      <h1 className="text-6xl font-bold mt-24">Tietosuojakäytäntö</h1>
-      <p className="mt-4">
-        Tämä tietosuojakäytäntö koskee Fiksaten.fi-verkkosivua,
-        mobiilisovellusta ja sen käyttäjiä. Fiksaten on mobiilisovellus, jonka
-        avulla kuluttajat voivat löytää paikallisen urakoitsijan helposti ja
-        nopeasti. Käsittelemme henkilötietoja noudattaen voimassa olevaa
-        tietosuojalainsäädäntöä.
-      </p>
-      <h1 className="text-6xl font-bold mt-24">1. Kerättävät tiedot</h1>
-      <p className="mt-4">Keräämme seuraavia tietoja käyttäjiltämme:</p>
-      <ul>
-        <li>
-          <p>
-            {" "}
-            <span className="font-bold">Henkilötiedot:</span> nimi, osoite,
-            puhelinnumero, sähköpostiosoite.
-          </p>
-        </li>
-        <li>
-          <p>
-            {" "}
-            <span className="font-bold">Sijaintitiedot:</span> käyttäjän
-            laitteesta kerätyt sijaintitiedot palvelun toiminnan
-            mahdollistamiseksi.
-          </p>
-        </li>
-        <li>
-          <p>
-            {" "}
-            <span className="font-bold">Maksutiedot:</span> maksutietoja
-            käsitellään turvallisesti kolmannen osapuolen maksupalveluiden
-            kautta.
-          </p>
-        </li>
-        <li>
-          <p>
-            {" "}
-            <span className="font-bold">
-              Sovelluksen käyttöön liittyvät tiedot:
-            </span>{" "}
-            laitteiden tunnisteet, IP-osoitteet, käyttöjärjestelmätiedot.
-          </p>
-        </li>
-      </ul>
-      <h1 className="text-6xl font-bold mt-24">2. Tietojen käyttö</h1>
-      <p className="mt-4">
-        Käytämme kerättyjä tietoja seuraaviin tarkoituksiin:
-      </p>
-      <ul>
-        <li>Palvelun tarjoaminen ja käyttäjäkokemuksen parantaminen.</li>
-        <li>
-          Käyttäjien ja urakoitsijoiden välisen yhteydenpidon mahdollistaminen.
-        </li>
-        <li>Maksutapahtumien käsittely.</li>
-        <li>
-          Markkinointi ja viestintä käyttäjien suuntaan, heidän
-          suostumuksellaan.
-        </li>
-        <li>Analytiikka ja tilastolliset tarkoitukset.</li>
-      </ul>
-      <h1 className="text-6xl font-bold mt-24">3. Tietojen säilytys</h1>
-      <p className="mt-4">
-        Säilytämme henkilötietoja niin kauan kuin se on tarpeen palvelun
-        tarjoamisen ja lakisääteisten velvoitteiden täyttämiseksi. Kun tietoja
-        ei enää tarvita, ne poistetaan asianmukaisesti.
-      </p>
-      <h1 className="text-6xl font-bold mt-24">4. Tietojen luovuttaminen</h1>
-      <p>
-        Emme luovuta käyttäjien henkilötietoja kolmansille osapuolille, paitsi
-        seuraavissa tapauksissa:
-      </p>
-      <ul>
-        <li>Jos käyttäjä antaa meille suostumuksen.</li>
-        <li>
-          Jos tämä on vaadittu lakisääteisten velvoitteiden täyttämiseksi.
-        </li>
-        <li>
-          Palvelun toimittamiseksi tarvittaville palveluntarjoajille (esim.
-          maksupalvelut).
-        </li>
-      </ul>
-      <h1 className="text-6xl font-bold mt-24">5. Käyttäjän oikeudet</h1>
-      <p className="mt-4">Käyttäjillä on seuraavat oikeudet:</p>
-      <ul>
-        <li>Oikeus tarkistaa itseään koskevat tiedot.</li>
-        <li>Oikeus tietojen oikaisemiseen tai poistamiseen.</li>
-        <li>Oikeus käsittelyn rajoittamiseen.</li>
-        <li>Oikeus vastustaa tietojen käsittelyä.</li>
-        <li>Oikeus tietojen siirrettävyyteen.</li>
-      </ul>
+    <div className="max-w-4xl mx-auto px-4 py-10 space-y-10 text-gray-800 dark:text-gray-100">
+      <h1 className="text-4xl font-bold">{dict.privacy.mainTitle}</h1>
+      <p className="text-sm italic">{dict.privacy.lastUpdated}</p>
 
-      <p>
-        Yhteydenotot tietosuoja-asioissa voi osoittaa sähköpostitse osoitteeseen
-        asiakaspalvelu@fiksaten.fi.
-      </p>
+      <section>
+        <h2 className="text-2xl font-semibold">
+          {dict.privacy.dataControllerTitle}
+        </h2>
+        <p className="mt-2">{dict.privacy.dataControllerDescription}</p>
+      </section>
 
-      <h1 className="text-6xl font-bold mt-24">Evästekäytäntö</h1>
-      <h3>Fiksaten.fi evästekäytäntö</h3>
+      <section>
+        <h2 className="text-2xl font-semibold">
+          {dict.privacy.privacyPolicyTitle}
+        </h2>
+        <p className="mt-2">{dict.privacy.privacyPolicyDescription}</p>
+      </section>
 
-      <p>
-        Tämä evästekäytäntö selittää, miten Fiksaten.fi käyttää evästeitä ja
-        vastaavia teknologioita käyttäjien laitteilla. Käyttämällä palveluamme
-        hyväksyt evästeiden käytön tämän käytännön mukaisesti.
-      </p>
+      <section>
+        <h3 className="text-xl font-semibold">{dict.privacy.section1Title}</h3>
+        <p className="mt-2">{dict.privacy.section1Intro}</p>
+        <ul className="list-disc list-inside mt-2 space-y-1">
+          <li>{dict.privacy.section1DataPoints.personal}</li>
+          <li>{dict.privacy.section1DataPoints.location}</li>
+          <li>{dict.privacy.section1DataPoints.payment}</li>
+          <li>{dict.privacy.section1DataPoints.usage}</li>
+        </ul>
+      </section>
 
-      <h1 className="text-6xl font-bold mt-24">1. Mitä evästeet ovat?</h1>
-      <p>
-        Evästeet ovat pieniä tekstitiedostoja, jotka tallennetaan käyttäjän
-        laitteelle heidän vieraillessaan verkkosivuilla. Evästeet voivat olla
-        väliaikaisia (istuntokohtaisia) tai pysyviä.
-      </p>
+      <section>
+        <h3 className="text-xl font-semibold">{dict.privacy.section2Title}</h3>
+        <p className="mt-2">{dict.privacy.section2Intro}</p>
+        <ul className="list-disc list-inside mt-2 space-y-1">
+          <li>{dict.privacy.section2Purposes.service}</li>
+          <li>{dict.privacy.section2Purposes.communication}</li>
+          <li>{dict.privacy.section2Purposes.payments}</li>
+          <li>{dict.privacy.section2Purposes.marketing}</li>
+          <li>{dict.privacy.section2Purposes.analytics}</li>
+        </ul>
+      </section>
 
-      <h1 className="text-6xl font-bold mt-24">2. Evästeiden käyttö</h1>
-      <p>Käytämme evästeitä seuraaviin tarkoituksiin:</p>
+      <section>
+        <h3 className="text-xl font-semibold">{dict.privacy.section3Title}</h3>
+        <p className="mt-2">{dict.privacy.section3Content}</p>
+      </section>
 
-      <p>
-        Toiminnalliset evästeet: Nämä evästeet ovat välttämättömiä palvelun
-        toiminnan kannalta. Ne mahdollistavat sivuston perustoiminnot, kuten
-        navigoinnin ja lomakkeiden täyttämisen.
-      </p>
-      <p>
-        Analytiikkaevästeet: Nämä evästeet keräävät tietoa siitä, miten
-        käyttäjät käyttävät palveluamme. Käytämme tätä tietoa parantaaksemme
-        palvelun toimivuutta.
-      </p>
-      <p>
-        Markkinointievästeet: Nämä evästeet keräävät tietoa käyttäjän
-        selaustottumuksista, jotta voimme tarjota kohdennettua mainontaa.
-      </p>
-      <h1 className="text-6xl font-bold mt-24">3. Evästeiden hallinta</h1>
-      <p>
-        Käyttäjät voivat hallita evästeasetuksiaan selaimensa asetuksista.
-        Huomaa, että evästeiden poistaminen tai niiden käytön estäminen voi
-        vaikuttaa palvelun toimivuuteen.
-      </p>
+      <section>
+        <h3 className="text-xl font-semibold">{dict.privacy.section4Title}</h3>
+        <p className="mt-2">{dict.privacy.section4Intro}</p>
+        <ul className="list-disc list-inside mt-2 space-y-1">
+          <li>{dict.privacy.section4Conditions.consent}</li>
+          <li>{dict.privacy.section4Conditions.legal}</li>
+          <li>{dict.privacy.section4Conditions.providers}</li>
+        </ul>
+      </section>
 
-      <h1 className="text-6xl font-bold mt-24">
-        4. Kolmannen osapuolen evästeet
-      </h1>
-      <p>
-        Sovelluksemme voi käyttää kolmansien osapuolten evästeitä, kuten
-        analytiikka- ja mainontapalveluja tarjoavia evästeitä. Näiden evästeiden
-        käyttöön sovelletaan kyseisten kolmansien osapuolten omia
-        evästekäytäntöjä.
-      </p>
+      <section>
+        <h2 className="text-xl font-semibold">{dict.privacy.section5Title}</h2>
+        <p className="mt-2">{dict.privacy.section5Intro}</p>
+        <ul className="list-disc list-inside mt-2 space-y-1">
+          <li>{dict.privacy.section5Rights.access}</li>
+          <li>{dict.privacy.section5Rights.correction}</li>
+          <li>{dict.privacy.section5Rights.restriction}</li>
+          <li>{dict.privacy.section5Rights.objection}</li>
+          <li>{dict.privacy.section5Rights.portability}</li>
+        </ul>
+        <p className="mt-4">{dict.privacy.contactInfo}</p>
+      </section>
 
-      <p>
-        Yhteydenotot evästeisiin liittyvissä asioissa voi osoittaa sähköpostitse
-        osoitteeseen asiakaspalvelu@fiksaten.fi
-      </p>
+      <section>
+        <h2 className="text-2xl font-semibold">
+          {dict.privacy.cookiePolicyTitle}
+        </h2>
+        <p className="mt-2">{dict.privacy.cookiePolicyIntro}</p>
+      </section>
 
-      <p>
-        Nämä käytännöt voivat muuttua aika ajoin. Suosittelemme käyttäjiä
-        tarkistamaan nämä sivut säännöllisesti pysyäkseen ajan tasalla
-        mahdollisista muutoksista.
-      </p>
-    </div>
-    <Footer />
+      <section>
+        <h3 className="text-xl font-semibold">
+          {dict.privacy.cookieSection1Title}
+        </h3>
+        <p className="mt-2">{dict.privacy.cookieSection1Content}</p>
+      </section>
+
+      <section>
+        <h3 className="text-xl font-semibold">
+          {dict.privacy.cookieSection2Title}
+        </h3>
+        <ul className="list-disc list-inside mt-2 space-y-1">
+          <li>{dict.privacy.cookieSection2Functional}</li>
+          <li>{dict.privacy.cookieSection2Analytics}</li>
+          <li>{dict.privacy.cookieSection2Marketing}</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3 className="text-xl font-semibold">
+          {dict.privacy.cookieSection3Title}
+        </h3>
+        <p className="mt-2">{dict.privacy.cookieSection3Content}</p>
+      </section>
+
+      <section>
+        <h3 className="text-xl font-semibold">
+          {dict.privacy.cookieSection4Title}
+        </h3>
+        <p className="mt-2">{dict.privacy.cookieSection4Content}</p>
+      </section>
+
+      <p>{dict.privacy.cookieContact}</p>
+      <p className="text-sm italic mt-4">{dict.privacy.cookieChanges}</p>
     </div>
   );
 }

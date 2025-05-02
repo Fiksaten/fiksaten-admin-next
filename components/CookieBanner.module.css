@@ -1,0 +1,20 @@
+.cookieBanner {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    z-index: 50;
+  }
+  
+  @media (min-width: 768px) {
+    .cookieBanner {
+      max-width: 42rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }

@@ -1,13 +1,6 @@
-import { Footer, Navigation, PromotionHeader } from "@/components/lander";
-import { getDictionary } from "@/lib/dictionaries";
 export default async function Page() {
-  const dict = await getDictionary('fi');
   return (
-    <div className="flex flex-col min-h-screen ">
-      <header className="bg-white shadow-sm">
-        <PromotionHeader dict={dict} />
-        <Navigation dict={dict} />
-      </header>
+    <>
       <div className="flex flex-col px-32 py-12 ">
         <h1 className="text-7xl  font-bold text-center">
           Fiksaten sopimus- ja käyttöehdot Kuluttajille
@@ -18,132 +11,135 @@ export default async function Page() {
           käyttäjän tulee lukea ennen palvelun käytön aloittamista. Olkaa hyvä,
           ja tutustukaa ehtoihin ennen kuin käytätte Fiksaten-sovellusta.
           Käyttäjä vakuuttaa perehtyneensä näihin yleisiin käyttöehtoihin ja
-          hyväksyvänsä ne ja sitoutuu noudattamaan niitä. &ldquo;Palvelulla&rdquo;
-          tarkoitetaan jäljempänä Fiksaten Group Oy:n tarjoamaa
-          &ldquo;Fiksaten&rdquo;-mobiilisovellusta, joka tarjoaa muun muassa: yksityisten
-          henkilöiden tai yritysten tekemien avuntarve pyyntöjen välittäminen
-          Palveluntarjoajille sekä Palveluntarjoajien tekemien tarjouksien tai
-          yhteydenottojen toimittaminen avuntarve pyynnön tehneiden asiakkaiden
-          saataville neuvojen ja ohjeiden välittäminen käyttäjille
-          asiakasprofiilien, Palveluntarjoajan profiilien sekä
-          Palveluntarjoajien yritysprofiilien luominen ja ylläpito
-          Palveluntarjoaja voi markkinoida omaa osaamistaan ja yritystä omassa
-          Palveluntarjoajan profiilissa Asiakkaat voivat tarkastella
+          hyväksyvänsä ne ja sitoutuu noudattamaan niitä.
+          &ldquo;Palvelulla&rdquo; tarkoitetaan jäljempänä Fiksaten Group Oy:n
+          tarjoamaa &ldquo;Fiksaten&rdquo;-mobiilisovellusta, joka tarjoaa muun
+          muassa: yksityisten henkilöiden tai yritysten tekemien avuntarve
+          pyyntöjen välittäminen Palveluntarjoajille sekä Palveluntarjoajien
+          tekemien tarjouksien tai yhteydenottojen toimittaminen avuntarve
+          pyynnön tehneiden asiakkaiden saataville neuvojen ja ohjeiden
+          välittäminen käyttäjille asiakasprofiilien, Palveluntarjoajan
+          profiilien sekä Palveluntarjoajien yritysprofiilien luominen ja
+          ylläpito Palveluntarjoaja voi markkinoida omaa osaamistaan ja yritystä
+          omassa Palveluntarjoajan profiilissa Asiakkaat voivat tarkastella
           Palveluntarjoajan profiileja ja antaa arvioita Palveluntarjoajista
           Palvelun selaaminen edellyttää rekisteröitymistä. Avuntarve Pyynnön
           jättäminen edellyttää rekisteröitymistä. Jättääkseen viestejä tai
           ottaakseen yhteyttä Asiakkaaseen Palveluntarjoajan tulee olla
-          kirjautuneena Palveluun. &ldquo;Palveluntarjoajalla&rdquo; tarkoitetaan jäljempänä
-          Palvelussa palveluntarjoajaksi rekisteröitynyttä tai kirjautuneena
-          olevaa ja Palvelua käyttävää yritystä, joka on hyväksytty Palveluun
-          palveluntarjoajaksi. Palveluntarjoajaa voidaan myös kutsua
-          Apulaiseksi. &ldquo;Asiakkaalla&rdquo; tarkoitetaan jäljempänä palvelua, työtä,
+          kirjautuneena Palveluun. &ldquo;Palveluntarjoajalla&rdquo;
+          tarkoitetaan jäljempänä Palvelussa palveluntarjoajaksi
+          rekisteröitynyttä tai kirjautuneena olevaa ja Palvelua käyttävää
+          yritystä, joka on hyväksytty Palveluun palveluntarjoajaksi.
+          Palveluntarjoajaa voidaan myös kutsua Apulaiseksi.
+          &ldquo;Asiakkaalla&rdquo; tarkoitetaan jäljempänä palvelua, työtä,
           tehtävää tai muuta näihin rinnastettavan toimeksiantoa koskevan
           tarjouspyynnön tekijää tai tahoa. Asiakas voi olla luonnollinen tai
-          juridinen henkilö. &ldquo;Käyttäjällä&rdquo; tarkoitetaan jäljempänä sekä
-          Palveluun rekisteröitynyttä tai kirjautuneena olevaa ja Palvelua
+          juridinen henkilö. &ldquo;Käyttäjällä&rdquo; tarkoitetaan jäljempänä
+          sekä Palveluun rekisteröitynyttä tai kirjautuneena olevaa ja Palvelua
           käyttävää Palveluntarjoajaa että Asiakasta yhdessä tai erikseen
-          riippuen asiayhteydestä. &ldquo;Sisällöllä&rdquo; tarkoitetaan jäljempänä tekstiä,
-          piirroksia, valokuvia, äänitiedostoja, videoita, paikkatietoja,
-          yhteystietoja sekä kaikkia muita tietoja ja viestintää. &ldquo;Käyttäjien
-          Sisällöllä&rdquo; tarkoitetaan jäljempänä sellaista Sisältöä, jonka Käyttäjä
-          lähettää tai siirtää Palveluun tai sen avulla. Käyttäjien Sisältöä
-          ovat esimerkiksi luokittelut, arvostelut, onnittelut, kutsut, sisään
-          kirjautuminen sivustolle, yhteystiedot, kiinteistön kuvat, kiinteistön
-          muut tiedot, viestit sekä kaikki sellaiset tiedot, jotka Käyttäjä
-          näyttää tai jotka näytetään julkisesti käyttäjän profiilissa.
-          &ldquo;FIksatenin Sisällöllä&rdquo; tarkoitetaan jäljempänä sellaista Sisältöä,
-          joka on Fiksatenin luomaa ja jonka se tuo saataville Palvelun kautta.
-          &ldquo;Kolmansien osapuolten sisällöllä&rdquo; tarkoitetaan jäljempänä sellaista
+          riippuen asiayhteydestä. &ldquo;Sisällöllä&rdquo; tarkoitetaan
+          jäljempänä tekstiä, piirroksia, valokuvia, äänitiedostoja, videoita,
+          paikkatietoja, yhteystietoja sekä kaikkia muita tietoja ja viestintää.
+          &ldquo;Käyttäjien Sisällöllä&rdquo; tarkoitetaan jäljempänä sellaista
+          Sisältöä, jonka Käyttäjä lähettää tai siirtää Palveluun tai sen
+          avulla. Käyttäjien Sisältöä ovat esimerkiksi luokittelut, arvostelut,
+          onnittelut, kutsut, sisään kirjautuminen sivustolle, yhteystiedot,
+          kiinteistön kuvat, kiinteistön muut tiedot, viestit sekä kaikki
+          sellaiset tiedot, jotka Käyttäjä näyttää tai jotka näytetään
+          julkisesti käyttäjän profiilissa. &ldquo;FIksatenin Sisällöllä&rdquo;
+          tarkoitetaan jäljempänä sellaista Sisältöä, joka on Fiksatenin luomaa
+          ja jonka se tuo saataville Palvelun kautta. &ldquo;Kolmansien
+          osapuolten sisällöllä&rdquo; tarkoitetaan jäljempänä sellaista
           Palvelun kautta saataville tuotua Sisältöä, jonka on tuottanut joku
-          muu kuin Fiksaten tai Palvelun Käyttäjät. &ldquo;Palvelun Sisällöllä&rdquo;
-          tarkoitetaan jäljempänä kaikkea sellaista Sisältöä, joka on tuotu
-          saataville Palvelun kautta. Palvelun Sisältöä ovat esimerkiksi
-          Käyttäjien Sisältö, Kolmansien osapuolten Sisältö ja Fiksaten Group
-          Oy:n sisältö. Käyttöehdot Käyttöehtoja sovelletaan kaikkiin Palvelun
-          Käyttäjiin. 1. Käyttöehtojen hyväksyminen ja muutokset Käyttäjä
-          hyväksyy ja sitoutuu noudattamaan Palvelun käyttöehtoja käyttäessään
-          Palvelua kaikin tavoin, kuten esimerkiksi jättäessään tarjouspyynnön,
-          katsoessaan tarjouspyyntöön liittyviä yhteystietoja, jättäessään
-          tarjouksen, rekisteröityessään Palveluun tai luodessaan palveluun omaa
-          Sisältöä. Fiksatenilla on oikeus milloin tahansa ilman
-          ennakkoilmoitusta hyväksi katsomastaan syystä muuttaa Palvelun
-          käyttöehtoja, Fiksaten –mobiilisovelluksen ulkoasua, sisältöä,
-          saatavuutta, hinnoittelua sekä sivuilla välitettäviä palveluita. Jos
-          Fiksaten muuttaa Palvelun käyttöehtoja, Fiksatenilla on velvollisuus
-          ilmoittaa asiasta Palvelun rekisteröityneille käyttäjille. Käyttäjä
-          hyväksyy kulloisenkin muutoksen itseään sitovaksi jättäessään
-          avuntarve pyynnön, tarjouksen tai kirjautuessa Palveluun ensi kertaa
-          muutoksen jälkeen. Käyttäjän tulee huolehtia siitä, että hän on
-          tietoinen ajantasaisista käyttöehdoista. Palvelun käyttöehtojen uudet
-          versiot sitovat käyttäjää. Kaikki muutokset käyttöehdoissa astuvat
-          voimaan heti, kun uudet Palvelun käyttöehdot on julkaistu. Käyttäjä on
-          tietoinen siitä ja hyväksyy sen, että kun hän jatkaa Palvelun käyttöä
-          Palvelun käyttöehtojen muutosten voimaantulopäivän jälkeen, hän
-          hyväksyy samalla muutokset. Mikäli Käyttäjä ei hyväksy kulloinkin
-          voimassaolevia käyttöehtoja, Käyttäjän ei tule jatkaa Palvelun
-          käyttöä. 2. Yksityisyydensuoja Käyttäjä hyväksyy, että Fiksaten
-          käyttää Käyttäjien henkilötietoja siten kuin ehdot on esitetty näissä
-          käyttöehdoissa. 3. Käyttäjän vastuu 3.1 Vastuu Asiakkaan toimittamasta
-          Sisällöstä Asiakas vakuuttaa, että sillä on tarvittavat oikeudet ja
-          suostumukset mahdollisesti toimittamansa Sisällön ja henkilötietojen
-          käyttöön ja niiden luovuttamiseen. Asiakas vastaa siitä, että sen
-          toimittama Sisältö on lainmukaista eikä se ole harhaanjohtavaa tai ole
-          vastoin mainonnan eettisiä sääntöjä tai loukkaa hyvää tapaa tai
-          kolmansien tekijän-, immateriaali-, tai muuta oikeutta. Fiksaten ei
-          vastaa miltään osin sitä vastaan esitetyistä vaatimuksista, joita
-          esitetään sillä perusteella, ettei Asiakkaan toimittama Sisältö ole
-          tämän kohdan mukaista. Asiakkaat voivat selata ja tarkastella
-          Palveluntarjoajan profiileja, lukea ja kirjoittaa arvioita
-          Palveluntarjoajista ja luokitella Palveluntarjoajien palveluja.
-          Fiksaten ei lähtökohtaisesti muokkaa tai valikoi Asiakkaiden
-          toimittamia arvosteluja tai luokituksia tai muita näihin
-          rinnastettavaa Sisältöä. Asiakkaat vastaavat itse kirjoittamiensa
-          arvioiden tai Palveluntarjoajista antamien luokitustensa Sisällöstä ja
-          siitä, että Sisältö ei ole lain tai hyvien tapojen vastainen.
-          Fiksatenilla on oikeus, mutta ei velvollisuutta, poistaa Käyttäjän
-          antama palaute tai muu Sisältö. Lisäksi Fiksaten ei ole vastuussa
-          siitä, että aineistoa julkaistaan ja siitä voi tulla palautetta muissa
-          palveluissa, jotka ovat Fiksatenin vaikutusmahdollisuuksien
-          ulkopuolella. Fiksaten ei vastaa Asiakkaiden kirjoittamien arvioiden
-          tai luokittelujen sisällöllisestä hyväksyttävyydestä tai siitä
-          aiheutuvista välillisistä tai välittömistä vahingoista. 3.2.
-          Markkinointi ja Käyttäjän Palveluun lisäämä Sisältö Palvelun Käyttäjät
-          hyväksyvät sen, että heidän Palveluun lisäämäänsä Sisältöä voidaan
-          käyttää osana Palvelun markkinointia näiden käyttöehtojen sekä lain
-          puitteissa. Käyttäjällä ei ole, kuten edellä on todettu Asiakkaan
-          oikeuksista ja vastuusta, oikeutta lisätä Sisältöä, joka on hyvän
-          tavan vastaista, laitonta tai voi loukata kolmannen osapuolen oikeutta
-          (esimerkiksi toisten omistamat tavaramerkit, patentit tai muut
-          vastaavat immateriaalioikeudet). Fiksaten ei vastaa mahdollisista
-          oikeuden loukkauksista, mikäli tällaista Sisältöä on Palveluun
-          Käyttäjän toimesta lisätty. Fiksatenilla on oikeus välittömästi
-          poistaa Palvelusta kolmansien osapuolien oikeuksia loukkaava, lain tai
-          hyvän tavan vastainen Sisältö. Fiksatenilla on oikeus julkistaa
-          Palveluun liittyvä Sopijapuolten välinen asiakassuhde. Fiksatenilla on
-          lisäksi oikeus käyttää asiakassuhdetta referenssinä myydessään
-          palveluitaan ja/tai tuotteitaan kolmansille osapuolille. Käyttäjä on
-          itse vastuussa Käyttäjän Sisällöstä, ja kun Käyttäjä julkaisee
-          Sisältöä, sitä ei voi joissakin tapauksissa enää poistaa. Käyttäjällä
-          itsellään on kaikki vastuu Käyttäjän Sisällöstä, sen luotettavuus,
-          laatu ja virheettömyys mukaan lukien. Käyttäjä on itse vastuussa myös
-          siitä, jos Käyttäjä antaa Käyttäjän Sisällössään kuten esimerkiksi,
-          mutta ei rajoittuen, avuntarve pyynnön lisätietojen antamiseen
-          tarkoitetussa vapaassa tekstikentässä sellaisia tietoja, joista hänet
-          voi tunnistaa. Käyttäjä vakuuttaa, että hän joko omistaa Käyttäjän
-          Sisältöä tai Käyttäjällä on sen käyttämiseen ja käytön sallimiseen
-          tarvittavat oikeudet. Käyttäjä ei saa antaa sellaista vaikutelmaa,
-          että Fiksaten sponsoroisi tai suosittelisi Käyttäjän Sisältöä.
-          Fiksaten voi käyttää kolmansia osapuolia, kuten esimerkiksi
-          IT-alihankkijoita, operoimaan ja ylläpitämään Palvelua ja Palvelun
-          Sisältöä. Fiksatenin valtuuttamilla kolmansilla osapuolilla voi olla
-          pääsy kaikkeen Palvelun Sisältöön. Hyväksymällä nämä käyttöehdot
-          hyväksyt myös, että Fiksatenin valtuuttamat kolmannet osapuolet saavat
-          samat oikeudet Palvelun Sisällön hallintaan, kuin mitä Fiksatenilla
-          on. 3.3 Käyttäjän vastuu Käyttäjä on vastuussa aiheuttamansa vahingon
-          korvaamisesta, jos Käyttäjä esimerkiksi julkaisee Käyttäjän Sisällössä
-          virheellisiä, tahallisesti harhaanjohtavia tai loukkaavia tietoja; tai
-          jos Käyttäjä rikkoo jonkin kolmannen osapuolen oikeuksia, esimerkiksi
+          muu kuin Fiksaten tai Palvelun Käyttäjät. &ldquo;Palvelun
+          Sisällöllä&rdquo; tarkoitetaan jäljempänä kaikkea sellaista Sisältöä,
+          joka on tuotu saataville Palvelun kautta. Palvelun Sisältöä ovat
+          esimerkiksi Käyttäjien Sisältö, Kolmansien osapuolten Sisältö ja
+          Fiksaten Group Oy:n sisältö. Käyttöehdot Käyttöehtoja sovelletaan
+          kaikkiin Palvelun Käyttäjiin. 1. Käyttöehtojen hyväksyminen ja
+          muutokset Käyttäjä hyväksyy ja sitoutuu noudattamaan Palvelun
+          käyttöehtoja käyttäessään Palvelua kaikin tavoin, kuten esimerkiksi
+          jättäessään tarjouspyynnön, katsoessaan tarjouspyyntöön liittyviä
+          yhteystietoja, jättäessään tarjouksen, rekisteröityessään Palveluun
+          tai luodessaan palveluun omaa Sisältöä. Fiksatenilla on oikeus milloin
+          tahansa ilman ennakkoilmoitusta hyväksi katsomastaan syystä muuttaa
+          Palvelun käyttöehtoja, Fiksaten -mobiilisovelluksen ulkoasua,
+          sisältöä, saatavuutta, hinnoittelua sekä sivuilla välitettäviä
+          palveluita. Jos Fiksaten muuttaa Palvelun käyttöehtoja, Fiksatenilla
+          on velvollisuus ilmoittaa asiasta Palvelun rekisteröityneille
+          käyttäjille. Käyttäjä hyväksyy kulloisenkin muutoksen itseään
+          sitovaksi jättäessään avuntarve pyynnön, tarjouksen tai kirjautuessa
+          Palveluun ensi kertaa muutoksen jälkeen. Käyttäjän tulee huolehtia
+          siitä, että hän on tietoinen ajantasaisista käyttöehdoista. Palvelun
+          käyttöehtojen uudet versiot sitovat käyttäjää. Kaikki muutokset
+          käyttöehdoissa astuvat voimaan heti, kun uudet Palvelun käyttöehdot on
+          julkaistu. Käyttäjä on tietoinen siitä ja hyväksyy sen, että kun hän
+          jatkaa Palvelun käyttöä Palvelun käyttöehtojen muutosten
+          voimaantulopäivän jälkeen, hän hyväksyy samalla muutokset. Mikäli
+          Käyttäjä ei hyväksy kulloinkin voimassaolevia käyttöehtoja, Käyttäjän
+          ei tule jatkaa Palvelun käyttöä. 2. Yksityisyydensuoja Käyttäjä
+          hyväksyy, että Fiksaten käyttää Käyttäjien henkilötietoja siten kuin
+          ehdot on esitetty näissä käyttöehdoissa. 3. Käyttäjän vastuu 3.1
+          Vastuu Asiakkaan toimittamasta Sisällöstä Asiakas vakuuttaa, että
+          sillä on tarvittavat oikeudet ja suostumukset mahdollisesti
+          toimittamansa Sisällön ja henkilötietojen käyttöön ja niiden
+          luovuttamiseen. Asiakas vastaa siitä, että sen toimittama Sisältö on
+          lainmukaista eikä se ole harhaanjohtavaa tai ole vastoin mainonnan
+          eettisiä sääntöjä tai loukkaa hyvää tapaa tai kolmansien tekijän-,
+          immateriaali-, tai muuta oikeutta. Fiksaten ei vastaa miltään osin
+          sitä vastaan esitetyistä vaatimuksista, joita esitetään sillä
+          perusteella, ettei Asiakkaan toimittama Sisältö ole tämän kohdan
+          mukaista. Asiakkaat voivat selata ja tarkastella Palveluntarjoajan
+          profiileja, lukea ja kirjoittaa arvioita Palveluntarjoajista ja
+          luokitella Palveluntarjoajien palveluja. Fiksaten ei lähtökohtaisesti
+          muokkaa tai valikoi Asiakkaiden toimittamia arvosteluja tai
+          luokituksia tai muita näihin rinnastettavaa Sisältöä. Asiakkaat
+          vastaavat itse kirjoittamiensa arvioiden tai Palveluntarjoajista
+          antamien luokitustensa Sisällöstä ja siitä, että Sisältö ei ole lain
+          tai hyvien tapojen vastainen. Fiksatenilla on oikeus, mutta ei
+          velvollisuutta, poistaa Käyttäjän antama palaute tai muu Sisältö.
+          Lisäksi Fiksaten ei ole vastuussa siitä, että aineistoa julkaistaan ja
+          siitä voi tulla palautetta muissa palveluissa, jotka ovat Fiksatenin
+          vaikutusmahdollisuuksien ulkopuolella. Fiksaten ei vastaa Asiakkaiden
+          kirjoittamien arvioiden tai luokittelujen sisällöllisestä
+          hyväksyttävyydestä tai siitä aiheutuvista välillisistä tai
+          välittömistä vahingoista. 3.2. Markkinointi ja Käyttäjän Palveluun
+          lisäämä Sisältö Palvelun Käyttäjät hyväksyvät sen, että heidän
+          Palveluun lisäämäänsä Sisältöä voidaan käyttää osana Palvelun
+          markkinointia näiden käyttöehtojen sekä lain puitteissa. Käyttäjällä
+          ei ole, kuten edellä on todettu Asiakkaan oikeuksista ja vastuusta,
+          oikeutta lisätä Sisältöä, joka on hyvän tavan vastaista, laitonta tai
+          voi loukata kolmannen osapuolen oikeutta (esimerkiksi toisten
+          omistamat tavaramerkit, patentit tai muut vastaavat
+          immateriaalioikeudet). Fiksaten ei vastaa mahdollisista oikeuden
+          loukkauksista, mikäli tällaista Sisältöä on Palveluun Käyttäjän
+          toimesta lisätty. Fiksatenilla on oikeus välittömästi poistaa
+          Palvelusta kolmansien osapuolten oikeuksia loukkaava, lain tai hyvän
+          tavan vastainen Sisältö. Fiksatenilla on oikeus julkistaa Palveluun
+          liittyvä Sopijapuolten välinen asiakassuhde. Fiksatenilla on lisäksi
+          oikeus käyttää asiakassuhdetta referenssinä myydessään palveluitaan
+          ja/tai tuotteitaan kolmansille osapuolille. Käyttäjä on itse vastuussa
+          Käyttäjän Sisällöstä, ja kun Käyttäjä julkaisee Sisältöä, sitä ei voi
+          joissakin tapauksissa enää poistaa. Käyttäjällä itsellään on kaikki
+          vastuu Käyttäjän Sisällöstä, sen luotettavuus, laatu ja virheettömyys
+          mukaan lukien. Käyttäjä on itse vastuussa myös siitä, jos Käyttäjä
+          antaa Käyttäjän Sisällössään kuten esimerkiksi, mutta ei rajoittuen,
+          avuntarve pyynnön lisätietojen antamiseen tarkoitetussa vapaassa
+          tekstikentässä sellaisia tietoja, joista hänet voi tunnistaa. Käyttäjä
+          vakuuttaa, että hän joko omistaa Käyttäjän Sisältöä tai Käyttäjällä on
+          sen käyttämiseen ja käytön sallimiseen tarvittavat oikeudet. Käyttäjä
+          ei saa antaa sellaista vaikutelmaa, että Fiksaten sponsoroisi tai
+          suosittelisi Käyttäjän Sisältöä. Fiksaten voi käyttää kolmansia
+          osapuolia, kuten esimerkiksi IT-alihankkijoita, operoimaan ja
+          ylläpitämään Palvelua ja Palvelun Sisältöä. Fiksatenin valtuuttamilla
+          kolmansilla osapuolilla voi olla pääsy kaikkeen Palvelun Sisältöön.
+          Hyväksymällä nämä käyttöehdot hyväksyt myös, että Fiksatenin
+          valtuuttamat kolmannet osapuolet saavat samat oikeudet Palvelun
+          Sisällön hallintaan, kuin mitä Fiksatenilla on. 3.3 Käyttäjän vastuu
+          Käyttäjä on vastuussa aiheuttamansa vahingon korvaamisesta, jos
+          Käyttäjä esimerkiksi julkaisee Käyttäjän Sisällössä virheellisiä,
+          tahallisesti harhaanjohtavia tai loukkaavia tietoja; tai jos Käyttäjä
+          rikkoo jonkin kolmannen osapuolen oikeuksia, esimerkiksi
           tekijänoikeuksia, tavaramerkkiä, patenttia, liikesalaisuutta,
           moraalista oikeutta, yksityisyyttä, oikeutta päättää oman nimensä tai
           kuvansa käytöstä tai mitä tahansa muuta immateriaali- tai
@@ -162,27 +158,27 @@ export default async function Page() {
           suorittaa Fiksaten mobiilisovelluksen kautta. Kaikki sovellettavat
           maksut, mukaan lukien Alustamaksu, vakuus (tarvittaessa) ja
           mahdolliset sovellettavat verot ja viranomaismaksut (yhdessä
-          &ldquo;kokonaiskorvaukset&rdquo;) esitetään Asiakkaalle ennen tarjouspyynnön
-          hyväksymistä. Saatuaan tarjouspyynnön, Asiakas ja Palveluntarjoajan
-          välillä tehdään sitova sopimus, johon sovelletaan voimassa olevia
-          Palveluntarjoajan muita ehtoja, mukaan lukien erityisesti sovellettava
-          peruutuskäytäntö ja mahdolliset Palvelun yhteydessä määritellyt
-          säännöt ja rajoitukset. Palvelun maksaminen suoritetaan
-          mobiilisovelluksen kautta näiden Ehtojen, maksuehtojen ja erillisten
-          Palveluehtojen mukaisesti. Tiettyihin Palveluihin voidaan kohdistaa
-          Palveluntarjoajan mahdollisuus veloittaa Palvelu useassa erässä tai
-          mahdollisuutta antaa Asiakkaan maksaa useissa erissä. Jos Asiakas
-          tilaa Palvelun yrityksen, yhteisön tai muun tahon puolesta, Asiakas on
-          vastuussa siitä, että hänellä on oikeus tilata kyseinen Palvelu. Jos
-          Asiakas tilaa Palvelun toisen tahon puolesta ja vakuuttaa hän, että
-          Asiakkaalla on laillinen valta toimia kyseisen tahon puolesta. Jos
-          Asiakas tilaa Palvelun henkilölle, joka on alaikäinen, Asiakas takaa
-          ja vakuuttaa, että Asiakkaalla on laillinen valta toimia alaikäisen
-          puolesta. Kaikki sovelluksen kautta tilatut Palvelut ovat
+          &ldquo;kokonaiskorvaukset&rdquo;) esitetään Asiakkaalle ennen
+          tarjouspyynnön hyväksymistä. Saatuaan tarjouspyynnön, Asiakas ja
+          Palveluntarjoajan välillä tehdään sitova sopimus, johon sovelletaan
+          voimassa olevia Palveluntarjoajan muita ehtoja, mukaan lukien
+          erityisesti sovellettava peruutuskäytäntö ja mahdolliset Palvelun
+          yhteydessä määritellyt säännöt ja rajoitukset. Palvelun maksaminen
+          suoritetaan mobiilisovelluksen kautta näiden Ehtojen, maksuehtojen ja
+          erillisten Palveluehtojen mukaisesti. Tiettyihin Palveluihin voidaan
+          kohdistaa Palveluntarjoajan mahdollisuus veloittaa Palvelu useassa
+          erässä tai mahdollisuutta antaa Asiakkaan maksaa useissa erissä. Jos
+          Asiakas tilaa Palvelun yrityksen, yhteisön tai muun tahon puolesta,
+          Asiakas on vastuussa siitä, että hänellä on oikeus tilata kyseinen
+          Palvelu. Jos Asiakas tilaa Palvelun toisen tahon puolesta ja vakuuttaa
+          hän, että Asiakkaalla on laillinen valta toimia kyseisen tahon
+          puolesta. Jos Asiakas tilaa Palvelun henkilölle, joka on alaikäinen,
+          Asiakas takaa ja vakuuttaa, että Asiakkaalla on laillinen valta toimia
+          alaikäisen puolesta. Kaikki sovelluksen kautta tilatut Palvelut ovat
           yksilöllisiä, jolloin niihin ei voi soveltaa etä- tai kotimyynnin
           peruutusehtoja. Asiakkaalle toimitetaan tilauksen jälkeen
           sähköpostitse tilausvahvistus, jonka liitteenä on tilausvahvistus ja
-          peruutusehdot. ‍ 3.5 Muutokset, peruutukset ja palautukset Asiakas ja
+          peruutusehdot. 3.5 Muutokset, peruutukset ja palautukset Asiakas ja
           Palveluntarjoaja ovat vastuussa kaikista tilauksen muutoksista, jotka
           he tekevät Fiksaten mobiilisovelluksen tai suoraan
           Fikasten-asiakaspalvelun välityksellä, ja sitoutuvat maksamaan
@@ -225,8 +221,8 @@ export default async function Page() {
           näkemyksen mukaan Palvelun peruuttamisella vältetään Apulaiselle,
           Asiakkaalle tai kolmansille osapuolille syntyvät merkittävät
           taloudelliset tai muut haitat. Tällöin Asiakkaalle palautetaan
-          välittömästi kaikki Asiakkaan mahdollisesti jo suorittamat maksut. ‍
-          4. Fiksatenin rooli Palvelun tuottajana Fiksaten tarjoaa Palveluna
+          välittömästi kaikki Asiakkaan mahdollisesti jo suorittamat maksut. 4.
+          Fiksatenin rooli Palvelun tuottajana Fiksaten tarjoaa Palveluna
           markkinointi- ja myyntipalvelun Palveluntarjoajille ja kauppapaikan
           Asiakkaille, jossa Asiakkaat voivat tehdä avuntarve pyyntöjä
           erilaisista töistä, asennuksista, remonteista, toimeksiannoista ja/tai
@@ -252,31 +248,32 @@ export default async function Page() {
           palvelumaksu. Fiksatenilla on myös oikeus muuttaa palvelumaksua tai
           poistaa palvelumaksu ilman erillistä perustetta tai syytä. Asiakas
           valitsee maksutavan avuntarve pyyntöä tehdessään. Mikäli asiakas
-          valitsee &ldquo;Maksan työn etukäteen&rdquo;, on Asiakkaalla velvollisuus valita
-          maksutapa vasta, kun Asiakas hyväksyy Palveluntarjoajan tarjouksen.
-          Maksutapoina voi olla Klarna tai korttimaksu. Mikäli asiakas valitsee
-          &ldquo;Lasku työn jälkeen&rdquo;, on Palveluntarjoajalla velvollisuus lähettää
-          lasku omatoimisesti Asiakkaalle toimeksiannon jälkeen. Fiksaten
-          mobiilisovelluksen maksunvälittäjänä toimii Stripe Inc. Asiakas tekee
-          sopimuksen kyseisen pankin ja/tai muun maksun tarjoajan välillä.
-          Käyttäjien tulee ymmärtää, että Palvelun kautta annetut tarjouspyynnöt
-          ja viestit voivat olla puutteellisia eivätkä ole välttämättä
-          sellaisenaan lopullisia. Viestissä mahdollisesti annettu hinta
-          tarjouspyynnössä pyydetylle toimeksiannolle on hinta-arvio, joka
-          perustuu tarjouksen antajan parhaaseen ymmärrykseen ja perustuu
-          tarjouksen antajan käytettävissä oleviin tietoihin. Lopullinen
-          toimeksianto tai Asiakkaalta veloitettava summa voi poiketa
-          Fiksaten–palvelussa tarjouspyynnössä tai tarjouksessa ilmoitetusta
-          siten kuin Palveluntarjoaja ja Asiakas erikseen tarkemmin sopivat.
-          Asiakas voi lähettää kiinteistön huoltoon ja korjaukseen liittyviä
-          kysymyksiä Fiksaten –palvelussa oleville muille Käyttäjille.
-          Käyttäjien vastaukset tulee ottaa yleisinä ohjeina eikä Fiksatenia tai
-          Palvelussa olevia muita Käyttäjiä voi pitää vastuullisena
-          mahdollisista vahingoista, joita neuvojen tai ohjeiden käyttämisestä
-          seuraa. Fiksaten ei vastaa Käyttäjien Palvelun välityksellä toisilleen
-          antamien tietojen oikeellisuudesta, paikkansa pitävyydestä tai
-          ajantasaisuudesta. Palveluntarjoajan myöntämät takuut töille voivat
-          poiketa toimipaikkakohtaisesti. Palveluntarjoaja vastaa itse töille
+          valitsee &ldquo;Maksan työn etukäteen&rdquo;, on Asiakkaalla
+          velvollisuus valita maksutapa vasta, kun Asiakas hyväksyy
+          Palveluntarjoajan tarjouksen. Maksutapoina voi olla Klarna tai
+          korttimaksu. Mikäli asiakas valitsee &ldquo;Lasku työn jälkeen&rdquo;,
+          on Palveluntarjoajalla velvollisuus lähettää lasku omatoimisesti
+          Asiakkaalle toimeksiannon jälkeen. Fiksaten mobiilisovelluksen
+          maksunvälittäjänä toimii Stripe Inc. Asiakas tekee sopimuksen kyseisen
+          pankin ja/tai muun maksun tarjoajan välillä. Käyttäjien tulee
+          ymmärtää, että Palvelun kautta annetut tarjouspyynnöt ja viestit
+          voivat olla puutteellisia eivätkä ole välttämättä sellaisenaan
+          lopullisia. Viestissä mahdollisesti annettu hinta tarjouspyynnössä
+          pyydetylle toimeksiannolle on hinta-arvio, joka perustuu tarjouksen
+          antajan parhaaseen ymmärrykseen ja perustuu tarjouksen antajan
+          käytettävissä oleviin tietoihin. Lopullinen toimeksianto tai
+          Asiakkaalta veloitettava summa voi poiketa Fiksaten- palvelussa
+          tarjouspyynnössä tai tarjouksessa ilmoitetusta siten kuin
+          Palveluntarjoaja ja Asiakas erikseen tarkemmin sopivat. Asiakas voi
+          lähettää kiinteistön huoltoon ja korjaukseen liittyviä kysymyksiä
+          Fiksaten-palvelussa oleville muille Käyttäjille. Käyttäjien vastaukset
+          tulee ottaa yleisinä ohjeina eikä Fiksatenia tai Palvelussa olevia
+          muita Käyttäjiä voi pitää vastuullisena mahdollisista vahingoista,
+          joita neuvojen tai ohjeiden käyttämisestä seuraa. Fiksaten ei vastaa
+          Käyttäjien Palvelun välityksellä toisilleen antamien tietojen
+          oikeellisuudesta, paikkansa pitävyydestä tai ajantasaisuudesta.
+          Palveluntarjoajan myöntämät takuut töille voivat poiketa
+          toimipaikkakohtaisesti. Palveluntarjoaja vastaa itse töille
           antamastaan takuusta. Fiksaten ei ota kantaa Asiakkaan ja
           Palveluntarjoajien välille mahdollisesti syntyvistä erimielisyyksistä.
           Fiksatenilla on oikeus keskeyttää Palvelun tarjoaminen mahdollisten
@@ -394,33 +391,6 @@ export default async function Page() {
           evästeitä. Ne ovat Fiksatenin palvelimien asettamia ja valvomia.
           Ensimmäisen osapuolen evästeitä ei välitetä ulkopuolisille tahoille.
           Kolmannen osapuolen palveluntarjoajat, kuten esimerkiksi Google,
-          käyttävät myös evästeitä. Sivustolla saattaa olla myös kolmannen osapuolen
-          palveluntarjoajien ja mainosverkostojen mainoksia. Googlen mainosevästeiden
-          avulla Google ja sen kumppanit voivat näyttää mainoksia käyttäjille
-          niiden tietojen perusteella, jotka on saatu käyttäjien käynneistä
-          Fiksatenin sivuilla, mobiilisovelluksessa ja/tai muilla sivustoilla.
-          Käyttäjät voivat poistaa räätälöidyn mainonnan käytöstä Mainosasetuksissa.
-          Voit poistaa käytöstä kolmannen osapuolen räätälöidyn mainonnan evästeet
-          sivulla www.aboutads.info 7. Käyttäjien profiilit 7.1. Asiakasprofiili
-          Jotta Asiakas voi käyttää Fiksaten –palvelua, Asiakkaan tulee luoda oma
-          asiakasprofiili, joka pitää sisällään perustietoja Asiakkaasta, kuten
-          nimi, osoite, puhelinnumero, sähköpostiosoite. 7.2. Palveluntarjoajan
-          profiili Palveluntarjoajat voivat ylläpitää omaa Palveluntarjoajan
-          profiilia, jossa on tietoa yrityksestä ja heidän osaamisestaan.
-          Palveluntarjoajat voivat ladata profiiliin Sisältöä siinä määrin,
-          kun katsovat sen olevan hyödyllistä. Asiakkaat voivat selata ja
-          tarkastella Palveluntarjoajan profiileja, lukea ja kirjoittaa arvioita
-          Palveluntarjoajista omien kokemustensa mukaan ja luokitella
-          Palveluntarjoajien palveluja, kuitenkin niin, että Asiakas sitoutuu
-          noudattamaan näissä käyttöehdoissa kuvattuja ehtoja. Fiksaten voi halutessaan
-          lisätä Sisältöä Palveluntarjoajien profiileihin, poistaa Sisältöä
-          Palveluntarjoajien profiileista, päivittää ja parantaa Palveluntarjoajien
-          profiileja. Palveluntarjoajan profiilia voidaan täydentää myös julkisista
-          lähteistä saatujen tietojen avulla. 8. Palvelun tiedot, Sisältö ja
-          käytettävyys Kaikki Palveluun kuuluvat Fiksatenin oikeudet kuten
-          tiedot, nimet, tuotemerkit, logot, ohjelmistot, tuotteet, palvelut ja
-          muu Fiksatenin tuottama Sisältö ovat yksinomaan Fiksatenin omaisuutta
-          lukuun ottamatta Käyttäjien mahdollisesti Palveluun syöttämiä
           käyttävät myös evästeitä. Sivustolla saattaa olla myös kolmannen
           osapuolen palveluntarjoajien ja mainosverkostojen mainoksia. Googlen
           mainosevästeiden avulla Google ja sen kumppanit voivat näyttää
@@ -430,7 +400,35 @@ export default async function Page() {
           käytöstä Mainosasetuksissa. Voit poistaa käytöstä kolmannen osapuolen
           räätälöidyn mainonnan evästeet sivulla www.aboutads.info 7. Käyttäjien
           profiilit 7.1. Asiakasprofiili Jotta Asiakas voi käyttää Fiksaten
-          –palvelua, Asiakkaan tulee luoda oma asiakasprofiili, joka pitää
+          -palvelua, Asiakkaan tulee luoda oma asiakasprofiili, joka pitää
+          sisällään perustietoja Asiakkaasta, kuten nimi, osoite, puhelinnumero,
+          sähköpostiosoite. 7.2. Palveluntarjoajan profiili Palveluntarjoajat
+          voivat ylläpitää omaa Palveluntarjoajan profiilia, jossa on tietoa
+          yrityksestä ja heidän osaamisestaan. Palveluntarjoajat voivat ladata
+          profiiliin Sisältöä siinä määrin, kun katsovat sen olevan hyödyllistä.
+          Asiakkaat voivat selata ja tarkastella Palveluntarjoajan profiileja,
+          lukea ja kirjoittaa arvioita Palveluntarjoajista omien kokemustensa
+          mukaan ja luokitella Palveluntarjoajien palveluja, kuitenkin niin,
+          että Asiakas sitoutuu noudattamaan näissä käyttöehdoissa kuvattuja
+          ehtoja. Fiksaten voi halutessaan lisätä Sisältöä Palveluntarjoajien
+          profiileihin, poistaa Sisältöä Palveluntarjoajien profiileista,
+          päivittää ja parantaa Palveluntarjoajien profiileja. Palveluntarjoajan
+          profiilia voidaan täydentää myös julkisista lähteistä saatujen
+          tietojen avulla. 8. Palvelun tiedot, Sisältö ja käytettävyys Kaikki
+          Palveluun kuuluvat Fiksatenin oikeudet kuten tiedot, nimet,
+          tuotemerkit, logot, ohjelmistot, tuotteet, palvelut ja muu Fiksatenin
+          tuottama Sisältö ovat yksinomaan Fiksatenin omaisuutta lukuun
+          ottamatta Käyttäjien mahdollisesti Palveluun syöttämiä käyttävät myös
+          evästeitä. Sivustolla saattaa olla myös kolmannen osapuolen
+          palveluntarjoajien ja mainosverkostojen mainoksia. Googlen
+          mainosevästeiden avulla Google ja sen kumppanit voivat näyttää
+          mainoksia käyttäjille niiden tietojen perusteella, jotka on saatu
+          käyttäjien käynneistä Fiksatenin sivuilla, mobiilisovelluksessa ja/tai
+          muilla sivustoilla. Käyttäjät voivat poistaa räätälöidyn mainonnan
+          käytöstä Mainosasetuksissa. Voit poistaa käytöstä kolmannen osapuolen
+          räätälöidyn mainonnan evästeet sivulla www.aboutads.info 7. Käyttäjien
+          profiilit 7.1. Asiakasprofiili Jotta Asiakas voi käyttää Fiksaten
+          -palvelua, Asiakkaan tulee luoda oma asiakasprofiili, joka pitää
           sisällään perustietoja Asiakkaasta, kuten nimi, osoite, puhelinnumero,
           sähköpostiosoite. 7.2. Palveluntarjoajan profiili Palveluntarjoajat
           voivat ylläpitää omaa Palveluntarjoajan profiilia, jossa on tietoa
@@ -470,66 +468,65 @@ export default async function Page() {
           käytetty tarkoitukseen, johon sitä ei ole suunniteltu tai hyväksytty
           taikka siitä, että Palvelua käytetään vastoin Fiksatenin antamia
           ohjeita tai voimassaolevan lainsäädännön vastaisesti. 9. Evästeiden
-          käyttö ja IP–osoitteet Palvelu voi tallentaa Käyttäjien sivuston
+          käyttö ja IP-osoitteet Palvelu voi tallentaa Käyttäjien sivuston
           kautta lähettämiä tietoja sekä käyttöön liittyvää kerättyä tietoa.
           Fiksaten sekä sen yhteistyökumppaneina toimivat kolmannet osapuolet
           voivat käyttää evästeitä, verkkojäljitteitä, paikallisesti
-          tallennettuja objekteja (joita kutsutaan myös ”flash-evästeiksi”) sekä
-          muita samankaltaisia tekniikoita, kun Käyttäjä käyttää Sivustoa
-          (jäljempänä yhdessä ”Evästeet”). Evästeet ovat pieniä datatiedostoja,
-          joissa voi olla yksilöllisiä tunnisteita ja ne saatetaan muiden
-          kohteiden lisäksi tallentaa myös Käyttäjien tietokoneelle tai
-          mobiililaitteeseen, Käyttäjille lähetettyihin sähköpostiviesteihin tai
-          Fiksatenin verkkosivuille tai mobiilisovellukselle. Evästeet voivat
-          välittää Käyttäjää ja Käyttäjän Palvelun käyttöä koskevia tietoja,
-          esimerkiksi käytetyn selaimen tyypistä, hakuasetuksista, Käyttäjälle
-          näytetyistä mainoksista, Käyttäjän klikkaamista mainoslinkeistä sekä
-          Palvelun käyttöajankohdista. Evästeet voivat olla pysyviä tai
-          istuntokohtaisia. Evästeitä voidaan käyttää parantamaan palvelun
-          toiminnallisuutta. Mikäli Käyttäjä haluaa estää evästeiden käytön,
-          tämä tapahtuu muuttamalla selaimen asetuksia. Pyydämme kuitenkin
-          huomioimaan, että evästeiden poistaminen tai käytön rajoittaminen voi
-          huonontaa Palvelun toiminnallisuutta. Milloin tahansa Käyttäjä
-          vierailee Palvelun sivustoilla, Käyttäjän laitteen IP–osoite voidaan
-          tallentaa Palvelussa. 10. Vahingonkorvausvelvollisuus ja
-          vastuunrajoitukset Fiksaten ei ole korvausvelvollinen
-          Palveluntarjoajalle ja/tai Asiakkaalle sopimusrikkomuksesta
-          aiheutuneista välittömistä kuluista ja vahingoista. Fiksaten ei vastaa
-          missään tilanteessa mistään välillisistä ja/tai epäsuorista
-          vahingoista. 11. Muut ehdot 11.1 Ylivoimainen este Fiksaten ei vastaa
-          viivästyksistä ja vahingoista, jotka johtuvat Fiksatenin
-          vaikutusmahdollisuuksiensa ulkopuolella olevasta esteestä, jota
-          Fiksaten ei kohtuudella voida edellyttää ottaneen huomioon
-          sopimuksentekohetkellä tai tilaushetkellä ja jonka seurauksia Fiksaten
-          ei myöskään kohtuudella olisi voinut välttää tai voittaa. Lakko,
-          sulku, boikotti ja muu työtaistelutoimenpide katsotaan ylivoimaiseksi
-          esteeksi myös silloin, kun Fiksaten on itse sen kohteena tai siihen
-          osallisena. Fiksatenin alihankkijaa kohdannut ylivoimainen este
-          katsotaan myös vapauttamisperusteeksi, mikäli alihankintaa ei voida
-          ilman kohtuuttomia kustannuksia tai oleellista ajanhukkaa hankkia
-          muualta. 11.2. Sopimuksen siirtäminen Palveluntarjoajalla ja/tai
-          Asiakkaalla ei ole oikeutta siirtää näitä Sopimusehtoja ja/tai
-          Palvelun käyttöoikeutta osaksikaan kolmannelle osapuolelle ilman
-          Fiksatenin etukäteen antamaa kirjallista suostumusta. Fiksatenilla on
-          oikeus siirtää nämä Sopimusehdot ja/tai Palvelu kokonaan tai osittain
-          kolmannelle osapuolelle. Fiksatenilla on myös oikeus siirtää
-          saatavansa kolmannelle osapuolelle. 11.3 Ei-luopumista oikeuksista Se,
-          että Fiksaten jättää käyttämättä jonkin näihin Sopimusehtoihin
-          perustuvan oikeutensa, ei rajoita Fiksatenin oikeutta myöhemmin
-          vastaavissa tapauksissa vedota näiden Sopimusehtoihin. 12.
-          Erimielisyyksien ratkaiseminen Näihin ehtoihin sekä mahdollisiin
-          Fiksatenin tai Fiksaten -mobiilisovelluksen Sisällöstä johtuviin
-          kiistoihin sovelletaan Suomen lakia, ei kuitenkaan sen
-          lainvalintasääntöjä. Mahdolliset erimielisyydet ja riitaisuudet
-          pyritään sovittelemaan ensisijaisesti neuvottelemalla. Näitä
-          käyttöehtoja koskevat erimielisyydet ratkaistaan yhden (1) välimiehen
-          nopeutettuna välimiesmenettelynä. Välimiesmenettelyssä noudatetaan
-          Keskuskauppakamarin välityslautakunnan sääntöjä. Käsittely tapahtuu
-          Espoossa suomen kielellä ja käsittelyn lopputulos on lopullinen ja
-          Osapuolia sitova.
+          tallennettuja objekteja (joita kutsutaan myös
+          &quot;flash-evästeiksi&quot;) sekä muita samankaltaisia tekniikoita,
+          kun Käyttäjä käyttää Sivustoa (jäljempänä yhdessä
+          &quot;Evästeet&quot;). Evästeet ovat pieniä datatiedostoja, joissa voi
+          olla yksilöllisiä tunnisteita ja ne saatetaan muiden kohteiden lisäksi
+          tallentaa myös Käyttäjien tietokoneelle tai mobiililaitteeseen,
+          Käyttäjille lähetettyihin sähköpostiviesteihin tai Fiksatenin
+          verkkosivuille tai mobiilisovellukselle. Evästeet voivat välittää
+          Käyttäjää ja Käyttäjän Palvelun käyttöä koskevia tietoja, esimerkiksi
+          käytetyn selaimen tyypistä, hakuasetuksista, Käyttäjälle näytetyistä
+          mainoksista, Käyttäjän klikkaamista mainoslinkeistä sekä Palvelun
+          käyttöajankohdista. Evästeet voivat olla pysyviä tai istuntokohtaisia.
+          Evästeitä voidaan käyttää parantamaan palvelun toiminnallisuutta.
+          Mikäli Käyttäjä haluaa estää evästeiden käytön, tämä tapahtuu
+          muuttamalla selaimen asetuksia. Pyydämme kuitenkin huomioimaan, että
+          evästeiden poistaminen tai käytön rajoittaminen voi huonontaa Palvelun
+          toiminnallisuutta. Milloin tahansa Käyttäjä vierailee Palvelun
+          sivustoilla, Käyttäjän laitteen IP-osoite voidaan tallentaa
+          Palvelussa. 10. Vahingonkorvausvelvollisuus ja vastuunrajoitukset
+          Fiksaten ei ole korvausvelvollinen Palveluntarjoajalle ja/tai
+          Asiakkaalle sopimusrikkomuksesta aiheutuneista välittömistä kuluista
+          ja vahingoista. Fiksaten ei vastaa missään tilanteessa mistään
+          välillisistä ja/tai epäsuorista vahingoista. 11. Muut ehdot 11.1
+          Ylivoimainen este Fiksaten ei vastaa viivästyksistä ja vahingoista,
+          jotka johtuvat Fiksatenin vaikutusmahdollisuuksiensa ulkopuolella
+          olevasta esteestä, jota Fiksaten ei kohtuudella voida edellyttää
+          ottaneen huomioon sopimuksentekohetkellä tai tilaushetkellä ja jonka
+          seurauksia Fiksaten ei myöskään kohtuudella olisi voinut välttää tai
+          voittaa. Lakko, sulku, boikotti ja muu työtaistelutoimenpide katsotaan
+          ylivoimaiseksi esteeksi myös silloin, kun Fiksaten on itse sen
+          kohteena tai siihen osallisena. Fiksatenin alihankkijaa kohdannut
+          ylivoimainen este katsotaan myös vapauttamisperusteeksi, mikäli
+          alihankintaa ei voida ilman kohtuuttomia kustannuksia tai oleellista
+          ajanhukkaa hankkia muualta. 11.2. Sopimuksen siirtäminen
+          Palveluntarjoajalla ja/tai Asiakkaalla ei ole oikeutta siirtää näitä
+          Sopimusehtoja ja/tai Palvelun käyttöoikeutta osaksikaan kolmannelle
+          osapuolelle ilman Fiksatenin etukäteen antamaa kirjallista
+          suostumusta. Fiksatenilla on oikeus siirtää nämä Sopimusehdot ja/tai
+          Palvelu kokonaan tai osittain kolmannelle osapuolelle. Fiksatenilla on
+          myös oikeus siirtää saatavansa kolmannelle osapuolelle. 11.3
+          Ei-luopumista oikeuksista Se, että Fiksaten jättää käyttämättä jonkin
+          näihin Sopimusehtoihin perustuvan oikeutensa, ei rajoita Fiksatenin
+          oikeutta myöhemmin vastaavissa tapauksissa vedota näiden
+          Sopimusehtoihin. 12. Erimielisyyksien ratkaiseminen Näihin ehtoihin
+          sekä mahdollisiin Fiksatenin tai Fiksaten -mobiilisovelluksen
+          Sisällöstä johtuviin kiistoihin sovelletaan Suomen lakia, ei
+          kuitenkaan sen lainvalintasääntöjä. Mahdolliset erimielisyydet ja
+          riitaisuudet pyritään sovittelemaan ensisijaisesti neuvottelemalla.
+          Näitä käyttöehtoja koskevat erimielisyydet ratkaistaan yhden (1)
+          välimiehen nopeutettuna välimiesmenettelynä. Välimiesmenettelyssä
+          noudatetaan Keskuskauppakamarin välityslautakunnan sääntöjä. Käsittely
+          tapahtuu Espoossa suomen kielellä ja käsittelyn lopputulos on
+          lopullinen ja Osapuolia sitova.
         </p>
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }

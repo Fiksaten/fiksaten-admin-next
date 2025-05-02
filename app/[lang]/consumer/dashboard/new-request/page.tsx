@@ -2,11 +2,12 @@ import { getCategories, getIdToken } from "@/app/lib/actions";
 import NewRequestForm from "./new-request-form";
 import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
 
-export default async function NewRequest({
-  params,
-}: {
-  params: { lang: string };
-}) {
+export default async function NewRequest(
+  props: {
+    params: Promise<{ lang: string }>;
+  }
+) {
+  const params = await props.params;
   const idToken = await getIdToken();
   const categories = await getCategories();
   const dict = await getDictionary((params.lang as AvailableLocale) || "fi");

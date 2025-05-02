@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { useIntersectionObserver } from "./Observer";
 import { Dictionary } from "@/lib/dictionaries";
 
+
 interface HeroSectionProps {
   dict: Dictionary;
 }

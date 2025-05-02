@@ -3,10 +3,12 @@ import Image from "next/image";
 import { useIntersectionObserver } from "./Observer";
 import { Button } from "../ui/button";
 import { Dictionary } from "@/lib/dictionaries";
+import womanPhone from "@/public/images/woman-phone-lander.webp";
+
 const ImageContainer = () => (
   <div className="w-full h-full">
     <Image
-      src={"/images/woman-phone-lander.webp"}
+      src={womanPhone}
       alt="Woman on her phone"
       width={700}
       height={700}

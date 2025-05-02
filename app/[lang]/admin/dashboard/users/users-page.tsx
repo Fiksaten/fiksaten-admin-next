@@ -25,6 +25,7 @@ import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 export type User = {
   id: string;
   sub: string;
+  avatar: string | null;
   firstname: string;
   lastname: string;
   email: string;
@@ -134,14 +135,20 @@ export default function UsersPage({
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                          onClick={() => navigator?.clipboard?.writeText(user.id)}
+                          onClick={() =>
+                            navigator?.clipboard?.writeText(user.id)
+                          }
                         >
                           Copy user ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          onClick={() => router.push(`/dashboard/users/${user.id}`)}
-                        >View user details</DropdownMenuItem>
+                          onClick={() =>
+                            router.push(`/admin/dashboard/users/${user.id}`)
+                          }
+                        >
+                          View user details
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

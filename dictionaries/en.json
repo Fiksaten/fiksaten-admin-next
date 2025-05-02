@@ -78,8 +78,59 @@
       "sendRequest": "Submit a help request",
       "aboutUs": "What is Fiksaten",
       "joinUs": "Join as an assistant",
-      "customerService": "Customer service"
+      "customerService": "Customer service",
+      "login": "Log in",
+      "register": "Register"
     },
+  "register": {
+      "register": "Register",
+      "consumer": "Consumer",
+      "contractor": "Contractor",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "phone": "Phone number",
+      "companyName": "Company name",
+      "companyEmail": "Company email",
+      "companyPhone": "Company phone number",
+      "businessId": "Business ID",
+      "companyDescription": "Company description"
+  },
+  "verification": {
+    "phone": "Verify Your Phone Number",
+    "enter": "Enter the verification code sent to your phone:",
+    "send": "Send",
+    "registerSuccess": "Registration Successful",
+    "registerSuccessDescription": "Please verify your phone number.",
+    "registerFailed": "Registration Failed",
+    "registerFailedDescription": "An error occurred during registration.",
+    "verificationSuccess": "Phone Verified",
+    "verificationSuccessDescription": "Your phone number has been successfully verified.",
+    "verificationFailed": "Verification Failed",
+    "verificationFailedDescription": "Please check the code and try again."
+  },
+  "validation": {
+    "required": " is required",
+    "invalid": " is invalid",
+    "password": {
+      "lowercase": "Password must contain lowercase letters",
+      "uppercase": "Password must contain uppercase letters",
+      "number": "Password must contain at least one number",
+      "special": "Password must contain special characters (!@#$%^&*+:)",
+      "min": "Password must be at least {{min}} characters long"
+    }
+  },
+  "media": {
+    "toMedia": "",
+    "description": "",
+    "emailFor": ""
+  },
+  "contact": {
+    "title": "",
+    "description": "",
+    "emailFor": "",
+    "callFor": ""
+  },
     "promotionHeader": "The Fiksaten mobile app is out! Download now and easily submit your help request."
   }
-  

@@ -3,15 +3,19 @@ import Navigation from "@/components/lander/Navigation";
 import LiveChatWidget from "@/components/LiveChatWidget";
 import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
 
+type LayoutProps = {
+  children: React.ReactNode;
+  params: Promise<{ lang: AvailableLocale }>;
+};
+
 export default async function ConsumerDashboard({
   children,
-  params: { lang },
-}: Readonly<{
-  children: React.ReactNode;
-  params: { lang: AvailableLocale };
-}>) {
+  params,
+}: LayoutProps) {
+  const { lang } = await params;
   const dict = await getDictionary(lang);
   const idToken = await getIdToken();
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
       <div className="flex flex-1 flex-col overflow-hidden">

@@ -7,7 +7,7 @@ import { CreateCategory } from "../[lang]/admin/dashboard/settings/categories/ca
 import { Chat } from "../[lang]/admin/dashboard/chats/CustomerServiceChat";
 
 export async function getIdToken(): Promise<string> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("idToken");
 
   if (!token) {
