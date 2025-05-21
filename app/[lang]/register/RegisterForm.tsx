@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Dictionary } from "@/lib/dictionaries";
 import { FormInput } from "@/components/FormInput";
+import {FormTextarea} from "@/components/FormTextarea";
 
 const getConsumerSchema = (dict: Dictionary) =>
   Yup.object().shape({
@@ -163,7 +164,7 @@ export default function RegisterForm({
 
   if (isVerifying) {
     return (
-      <div className="container mx-auto p-6 max-w-2xl">
+      <div className="container py-6">
         <h2 className="text-2xl font-bold mb-4">{dict.verification.phone}</h2>
         <p className="mb-4">{dict.verification.enter}</p>
         <InputOTP
@@ -194,111 +195,118 @@ export default function RegisterForm({
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-2xl">
-      <h1 className="text-3xl text-black font-bold mb-6">
-        {dict.register.register}
-      </h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <RadioGroup
-          value={userType}
-          onValueChange={(value: "consumer" | "contractor") =>
-            setUserType(value)
-          }
-          className="flex space-x-4 mb-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="consumer" id="consumer" />
-            <Label className="text-black" htmlFor="consumer">
-              {dict.register.consumer}
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="contractor" id="contractor" />
-            <Label className="text-black" htmlFor="contractor">
-              {dict.register.contractor}
-            </Label>
-          </div>
-        </RadioGroup>
+      <div className="w-full flex flex-col justify-center space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
+          <RadioGroup
+              value={userType}
+              onValueChange={(value: "consumer" | "contractor") =>
+                  setUserType(value)
+              }
+              className="flex space-x-4 mb-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem className="h-4 w-4" value="consumer" id="consumer"/>
+              <Label className="text-black text-[16px]" htmlFor="consumer">
+                {dict.register.consumer}
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem className="h-4 w-4" value="contractor" id="contractor"/>
+              <Label className="text-black text-[16px]" htmlFor="contractor">
+                {dict.register.contractor}
+              </Label>
+            </div>
+          </RadioGroup>
 
-        <div className="grid grid-cols-2 gap-4">
-          <FormInput
-            id="firstname"
-            label={dict.register.firstName}
-            registration={register("firstname")}
-            error={errors.firstname?.message}
-          />
-          <FormInput
-            id="lastname"
-            label={dict.register.lastName}
-            registration={register("lastname")}
-            error={errors.lastname?.message}
-          />
-        </div>
-        <FormInput
-          id="email"
-          type="email"
-          label={dict.register.email}
-          registration={register("email")}
-          error={errors.email?.message}
-        />
-        <FormInput
-          id="password"
-          type="password"
-          label={dict.register.password}
-          registration={register("password")}
-          error={errors.password?.message}
-        />
-        <FormInput
-          id="phoneNumber"
-          type="tel"
-          label={dict.register.phone}
-          registration={register("phoneNumber")}
-          error={errors.phoneNumber?.message}
-        />
-        {/*      {userType === "contractor" && (
-          <>
+          <div className="grid sm:grid-cols-2 grid-cols-1 items-center sm:items-stretch gap-4">
             <FormInput
-              id="companyName"
-              label={dict.register.companyName}
-              registration={register("companyName")}
-              error={errors.companyName?.message}
+                placeholder={dict.register.holder + dict.register.firstName.toLowerCase()}
+                id="firstname"
+                label={dict.register.firstName}
+                registration={register("firstname")}
+                error={errors.firstname?.message}
             />
             <FormInput
-              id="companyEmail"
+                placeholder={dict.register.holder + dict.register.lastName.toLowerCase()}
+                id="lastname"
+                label={dict.register.lastName}
+                registration={register("lastname")}
+                error={errors.lastname?.message}
+            />
+          <FormInput
+              placeholder={dict.register.holder + dict.register.email.toLowerCase()}
+              id="email"
               type="email"
-              label={dict.register.companyEmail}
-              registration={register("companyEmail")}
-              error={errors.companyEmail?.message}
-            />
-            <FormInput
-              id="companyPhone"
+              label={dict.register.email}
+              registration={register("email")}
+              error={errors.email?.message}
+          />
+          <FormInput
+              placeholder={dict.register.holder + dict.register.password.toLowerCase()}
+              id="password"
+              type="password"
+              label={dict.register.password}
+              registration={register("password")}
+              error={errors.password?.message}
+          />
+          <FormInput
+              placeholder={dict.register.holder + dict.register.phone.toLowerCase()}
+              id="phoneNumber"
               type="tel"
-              label={dict.register.companyPhone}
-              registration={register("companyPhone")}
-              error={errors.companyPhone?.message}
-            />
-            <FormInput
-              id="businessId"
-              label={dict.register.businessId}
-              registration={register("businessId")}
-                error={errors.businessId?.message}
-            />
-            <FormTextarea
-              id="companyDescription"
-              label={dict.register.companyDescription}
-              registration={register("companyDescription")}
-              error={errors.companyDescription?.message}
-            />
-          </>
-        )} */}
-        <Button
-          className="bg-[#007bff] w-full text-white p-3 font-semibold"
-          type="submit"
-          disabled={isSubmitting}
-        >
-          {dict.register.register}
-        </Button>
-      </form>
-    </div>
+              label={dict.register.phone}
+              registration={register("phoneNumber")}
+              error={errors.phoneNumber?.message}
+          />
+          {userType === "contractor" && (
+              <>
+                <FormInput
+                    placeholder={dict.register.holder + dict.register.companyName.toLowerCase()}
+                    id="companyName"
+                    label={dict.register.companyName}
+                    registration={register("companyName")}
+                    error={errors.companyName?.message}
+                />
+                <FormInput
+                    placeholder={dict.register.holder + dict.register.companyEmail.toLowerCase()}
+                    id="companyEmail"
+                    type="email"
+                    label={dict.register.companyEmail}
+                    registration={register("companyEmail")}
+                    error={errors.companyEmail?.message}
+                />
+                <FormInput
+                    placeholder={dict.register.holder + dict.register.companyPhone.toLowerCase()}
+                    id="companyPhone"
+                    type="tel"
+                    label={dict.register.companyPhone}
+                    registration={register("companyPhone")}
+                    error={errors.companyPhone?.message}
+                />
+                <FormInput
+                    placeholder={dict.register.holder + dict.register.businessId}
+                    id="businessId"
+                    label={dict.register.businessId}
+                    registration={register("businessId")}
+                    error={errors.businessId?.message}
+                />
+                <FormTextarea
+                    placeholder={dict.register.holder + dict.register.companyDescription.toLowerCase()}
+                    id="companyDescription"
+                    label={dict.register.companyDescription}
+                    registration={register("companyDescription")}
+                    error={errors.companyDescription?.message}
+                />
+              </>
+          )}
+          </div>
+          <Button
+              className="bg-[#007bff] w-full max-w-[250px] text-white p-3 font-semibold"
+              type="submit"
+              disabled={isSubmitting}
+          >
+            {dict.register.register}
+          </Button>
+        </form>
+      </div>
   );
 }

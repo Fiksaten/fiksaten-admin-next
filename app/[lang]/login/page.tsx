@@ -14,26 +14,14 @@ export default async function Login({ params }: PageProps) {
   const dict = await getDictionary(lang);
 
   return (
-    <>
-      <div className="flex justify-end p-4">
-        <Link href="/register" className="text-blue-500 underline">
-          {dict.company.about.description}
-        </Link>
+      <div className='w-full gap-4 flex flex-col py-24 px-4 items-center'>
+          <div className="w-full max-w-[500px] flex flex-col gap-2">
+              <h1 className="text-4xl font-bold text-black">{dict.login.title}</h1>
+              <p className="text-muted-foreground">{dict.login.titleSecondary}</p>
+          </div>
+          <div className="w-full py-4 max-w-[500px] content-center">
+              <LoginForm dict={dict}/>
+          </div>
       </div>
-      <div className="w-full lg:w-1/3 hidden lg:block">
-        <AspectRatio ratio={9 / 16}>
-          <Image
-            src={login}
-            width={1000}
-            height={1000}
-            alt="Login"
-            className="w-full h-full object-cover"
-          />
-        </AspectRatio>
-      </div>
-      <div className="w-full lg:w-2/5 p-4 sm:p-8 lg:p-12">
-        <LoginForm />
-      </div>
-    </>
   );
 }

@@ -47,7 +47,7 @@ const TextContainer = ({ dict }: { dict: Dictionary }) => (
 
 export default function SecondaryHero({ dict }: { dict: Dictionary }) {
   return (
-    <section className="flex flex-col lg:flex-row items-center justify-center py-8 lg:py-12 px-4 lg:px-8 bg-white">
+    <section className="flex flex-col lg:flex-row items-center justify-center py-8 lg:py-12 px-4 bg-white">
       <div className="w-full lg:w-1/2 h-[400px] lg:h-[600px] mb-8 lg:mb-0 mx-2">
         <TextContainer dict={dict} />
       </div>

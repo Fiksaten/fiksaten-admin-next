@@ -9,7 +9,7 @@ export default async function Page({
   const dict = await getDictionary(lang);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-10 text-gray-800 dark:text-gray-100">
+    <div className="max-w-4xl px-4 py-10 space-y-10 text-gray-800 dark:text-gray-100">
       <h1 className="text-4xl font-bold">{dict.privacy.mainTitle}</h1>
       <p className="text-sm italic">{dict.privacy.lastUpdated}</p>
 

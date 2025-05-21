@@ -13,8 +13,8 @@ const logos = [
 
 export default function ContractorLogoCarousel({dict}: {dict: Dictionary}) {
   return (
-    <div className="w-full overflow-hidden bg-white py-10">
-        <div className="my-2 flex justify-center">  
+    <div className="w-full overflow-hidden bg-white px-4 py-10">
+        <div className="my-2 flex justify-center">
             <p className="text-xl text-black font-bold">{dict.lander.contractorLogoCarousel.title}</p>
         </div>
       <div className="flex animate-carousel">

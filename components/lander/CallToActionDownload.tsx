@@ -2,9 +2,9 @@ import Image from "next/image";
 import AppleButton from "./AppleButton";
 import { Dictionary } from "@/lib/dictionaries";
 import youngWomanCouch from "@/public/images/young-woman-couch.webp";
-const CallToActionDownload: React.FC<{dict: Dictionary}> = ({dict}) => {
+export default function CallToActionDownload({dict}: {dict: Dictionary}) {
   return (
-    <div className="w-full relative px-4 sm:px-12 mb-12">
+    <div className="w-full relative px-4 mb-12">
       <div className="aspect-[16/9] h-full relative">
         <Image
           src={youngWomanCouch}
@@ -29,5 +29,3 @@ const CallToActionDownload: React.FC<{dict: Dictionary}> = ({dict}) => {
     </div>
   );
 };
-
-export default CallToActionDownload;

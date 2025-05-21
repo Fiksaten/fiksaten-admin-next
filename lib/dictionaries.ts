@@ -106,6 +106,7 @@ export interface Dictionary {
       companyPhone: string;
       businessId: string;
       companyDescription: string;
+      holder: string
   },
   verification: {
     phone: string;
@@ -231,11 +232,63 @@ export interface Dictionary {
       };
     };
   };
+  login: {
+    email: string;
+    emailHolder: string;
+    password: string;
+    passwordHolder: string
+    forgot: string;
+    title: string;
+    titleSecondary: string;
+    or: string;
+    donthaveaccount: string;
+    register: string;
+    loginFailed: string;
+  }
+  footer: {
+    company: {
+      title: string;
+      aboutUs: string;
+      faq: string;
+      privacy: string;
+      team: string;
+      recruiment: string;
+    }
+    consumers: {
+      title: string;
+      howItWorks: string;
+      request: string;
+      blog: string;
+    }
+    companies: {
+      title: string;
+      join: string;
+      info: string;
+      terms: string;
+      support: string;
+    }
+    download: {
+      title: string;
+      subtitle: string;
+    }
+    bottom: {
+      logo: string;
+      privacy: string;
+      terms: string;
+      cookies: string;
+      facebook: string;
+      twitter: string;
+      instagram: string;
+      linkdin: string;
+      youtube: string;
+      tiktok: string;
+    }
+  }
   promotionHeader: string;
 }
 
 
-export const getDictionary = async (locale: AvailableLocale): Promise<Dictionary> => {
+export const getDictionary = (locale: AvailableLocale): Promise<Dictionary> => {
   let safeLocale = locale;
   if (!dictionaries[locale]) {
     safeLocale = 'fi';

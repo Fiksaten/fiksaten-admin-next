@@ -8,84 +8,92 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import {Dictionary} from "@/lib/dictionaries";
+import {FormInput} from "@/components/FormInput";
 
-// Define the validation schema
-const schema = yup.object().shape({
+const getLoginSchema = (dict: Dictionary) =>
+    yup.object().shape({
+        email: yup.string().email(dict.login.email + dict.validation.invalid).required(dict.login.email + dict.validation.required),
+        password: yup.string().required(dict.login.password + dict.validation.required),
+    });
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup.string().required("Password is required"),
 });
 
-type FormData = yup.InferType<typeof schema>;
+type FormData = yup.InferType<typeof loginSchema>;
 
-const LoginForm: React.FC = () => {
+export default function LoginForm({ dict }: { dict: Dictionary }) {
   const { login } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({
-    resolver: yupResolver(schema),
+  } = useForm({
+    resolver: yupResolver(getLoginSchema(dict)),
+    mode: "onBlur",
   });
 
-  const onSubmit = async (data: FormData) => {
+async function onSubmit(data: FormData) {
     try {
       await login(data.email, data.password);
     } catch (err) {
-      console.error("Login failed:", err);
+      console.error("Failed:", err);
       toast({
-        title: "Login failed. Please check your credentials.",
+        title: dict.login.loginFailed,
         variant: "destructive",
       });
     }
-  };
+  }
 
   return (
     <div className="w-full flex flex-col justify-center space-y-6">
-      <h2 className="text-2xl font-bold text-black">Kirjaudu sisään</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <Label htmlFor="email" className="text-black font-semibold">
-            Sähköposti
-          </Label>
-          <Input
-            type="email"
-            id="email"
-            placeholder="Sähköposti"
-            {...register("email")}
-            className="mt-1"
+          <FormInput
+              placeholder={dict.login.emailHolder}
+              id="email"
+              type="email"
+              label={dict.login.email}
+              registration={register("email")}
+              error={errors.email?.message}
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="password" className="text-black font-semibold">
-            Salasana
-          </Label>
-          <Input
-            type="password"
-            id="password"
-            placeholder="Salasana"
-            {...register("password")}
-            className="mt-1"
+
+          <FormInput
+              placeholder={dict.login.passwordHolder}
+              id="password"
+              type="password"
+              label={dict.login.password}
+              registration={register("password")}
+              error={errors.password?.message}
           />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-          )}
-        </div>
-        <Button
-          className="bg-[#007bff] w-full text-white p-3 font-semibold"
-          type="submit"
-          disabled={isSubmitting}
-        >
-          Kirjaudu sisään
-        </Button>
-        <Link href="/forgot-password" className="block text-center">
-          <span className="text-blue-500 underline">Unohtuiko salasanasi?</span>
-        </Link>
+          <div className="flex flex-col gap-4 w-full">
+              <div className="justify-items-end">
+                  <Link href="/forgot-password" className="block text-center">
+                      <span className="text-blue-500 underline">Unohtuiko salasanasi?</span>
+                  </Link>
+              </div>
+              <div className="text-center">
+                  <Button
+                      size="lg"
+                      className="bg-[#007bff] w-full max-w-[250px] text-white p-3 font-semibold"
+                      type="submit"
+                      disabled={isSubmitting}
+                  >
+                      {dict.login.title}
+                  </Button>
+              </div>
+              <div className="border-solid border-t-2 justify-center flex border-gray-200">
+                  <div className="flex mt-4 gap-1">
+                      <p>{dict.login.donthaveaccount}</p>
+                      <Link href="/register" className="block text-center">
+                          <span className="text-blue-500 underline">{dict.login.register}</span>
+                      </Link>
+                  </div>
+              </div>
+          </div>
       </form>
     </div>
   );
 };
-
-export default LoginForm;

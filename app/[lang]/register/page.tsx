@@ -13,24 +13,18 @@ export default async function Register({ params, searchParams }: PageProps) {
   const dict = await getDictionary(lang);
 
   return (
-    <div className="flex-grow flex flex-col lg:flex-row bg-white p-4 sm:p-8 lg:p-12 items-center justify-center">
-      <div className="w-full lg:w-1/3 hidden lg:block">
-        <AspectRatio ratio={9 / 16}>
-          <Image
-            src="/images/login.webp"
-            width={1000}
-            height={1000}
-            alt="Login"
-            className="w-full h-full object-cover"
-          />
-        </AspectRatio>
+      <div className='w-full gap-4 flex flex-col py-24 px-4 items-center'>
+          <div className="w-full max-w-[800px] flex items-center sm:items-stretch">
+              <h1 className="text-4xl text-black font-bold mb-6">
+                  {dict.register.register}
+              </h1>
+          </div>
+          <div className="w-full py-4 max-w-[800px] content-center">
+              <RegisterForm
+                  dict={dict}
+                  type={(await searchParams).type ?? "consumer"}
+              />
+          </div>
       </div>
-      <div className="w-full lg:w-2/5 p-4 sm:p-8 lg:p-12">
-        <RegisterForm
-          dict={dict}
-          type={(await searchParams).type ?? "consumer"}
-        />
-      </div>
-    </div>
   );
 }

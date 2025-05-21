@@ -9,15 +9,10 @@ export default async function Page({
 }) {
   const { lang } = await params;
   const dict = await getDictionary(lang);
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-10 text-gray-800 dark:text-gray-100">
+    <div className="px-4 py-10 space-y-10 text-gray-800 dark:text-gray-100">
       <section className="flex flex-col items-center text-center space-y-6">
-        <Badge
-          className="bg-[#EBF5FF] rounded-full py-2 px-6"
-          aria-label={dict.company.badge}
-        >
-          <p className="text-lg text-[#1484FF]">{dict.company.badge}</p>
-        </Badge>
         <h1 className="text-4xl md:text-6xl font-bold">{dict.company.title}</h1>
         <h2 className="text-xl md:text-2xl">{dict.company.subtitle}</h2>
         <Image

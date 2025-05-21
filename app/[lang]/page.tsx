@@ -4,7 +4,7 @@ import {
   ContractorLogoCarousel,
   FindNearYouSection,
   YourSupport,
-  Recomended,
+  //Recomended,
   FaqSection,
   CallToActionDownload,
 } from "@/components/lander";
@@ -25,7 +25,7 @@ export default async function Page({ params }: PageProps) {
       <SecondaryHero dict={dict} />
       <FindNearYouSection dict={dict} />
       <YourSupport dict={dict} />
-      <Recomended dict={dict} />
+        {/*<Recomended dict={dict} />*/}
       <FaqSection dict={dict} />
       <CallToActionDownload dict={dict} />
     </>

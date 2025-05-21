@@ -5,7 +5,7 @@ import {
     AccordionTrigger,
   } from "@/components/ui/accordion"
 import { Dictionary } from "@/lib/dictionaries"
-  
+
   export default function FAQSection({dict}: {dict: Dictionary}) {
     const faqs = [
       {
@@ -37,29 +37,29 @@ import { Dictionary } from "@/lib/dictionaries"
         answer: dict.lander.faqSection.faq7.answer
       },
     ]
-  
+
     return (
-      <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl text-black font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-4">
+      <section className="w-full py-12 md:py-24 px-4 lg:py-32">
+        <div>
+          <h2 className="text-4xl text-black font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-4">
             {dict.lander.faqSection.title}
           </h2>
           <p className="text-lg text-gray-500 mb-8 text-center">
             {dict.lander.faqSection.description}
           </p>
-          <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="bg-white">
-              {faqs.map((faq, index) => (
+          <div className="max-w-[80%] mx-auto">
+            {faqs.map((faq, index) => (
+            <Accordion key={index} type="single" collapsible className="bg-white">
                 <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="text-left text-black text-xl font-bold">
+                  <AccordionTrigger className="text-left text-black text-3xl font-semibold">
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-black text-base">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
-              ))}
             </Accordion>
+            ))}
           </div>
         </div>
       </section>

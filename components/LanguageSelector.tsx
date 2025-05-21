@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useRouter, usePathname } from 'next/navigation'
+import {GlobeIcon} from "@radix-ui/react-icons";
 
 type AvailableLocale = 'fi' | 'en' | 'sv'
 
 const languages: Record<AvailableLocale, string> = {
-  fi: '🇫🇮 Suomi',
-  en: '🇬🇧 English',
-  sv: '🇸🇪 Svenska'
+  fi: 'FI',
+  en: 'EN',
+  sv: 'SE'
 }
 
 export default function LanguageSelector({ currentLang }: { currentLang: AvailableLocale }) {
@@ -33,7 +34,8 @@ export default function LanguageSelector({ currentLang }: { currentLang: Availab
   return (
     <div className="flex">
       <Select value={selectedLanguage} onValueChange={handleLanguageChange}>
-        <SelectTrigger className="w-full cursor-pointer text-black">
+        <SelectTrigger className="w-full cursor-pointer gap-1 text-black">
+          <GlobeIcon height={20} width={20} />
           <SelectValue placeholder="Select language" />
         </SelectTrigger>
         <SelectContent>

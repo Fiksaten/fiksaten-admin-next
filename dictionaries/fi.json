@@ -95,7 +95,8 @@
     "companyEmail": "Yrityksen sähköposti",
     "companyPhone": "Yrityksen puhelinnumero",
     "businessId": "Y-tunnus",
-    "companyDescription": "Yrityksen kuvaus"
+    "companyDescription": "Yrityksen kuvaus",
+    "holder": "Syötä "
   },
   "verification": {
     "phone": "",
@@ -213,6 +214,58 @@
         "name": "Vantaa",
         "population": "Asukkaita yhteensä 251 235"
       }
+    }
+  },
+  "login": {
+    "email": "Sähköposti",
+    "emailHolder": "Syötä sähköposti",
+    "password": "Salasana",
+    "passwordHolder": "Syötä salasana",
+    "forgot": "Unohditko salasanasi?",
+    "title": "Kirjaudu sisään",
+    "titleSecondary": "Kirjaudu Fiksaten tilillesi ja voit ilmoittaa avuntarvepyynnön heti.",
+    "or": "TAI",
+    "donthaveaccount": "Eikö sinulla ole vielä tiliä?",
+    "register": "Rekisteröidy",
+    "loginFailed": "Kirjautuminen epäonnistui. Tarkista käyttäjätunnus ja salasana."
+  },
+  "footer": {
+    "company": {
+      "title": "YRITYS",
+      "aboutUs": "Tietoa meistä",
+      "faq": "Usein kysytyt kysymykset",
+      "privacy": "Tietosuoja",
+      "team": "Tiimi",
+      "recruiment": "Rekrytointi"
+    },
+    "consumers": {
+      "title": "KULUTTAJILLE",
+      "howItWorks": "Miten Fiksaten toimii",
+      "request": "Ilmoita avuntarve",
+      "blog": "Blogi"
+    },
+    "companies": {
+      "title": "YRITYKSILLE",
+      "join": "Liity apulaiseksi",
+      "info": "Tietoa yrityksille",
+      "terms": "Käyttöehdot",
+      "support": "Asiakaspalvelu"
+    },
+    "download": {
+      "title": "LATAA SOVELLUS",
+      "subtitle": "Lataa Fiksaten mobiilisovellus"
+    },
+    "bottom": {
+      "logo": "Fiksaten",
+      "privacy": "Tietosuoja",
+      "terms": "Käyttöehdot",
+      "cookies": "Evästeasetukset",
+      "facebook": "Facebook - Aukeaa uudessa välilehdessä",
+      "twitter": "X / Twitter - Aukeaa uudessa välilehdessä",
+      "instagram": "Instagram - Aukeaa uudessa välilehdessä",
+      "linkedin": "Linkedin - Aukeaa uudessa välilehdessä",
+      "youtube": "Youtube - Aukeaa uudessa välilehdessä",
+      "tiktok": "Tiktok - Aukeaa uudessa välilehdessä"
     }
   },
   "promotionHeader": "Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti."

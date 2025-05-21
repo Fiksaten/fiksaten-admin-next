@@ -37,15 +37,16 @@ export default async function RootLayout(
         <body className={`bg-white text-black ${inter.className} antialiased`}>
         <div className="flex flex-col min-h-screen">
           <header className="bg-white shadow-sm">
-            <PromotionHeader dict={dict}/>
             <Navigation dict={dict}/>
           </header>
           <CookieBanner/>
-            <main className="flex-grow xl:px-24 lg:px-0 md:px-12 bg-white">
+            <main className="w-full flex-grow justify-items-center justify-center items-center bg-white">
+                <div className="container">
               <Toaster/>
               {children}
+                </div>
             </main>
-          <Footer/>
+          <Footer dict={dict} />
         </div>
         </body>
       {/*</PHProvider> */}
