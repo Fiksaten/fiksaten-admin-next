@@ -36,7 +36,7 @@ export default async function Page({
         <FaqSection dict={dict} />
         <CallToActionDownload dict={dict} />
       </main>
-      <Footer />
+      <Footer dict={dict} />
     </div>
   );
 }

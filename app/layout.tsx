@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
-// import PHProvider from "./providers";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Toaster } from "@/components/ui/toaster";
 import CookieBanner from "@/components/CookieBanner";
-import {AvailableLocale, getDictionary} from "@/lib/dictionaries";
+import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
 import { Inter } from "next/font/google";
-import {Footer, Navigation, PromotionHeader} from "@/components/lander";
-// import PostHogPageView from "@/app/ClientOnlyPHProvider";
+import { Footer, Navigation, PromotionHeader } from "@/components/lander";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,10 +18,10 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout(
-    props: Readonly<{
-      children: React.ReactNode;
-      params: { lang: AvailableLocale };
-    }>
+  props: Readonly<{
+    children: React.ReactNode;
+    params: { lang: AvailableLocale };
+  }>
 ) {
   const { lang } = await props.params;
 
@@ -32,25 +30,23 @@ export default async function RootLayout(
   const dict = await getDictionary(lang);
   return (
     <html lang={lang || "fi"} className={inter.className}>
-    <AuthProvider>
-      {/*<PHProvider>*/}
+      <AuthProvider>
         <body className={`bg-white text-black ${inter.className} antialiased`}>
-        <div className="flex flex-col min-h-screen">
-          <header className="bg-white shadow-sm">
-            <Navigation dict={dict}/>
-          </header>
-          <CookieBanner/>
+          <div className="flex flex-col min-h-screen">
+            <header className="bg-white shadow-sm">
+              <Navigation dict={dict} />
+            </header>
+            <CookieBanner />
             <main className="w-full flex-grow justify-items-center justify-center items-center bg-white">
-                <div className="container">
-              <Toaster/>
-              {children}
-                </div>
+              <div className="container">
+                <Toaster />
+                {children}
+              </div>
             </main>
-          <Footer dict={dict} />
-        </div>
+            <Footer dict={dict} />
+          </div>
         </body>
-      {/*</PHProvider> */}
-    </AuthProvider>
+      </AuthProvider>
     </html>
-);
+  );
 }
