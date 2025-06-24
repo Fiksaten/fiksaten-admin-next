@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { ContractorRegisterData, RegisterData } from "@/app/lib/types";
 import { buildApiUrl } from "@/app/lib/utils";
+import { login as apiLogin, register as apiRegister, contractorJoinRequest, getCurrentUser } from "@/app/lib/openapi-client";
+import { client as apiClient } from "@/app/lib/apiClient";
 import { toast } from "@/hooks/use-toast";
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type UserMe = {
   id: string;
@@ -56,17 +57,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [tokens, setTokens] = useState<Tokens | null>(null);
   const router = useRouter();
 
-  const fetchUserData = useCallback(async (idToken: string) => {
-    try {
-      const userResponse = await fetch(`${API_URL}/api/v1/users/me`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        next: { revalidate: 600 }, // Cache for 10 minutes
-      });
-      if (!userResponse.ok) {
+  const fetchUserData = useCallback(
+    async (token: string) => {
+      try {
+        const { data } = await getCurrentUser({
+          client: apiClient,
+          headers: { Authorization: `Bearer ${token}` },
+          throwOnError: true,
+        });
+        const userData = data as UserMe;
+        setUser(userData);
+        return userData;
+      } catch (error) {
         toast({
           title: "Kirjaudu uudelleen",
           description: "Kirjaudu uudelleen",
@@ -74,14 +76,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         router.replace("/login");
       }
-      const userData: UserMe = await userResponse.json();
-      console.log("userData", userData);
-      setUser(userData);
-      return userData;
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  }, [router]);
+    },
+    [router]
+  );
 
   useEffect(() => {
     const idToken = Cookies.get("idToken");
@@ -92,39 +89,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch(`${API_URL}/api/v1/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const { data } = await apiLogin({
+        client: apiClient,
+        body: { email, password },
+        throwOnError: true,
       });
 
-      if (!response.ok) {
-        console.error("Login failed:", response.statusText);
-        throw new Error("Login failed");
-      }
+      const tokensData = {
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        idToken: data.accessToken,
+        username: data.username,
+      } as Tokens;
 
-      const data: Tokens = await response.json();
-
-      Cookies.set("accessToken", data.accessToken, {
+      Cookies.set("accessToken", tokensData.accessToken, {
         secure: true,
         sameSite: "strict",
       });
-      Cookies.set("refreshToken", data.refreshToken, {
+      Cookies.set("refreshToken", tokensData.refreshToken, {
         secure: true,
         sameSite: "strict",
       });
-      Cookies.set("idToken", data.idToken, {
+      Cookies.set("idToken", tokensData.idToken, {
         secure: true,
         sameSite: "strict",
       });
-      Cookies.set("username", data.username, {
+      Cookies.set("username", tokensData.username, {
         secure: true,
         sameSite: "strict",
       });
-      setTokens(data);
-      const fetchedUser = await fetchUserData(data.idToken);
+      setTokens(tokensData);
+      const fetchedUser = await fetchUserData(tokensData.idToken);
 
       const userRole = fetchedUser?.role;
       console.log("userRole", userRole);
@@ -148,65 +143,58 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { email, firstname, lastname, password, phoneNumber } =
         registerData;
-      const response = await fetch(`${API_URL}/api/v1/auth/register`, {
-        method: "POST",
-        body: JSON.stringify({
+      const { data } = await apiRegister({
+        client: apiClient,
+        body: {
           email,
           firstname,
           lastname,
           password,
           phoneNumber,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
         },
+        throwOnError: true,
       });
 
-      if (!response.ok) {
-        console.error("Login failed:", response.statusText);
-        throw new Error("Login failed");
-      }
-
-      const data = await response.json();
-
-      Cookies.set("accessToken", data.AccessToken, {
+      Cookies.set("accessToken", data.accessToken ?? data.AccessToken, {
         secure: true,
         sameSite: "strict",
       });
-      Cookies.set("refreshToken", data.refreshToken, {
+      Cookies.set("refreshToken", data.refreshToken ?? '', {
         secure: true,
         sameSite: "strict",
       });
-      Cookies.set("idToken", data.idToken, {
+      Cookies.set("idToken", data.accessToken ?? data.AccessToken, {
         secure: true,
         sameSite: "strict",
       });
-      Cookies.set("username", data.username, {
+      Cookies.set("username", data.username ?? '', {
         secure: true,
         sameSite: "strict",
       });
       setTokens({
-        accessToken: data.AccessToken,
-        refreshToken: data.refreshToken,
-        idToken: data.idToken,
-        username: data.username,
+        accessToken: data.accessToken ?? data.AccessToken,
+        refreshToken: data.refreshToken ?? '',
+        idToken: data.accessToken ?? data.AccessToken,
+        username: data.username ?? '',
       });
 
       if (contractor) {
-        const url = buildApiUrl("/users/contractor/request");
-        const contractorResponse = await fetch(url, {
-          method: "POST",
-          body: JSON.stringify({
-            ...contractor,
-          }),
+        await contractorJoinRequest({
+          client: apiClient,
+          headers: { Authorization: `Bearer ${data.accessToken ?? data.AccessToken}` },
+          body: {
+            companyName: contractor.companyName,
+            companyEmail: contractor.companyEmail,
+            companyPhone: contractor.companyPhone,
+            businessId: contractor.businessId,
+            companyDescription: contractor.companyDescription,
+          },
         });
-        if (!contractorResponse.ok) {
-          console.error("lol");
-        }
       }
 
-      await fetchUserData(data.idToken);
+      if (data.accessToken || data.AccessToken) {
+        await fetchUserData(data.accessToken ?? data.AccessToken);
+      }
 
     } catch (error) {
       console.error("Login error:", error);
