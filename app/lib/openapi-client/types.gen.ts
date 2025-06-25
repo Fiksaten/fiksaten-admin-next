@@ -501,11 +501,22 @@ export type UpdateCurrentUserResponse = UpdateCurrentUserResponses[keyof UpdateC
 
 export type ContractorJoinRequestData = {
     body?: {
-        companyName: string;
-        businessId: string;
-        companyPhone: string;
-        companyEmail: string;
-        companyDescription: string;
+        name: string;
+        description: string;
+        website?: string | null;
+        email: string;
+        phone: string;
+        addressStreet?: string | null;
+        addressDetail?: string | null;
+        addressZip?: string | null;
+        addressCountry?: string | null;
+        imageUrl?: string | null;
+        businessId?: string | null;
+        businessType?: string | null;
+        categoryId?: string | null;
+        headerImageUrl?: string | null;
+        iban?: string | null;
+        bic?: string | null;
     };
     path?: never;
     query?: never;

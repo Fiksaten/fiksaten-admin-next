@@ -1,4 +1,4 @@
-import { getIdToken } from "./actions";
+import { getaccessToken } from "./actions";
 import { ExtendedOrder } from "./types";
 import { buildApiUrl } from "./utils";
 
@@ -16,10 +16,10 @@ export enum Status {
 }
 
 export interface OrdersResponse {
-    orders: ExtendedOrder[];
-    totalCount: number;
-  }
-  
+  orders: ExtendedOrder[];
+  totalCount: number;
+}
+
 export const getPaginatedOrders = async (
   status: Status,
   page: number,
@@ -27,18 +27,18 @@ export const getPaginatedOrders = async (
   nameFilter?: string,
   sort?: Sort
 ) => {
-  const token = await getIdToken();
-  const url = buildApiUrl(`/orders/contractor/${status}?page=${page}&limit=${limit}&nameFilter=${nameFilter}&sort=${sort}`)
-  console.log(url)
-  const response = await fetch(url,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
+  const token = await getaccessToken();
+  const url = buildApiUrl(
+    `/orders/contractor/${status}?page=${page}&limit=${limit}&nameFilter=${nameFilter}&sort=${sort}`
   );
+  console.log(url);
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (!response.ok) {
     throw new Error("Failed to fetch orders");
   }
@@ -46,7 +46,7 @@ export const getPaginatedOrders = async (
 };
 
 export const getOwnOrders = async () => {
-  const token = await getIdToken();
+  const token = await getaccessToken();
   const response = await fetch(buildApiUrl("/contractors/orders/my"), {
     method: "GET",
     headers: {
@@ -61,16 +61,19 @@ export const getOwnOrders = async () => {
 };
 
 export const fetchOfferDetails = async (orderId: string, token: string) => {
-  const response = await fetch(buildApiUrl(`/contractors/me/offers/${orderId}`), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(
+    buildApiUrl(`/contractors/me/offers/${orderId}`),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   if (!response.ok) {
     throw new Error("Failed to fetch offer details");
   }
-  const json= await response.json();
+  const json = await response.json();
   return json.offers;
 };

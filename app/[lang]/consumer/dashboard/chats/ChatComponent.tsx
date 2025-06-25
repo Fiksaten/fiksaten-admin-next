@@ -1,174 +1,176 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client'
+"use client";
 
-import { buildApiUrl } from '@/app/lib/utils'
-import { useAuth } from '@/components/AuthProvider'
-import { toast } from '@/hooks/use-toast'
-import { useState, useEffect, useRef } from 'react'
-import { io, Socket } from 'socket.io-client'
+import { buildApiUrl } from "@/app/lib/utils";
+import { useAuth } from "@/components/AuthProvider";
+import { toast } from "@/hooks/use-toast";
+import { useState, useEffect, useRef } from "react";
+import { io, Socket } from "socket.io-client";
 
 type PartnerInfo = {
-	userId: string
-	contractorName: string
-	contractorDescription: string
-	contractorWebsite: string
-	contractorEmail: string
-	contractorPhone: string
-	contractorAddressStreet: string
-	contractorAddressDetail: any
-	contractorAddressZip: string
-	contractorAddressCountry: string
-	contractorImageUrl: string
-	contractorReviewAverage: string
-	contractorReviewCount: number
-	contractorVerified: boolean
-	contractorBusinessId: any
-	contractorCategoryId: string
-	contractorHeaderImageUrl: string
-	contractorIban: string
-	contractorBic: string
-	approvalStatus: string
-	created_at: string
-	updated_at: string
-  }
-  
+  userId: string;
+  contractorName: string;
+  contractorDescription: string;
+  contractorWebsite: string;
+  contractorEmail: string;
+  contractorPhone: string;
+  contractorAddressStreet: string;
+  contractorAddressDetail: any;
+  contractorAddressZip: string;
+  contractorAddressCountry: string;
+  contractorImageUrl: string;
+  contractorReviewAverage: string;
+  contractorReviewCount: number;
+  contractorVerified: boolean;
+  contractorBusinessId: any;
+  contractorCategoryId: string;
+  contractorHeaderImageUrl: string;
+  contractorIban: string;
+  contractorBic: string;
+  approvalStatus: string;
+  created_at: string;
+  updated_at: string;
+};
 
-export default function ChatComponent({chatId, partnerId, idToken}: {chatId: string, partnerId: string, idToken: string}) {
-	const {user} = useAuth()
-  const [messages, setMessages] = useState<any[]>([])
-  const [partnerInfo, setPartnerInfo] = useState<PartnerInfo | null>(null)
-  const [inputMessage, setInputMessage] = useState('')
-  const socketRef = useRef<Socket | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  
+export default function ChatComponent({
+  chatId,
+  partnerId,
+  accessToken,
+}: {
+  chatId: string;
+  partnerId: string;
+  accessToken: string;
+}) {
+  const { user } = useAuth();
+  const [messages, setMessages] = useState<any[]>([]);
+  const [partnerInfo, setPartnerInfo] = useState<PartnerInfo | null>(null);
+  const [inputMessage, setInputMessage] = useState("");
+  const socketRef = useRef<Socket | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchPartnerInfo = async () => {
-		const url = buildApiUrl(`/contractors/${partnerId}`)
-		const response = await fetch(url, {
-			headers: {
-				Authorization: `Bearer ${idToken}`,
-			},
-		})
-		const data = await response.json()
-		console.log("data", data)
-		setPartnerInfo(data)
-	}
+      const url = buildApiUrl(`/contractors/${partnerId}`);
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const data = await response.json();
+      console.log("data", data);
+      setPartnerInfo(data);
+    };
 
-	fetchPartnerInfo()
-  }, [partnerId, idToken])
-
-  useEffect(() => {
-		if (!chatId || !user) return undefined;
-
-		if (!socketRef.current) {
-			socketRef.current = io(process.env.NEXT_PUBLIC_WS_URL!);
-			socketRef.current.emit("join", {
-				conversationId: chatId,
-				userId: user?.id,
-			});
-
-			socketRef.current.on("chatHistory", (fetchedMessages: any[]) => {
-				setMessages(fetchedMessages);
-				fetchedMessages.forEach((message) => {
-					if (message.receiverId === user?.id && !message.read) {
-						socketRef.current?.emit("read", {
-							conversationId: chatId,
-							userId: user?.id,
-							messageId: message.id,
-						});
-					}
-				});
-			});
-
-			socketRef.current.on("newMessage", (newMessage: any) => {
-				setMessages((prevMessages: any[]) => [
-					...prevMessages,
-					newMessage,
-				]);
-
-				if (newMessage.receiverId === user?.id && !newMessage.read) {
-					socketRef.current?.emit("read", {
-						conversationId: chatId,
-						userId: user?.id,
-						messageId: newMessage.id,
-					});
-				}
-			});
-		}
-
-		// eslint-disable-next-line consistent-return
-		return () => {
-			if (socketRef.current) {
-				socketRef.current.disconnect();
-				socketRef.current = null;
-			} else {
-				toast({
-					title: "Unable to disconnect socket",
-					description: "Please try again",
-					variant: "destructive",
-				});
-				return undefined;
-			}
-		};
-	}, [chatId, user]);
-
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			for (const message of messages) {
-				if (message.receiverId === user?.id && !message.read) {
-					socketRef.current?.emit("read", {
-						conversationId: chatId,
-						userId: user?.id,
-						messageId: message.id,
-					});
-				}
-			}
-			socketRef.current?.emit("typing", {
-				conversationId: chatId,
-				userId: user?.id,
-				isTyping: false,
-			});
-		}, 35000);
-		return () => clearTimeout(timer);
-	}, [messages, user, chatId]);
-
-	const handleSendMessage = (msgContent: string) => {
-		if (!msgContent || !partnerId) {
-			console.log("No content, or partnerId");
-			return;
-		}
-
-		if (!socketRef.current) {
-			console.error("Socket not initialized");
-			toast({
-				title: "Viestin lähetys epäonnistui, yritä uudelleen",
-				description: "Please try again",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		socketRef.current.emit("message", {
-			conversationId: chatId,
-			content: msgContent,
-			senderId: user?.id,
-			receiverId: partnerId,
-			isImage: false,
-		});
-		socketRef.current?.emit("typing", {
-			conversationId: chatId,
-			userId: user?.id,
-			isTyping: false,
-		});
-		setInputMessage("");
-	};
-  
+    fetchPartnerInfo();
+  }, [partnerId, accessToken]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
-return (
+    if (!chatId || !user) return undefined;
+
+    if (!socketRef.current) {
+      socketRef.current = io(process.env.NEXT_PUBLIC_WS_URL!);
+      socketRef.current.emit("join", {
+        conversationId: chatId,
+        userId: user?.id,
+      });
+
+      socketRef.current.on("chatHistory", (fetchedMessages: any[]) => {
+        setMessages(fetchedMessages);
+        fetchedMessages.forEach((message) => {
+          if (message.receiverId === user?.id && !message.read) {
+            socketRef.current?.emit("read", {
+              conversationId: chatId,
+              userId: user?.id,
+              messageId: message.id,
+            });
+          }
+        });
+      });
+
+      socketRef.current.on("newMessage", (newMessage: any) => {
+        setMessages((prevMessages: any[]) => [...prevMessages, newMessage]);
+
+        if (newMessage.receiverId === user?.id && !newMessage.read) {
+          socketRef.current?.emit("read", {
+            conversationId: chatId,
+            userId: user?.id,
+            messageId: newMessage.id,
+          });
+        }
+      });
+    }
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      } else {
+        toast({
+          title: "Unable to disconnect socket",
+          description: "Please try again",
+          variant: "destructive",
+        });
+        return undefined;
+      }
+    };
+  }, [chatId, user]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      for (const message of messages) {
+        if (message.receiverId === user?.id && !message.read) {
+          socketRef.current?.emit("read", {
+            conversationId: chatId,
+            userId: user?.id,
+            messageId: message.id,
+          });
+        }
+      }
+      socketRef.current?.emit("typing", {
+        conversationId: chatId,
+        userId: user?.id,
+        isTyping: false,
+      });
+    }, 35000);
+    return () => clearTimeout(timer);
+  }, [messages, user, chatId]);
+
+  const handleSendMessage = (msgContent: string) => {
+    if (!msgContent || !partnerId) {
+      console.log("No content, or partnerId");
+      return;
+    }
+
+    if (!socketRef.current) {
+      console.error("Socket not initialized");
+      toast({
+        title: "Viestin lähetys epäonnistui, yritä uudelleen",
+        description: "Please try again",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    socketRef.current.emit("message", {
+      conversationId: chatId,
+      content: msgContent,
+      senderId: user?.id,
+      receiverId: partnerId,
+      isImage: false,
+    });
+    socketRef.current?.emit("typing", {
+      conversationId: chatId,
+      userId: user?.id,
+      isTyping: false,
+    });
+    setInputMessage("");
+  };
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+  return (
     <div className="flex flex-col h-full">
       <div className="flex items-center p-4 border-b border-gray-200">
         <h2 className="text-xl font-semibold">{partnerInfo?.contractorName}</h2>
@@ -178,14 +180,14 @@ return (
           <div
             key={message.id}
             className={`mb-4 ${
-              message.senderId === 'currentUser' ? 'text-right' : 'text-left'
+              message.senderId === "currentUser" ? "text-right" : "text-left"
             }`}
           >
             <div
               className={`inline-block p-2 rounded-lg ${
-                message.senderId === 'currentUser'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200'
+                message.senderId === "currentUser"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
               }`}
             >
               {message.content}
@@ -197,7 +199,10 @@ return (
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <form onSubmit={() => handleSendMessage(inputMessage)} className="border-t border-gray-200 p-4">
+      <form
+        onSubmit={() => handleSendMessage(inputMessage)}
+        className="border-t border-gray-200 p-4"
+      >
         <div className="flex">
           <input
             type="text"
@@ -216,5 +221,5 @@ return (
         </div>
       </form>
     </div>
-  )
+  );
 }

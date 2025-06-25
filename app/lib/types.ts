@@ -1,11 +1,9 @@
-
 export type TotalUsers = {
-    total: number;
-    consumers: string;
-    contractors: string;
-    admins: string;
+  total: number;
+  consumers: string;
+  contractors: string;
+  admins: string;
 };
-
 
 export type Review = {
   id: string;
@@ -29,53 +27,53 @@ export type AdminReview = {
   orderId: string;
   accepted: boolean;
   userCity: string;
-}
+};
 
 export type NewUsersOverTime = {
-    date: string;
-    newUsers: number;
+  date: string;
+  newUsers: number;
 };
 
 export type OrderStatusDistribution = {
-    pending: string;
-    accepted: string;
-    declined: string;
-    waitingForPayment: string;
-    done: string;
+  pending: string;
+  accepted: string;
+  declined: string;
+  waitingForPayment: string;
+  done: string;
 };
 
 export type TopCategoriesByOrder = {
-    categoryId: string;
-    categoryName: string;
-    orderCount: number;
+  categoryId: string;
+  categoryName: string;
+  orderCount: number;
 };
 export type DashboardStatsResponse = {
-    totalUsers: TotalUsers;
-    newUsersOverTime: NewUsersOverTime[];
-    orderStatusDistribution: OrderStatusDistribution;
-    averageOrderValue: string;
-    topCategoriesByOrders: TopCategoriesByOrder[];
-    activeConversations: number;
-    unreadMessagesCount: number;
-    startDate: string;
-    endDate: string;
+  totalUsers: TotalUsers;
+  newUsersOverTime: NewUsersOverTime[];
+  orderStatusDistribution: OrderStatusDistribution;
+  averageOrderValue: string;
+  topCategoriesByOrders: TopCategoriesByOrder[];
+  activeConversations: number;
+  unreadMessagesCount: number;
+  startDate: string;
+  endDate: string;
 };
 
 type Offer = {
-    date: string | null;
-    id: string;
-    created_at: string;
-    updated_at: string;
-    contractorId: string;
-    orderId: string;
-    categoryId: string;
-    status: string;
-    startTime: string | null;
-    endTime: string | null;
-    offerPrice: string | null;
-    materialCost: string | null;
-    offerDescription: string | null;
-}
+  date: string | null;
+  id: string;
+  created_at: string;
+  updated_at: string;
+  contractorId: string;
+  orderId: string;
+  categoryId: string;
+  status: string;
+  startTime: string | null;
+  endTime: string | null;
+  offerPrice: string | null;
+  materialCost: string | null;
+  offerDescription: string | null;
+};
 export type OrderWithOffers = {
   orderId: string;
   userId: string;
@@ -101,157 +99,153 @@ export type OrderWithOffers = {
   categoryDescription: string | null;
   orderOfferCount: number;
   offers: Offer[];
-}
+};
 
 export type Metrics = {
-    avgBudget: string;
-    avgRating: string;
-    mostCommonCategories: {
-      categoryCount: number;
-      categoryId: string;
-      categoryName: string;
-    }[];
-    offerAcceptanceRate: number;
-    retentionRate: number;
-    topClients: {
-      totalRevenue: number;
-      userId: string;
-      name: string;
-    }[];
-    totalMaterialCost: number;
-    totalProjects: number;
+  avgBudget: string;
+  avgRating: string;
+  mostCommonCategories: {
+    categoryCount: number;
+    categoryId: string;
+    categoryName: string;
+  }[];
+  offerAcceptanceRate: number;
+  retentionRate: number;
+  topClients: {
     totalRevenue: number;
-  };
-
-  
-  export type Contractor = {
-    contractorAddressCountry: string;
-    contractorAddressDetail: string;
-    contractorAddressStreet: string;
-    contractorAddressZip: string;
-    contractorBic: string;
-    contractorBusinessId: string;
-    contractorCategoryId: string;
-    contractorDescription: string;
-    contractorEmail: string;
-    contractorFirstname: string;
-    contractorId: string;
-    contractorLastname: string;
-    contractorHeaderImageUrl: string;
-    contractorIban: string;
-    contractorImageUrl: string;
-    contractorName: string;
-    contractorPhone: string;
-    contractorReviewAverage: string;
-    contractorReviewCount: number;
-    contractorVerified: boolean;
-    contractorWebsite: string;
-    created_at: string;
-    updated_at: string;
     userId: string;
-  };
-  
+    name: string;
+  }[];
+  totalMaterialCost: number;
+  totalProjects: number;
+  totalRevenue: number;
+};
 
-  export type ContractorData = {
-    id: string;
-    sub: string | null;
-    firstname: string;
-    lastname: string;
-    email: string;
-    phoneNumber: string;
-    expoPushToken: string | null;
-    stripeCustomerId: string | null;
-    addressStreet: string | null;
-    addressDetail: string | null;
-    addressZip: string | null;
-    addressCountry: string | null;
-    badgeCountOffers: number;
-    badgeCountMessages: number;
-    role: string;
-    pushNotificationPermission: boolean;
-    smsPersmission: boolean;
-    emailPermission: boolean;
-    created_at: string;
-    updated_at: string;
-    userId: string;
-    contractorName: string;
-    contractorDescription: string;
-    contractorWebsite: string;
-    contractorEmail: string;
-    contractorPhone: string;
-    contractorAddressStreet: string;
-    contractorAddressDetail: string | null;
-    contractorAddressZip: string;
-    contractorAddressCountry: string;
-    contractorImageUrl: string;
-    contractorReviewAverage: number | null;
-    contractorReviewCount: number | null;
-    contractorVerified: boolean;
-    contractorBusinessId: string | null;
-    contractorCategoryId: string;
-    contractorHeaderImageUrl: string;
-    contractorIban: string;
-    contractorBic: string;
-    approvalStatus: string;
-  }
+export type Contractor = {
+  contractorAddressCountry: string;
+  contractorAddressDetail: string;
+  contractorAddressStreet: string;
+  contractorAddressZip: string;
+  contractorBic: string;
+  contractorBusinessId: string;
+  contractorCategoryId: string;
+  contractorDescription: string;
+  contractorEmail: string;
+  contractorFirstname: string;
+  contractorId: string;
+  contractorLastname: string;
+  contractorHeaderImageUrl: string;
+  contractorIban: string;
+  contractorImageUrl: string;
+  contractorName: string;
+  contractorPhone: string;
+  contractorReviewAverage: string;
+  contractorReviewCount: number;
+  contractorVerified: boolean;
+  contractorWebsite: string;
+  created_at: string;
+  updated_at: string;
+  userId: string;
+};
 
-  
-export type ExtendedOrder = RequestOrder & OrderDetails
+export type ContractorData = {
+  id: string;
+  sub: string | null;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phoneNumber: string;
+  expoPushToken: string | null;
+  stripeCustomerId: string | null;
+  addressStreet: string | null;
+  addressDetail: string | null;
+  addressZip: string | null;
+  addressCountry: string | null;
+  badgeCountOffers: number;
+  badgeCountMessages: number;
+  role: string;
+  pushNotificationPermission: boolean;
+  smsPersmission: boolean;
+  emailPermission: boolean;
+  created_at: string;
+  updated_at: string;
+  userId: string;
+  contractorName: string;
+  contractorDescription: string;
+  contractorWebsite: string;
+  contractorEmail: string;
+  contractorPhone: string;
+  contractorAddressStreet: string;
+  contractorAddressDetail: string | null;
+  contractorAddressZip: string;
+  contractorAddressCountry: string;
+  contractorImageUrl: string;
+  contractorReviewAverage: number | null;
+  contractorReviewCount: number | null;
+  contractorVerified: boolean;
+  contractorBusinessId: string | null;
+  contractorCategoryId: string;
+  contractorHeaderImageUrl: string;
+  contractorIban: string;
+  contractorBic: string;
+  approvalStatus: string;
+};
+
+export type ExtendedOrder = RequestOrder & OrderDetails;
 
 export type RequestOrder = {
-    orderId: string;
-    title: string;
-    description: string;
-    budget: string;
-    status: string;
-    startDate: string;
-    endDate: string;
-    orderCreatedAt: string;
-    orderUpdatedAt: string;
-    categoryName: string;
-    categoryDescription: string;
-    categoryImageUrl: string;
-    offersCount: number;
-    offerCreatedAt: string;
-    orderTimeLabel: string;
-    isOfferSent: boolean;
+  orderId: string;
+  title: string;
+  description: string;
+  budget: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  orderCreatedAt: string;
+  orderUpdatedAt: string;
+  categoryName: string;
+  categoryDescription: string;
+  categoryImageUrl: string;
+  offersCount: number;
+  offerCreatedAt: string;
+  orderTimeLabel: string;
+  isOfferSent: boolean;
 };
 
 export type OrderDetails = {
-    orderId: string;
-    offerId?: string;
-    userId: string;
-    contractorId: string;
-    categoryId: string;
-    title: string;
-    description: string;
-    attachments: string;
-    budget: string;
-    status: string;
-    orderStreet: string;
-    orderCity: string;
-    orderZip: string;
-    locationMoreInfo: string;
-    scheduleOption: string;
-    paymentMethod: string;
-    categoryName: string;
-    startDate: string;
-    endDate: string;
-    orderCreatedAt: string;
-    orderUpdatedAt: string;
-    userFirstname: string;
-    userLastname: string;
-    userEmail: string;
-    userAddressStreet: string;
-    userAddressDetail: string;
-    userAddressZip: string;
-    userAddressCountry: string;
-    userRole: string;
-    categoryCategoryName: string;
-    categoryCategoryImageUrl: string;
-    categoryDescription: string;
+  orderId: string;
+  offerId?: string;
+  userId: string;
+  contractorId: string;
+  categoryId: string;
+  title: string;
+  description: string;
+  attachments: string;
+  budget: string;
+  status: string;
+  orderStreet: string;
+  orderCity: string;
+  orderZip: string;
+  locationMoreInfo: string;
+  scheduleOption: string;
+  paymentMethod: string;
+  categoryName: string;
+  startDate: string;
+  endDate: string;
+  orderCreatedAt: string;
+  orderUpdatedAt: string;
+  userFirstname: string;
+  userLastname: string;
+  userEmail: string;
+  userAddressStreet: string;
+  userAddressDetail: string;
+  userAddressZip: string;
+  userAddressCountry: string;
+  userRole: string;
+  categoryCategoryName: string;
+  categoryCategoryImageUrl: string;
+  categoryDescription: string;
 };
-
 
 export interface Category {
   id: string;
@@ -292,16 +286,16 @@ export type RegisterData = {
   email: string;
   password: string;
   phoneNumber: string;
-}
+};
 
 export type ContractorRegisterData = {
-  companyName: string;
-  companyEmail: string;
-  companyPhone: string;
+  name: string;
+  email: string;
+  phone: string;
   businessId: string;
-  companyDescription: string;
-  companyImageUrl: string;
-}
+  description: string;
+  imageUrl: string;
+};
 
 export type ContractorResponse = {
   userId: string;

@@ -21,9 +21,9 @@ type OrderDetailsWithCategoryImage = OrderDetails & {
 const DraftItem: React.FC<{
   order: OrderDetailsWithCategoryImage;
   handleDraftClick: (order: OrderDetailsWithCategoryImage) => void;
-  idToken: string;
+  accessToken: string;
   setDrafts: (drafts: OrderDetailsWithCategoryImage[]) => void;
-}> = ({ order, handleDraftClick, idToken, setDrafts }) => {
+}> = ({ order, handleDraftClick, accessToken, setDrafts }) => {
   const handleRemove = async (e: React.MouseEvent, orderId: string) => {
     e.stopPropagation();
     const response = await fetch(buildApiUrl("/orders/my/drafts"), {
@@ -31,7 +31,7 @@ const DraftItem: React.FC<{
       body: JSON.stringify({ orderId }),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -90,7 +90,10 @@ const DraftItem: React.FC<{
           </div>
           <p className="text-xs text-gray-500">
             {order.orderUpdatedAt
-              ? `Päivitetty ${format(order.orderUpdatedAt.toString(), "dd.MM.yyyy")}`
+              ? `Päivitetty ${format(
+                  order.orderUpdatedAt.toString(),
+                  "dd.MM.yyyy"
+                )}`
               : null}
           </p>
         </div>
@@ -102,9 +105,9 @@ const DraftItem: React.FC<{
 const InitialRequestStage: React.FC<{
   dict: Dictionary;
   goToStep: (step: number) => void;
-  idToken: string;
+  accessToken: string;
   setFormData: (formData: OrderFormData) => void;
-}> = ({ dict, goToStep, idToken, setFormData }) => {
+}> = ({ dict, goToStep, accessToken, setFormData }) => {
   const [drafts, setDrafts] = useState<OrderDetailsWithCategoryImage[]>([]);
   const [loading, setLoading] = useState(true);
   console.log(dict.lander.callToActionDownload);
@@ -115,7 +118,7 @@ const InitialRequestStage: React.FC<{
       const url = buildApiUrl("/orders/my/drafts");
       const response = await fetch(url, {
         headers: {
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       const data = await response.json();
@@ -130,7 +133,7 @@ const InitialRequestStage: React.FC<{
     } finally {
       setLoading(false);
     }
-  }, [idToken]);
+  }, [accessToken]);
 
   useEffect(() => {
     fetchDrafts();
@@ -143,7 +146,7 @@ const InitialRequestStage: React.FC<{
         const url = buildApiUrl(`/orders/images/get/${order.orderId}`);
         const response = await fetch(url, {
           headers: {
-            Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         });
         const data = await response.json();
@@ -178,7 +181,7 @@ const InitialRequestStage: React.FC<{
       const nextStep = order.draftStage ? order.draftStage : 2;
       goToStep(nextStep);
     },
-    [goToStep, idToken, setFormData]
+    [goToStep, accessToken, setFormData]
   );
 
   if (loading) {
@@ -201,7 +204,7 @@ const InitialRequestStage: React.FC<{
             <DraftItem
               order={item}
               handleDraftClick={handleDraftClick}
-              idToken={idToken}
+              accessToken={accessToken}
               setDrafts={setDrafts}
             />
           </li>

@@ -1,88 +1,103 @@
-'use client'
+"use client";
 
-import { useEffect, useCallback, useState } from 'react'
-import Link from "next/link"
-import { Menu, ChevronDown, LayoutDashboard, Settings, Bell, Search, ListOrdered, Star } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useEffect, useCallback, useState } from "react";
+import Link from "next/link";
+import {
+  Menu,
+  ChevronDown,
+  LayoutDashboard,
+  Settings,
+  Bell,
+  Search,
+  ListOrdered,
+  Star,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { useAuth } from "@/components/AuthProvider"
-import { useRouter } from "next/navigation"
-import LiveChatWidget from "@/components/LiveChatWidget"
-import { buildApiUrl } from "@/app/lib/utils"
-import Cookies from "js-cookie"
-import { toast } from "@/hooks/use-toast"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/components/AuthProvider";
+import { useRouter } from "next/navigation";
+import LiveChatWidget from "@/components/LiveChatWidget";
+import { buildApiUrl } from "@/app/lib/utils";
+import Cookies from "js-cookie";
+import { toast } from "@/hooks/use-toast";
 
 export default function AdminPanel({
-    children,
-  }: Readonly<{
-    children: React.ReactNode;
-  }>) {
-  const { user } = useAuth()
-  const router = useRouter()
-  const idToken = Cookies.get("idToken")
-  const [numberOfNotificationsChatsUnread, setNumberOfNotificationsChatsUnread] = useState(0)
-  const [numberOfNotificationsRequestsUnread, setNumberOfNotificationsRequestsUnread] = useState(0)
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const { user } = useAuth();
+  const router = useRouter();
+  const accessToken = Cookies.get("accessToken");
+  const [
+    numberOfNotificationsChatsUnread,
+    setNumberOfNotificationsChatsUnread,
+  ] = useState(0);
+  const [
+    numberOfNotificationsRequestsUnread,
+    setNumberOfNotificationsRequestsUnread,
+  ] = useState(0);
 
   useEffect(() => {
     if (!user) {
-      console.log("user not found")
+      console.log("user not found");
     } else if (user.role !== "contractor") {
-      console.log("user is not a contractor")
-      router.replace("/contractor/waiting-for-approval")
+      console.log("user is not a contractor");
+      router.replace("/contractor/waiting-for-approval");
     }
-  }, [user, router])
+  }, [user, router]);
 
   const fetchUserBadges = useCallback(async () => {
-    console.log("Fetching badges...")
+    console.log("Fetching badges...");
     try {
-      const url = buildApiUrl("/users/me/badges")
+      const url = buildApiUrl("/users/me/badges");
       const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
-      })
-      const data = await response.json()
+      });
+      const data = await response.json();
 
       if (data) {
-        const messages = data?.messages ? data.messages : 0
-        const offers = data?.offers ? data.offers : 0
-        setNumberOfNotificationsChatsUnread(messages)
-        setNumberOfNotificationsRequestsUnread(offers)
+        const messages = data?.messages ? data.messages : 0;
+        const offers = data?.offers ? data.offers : 0;
+        setNumberOfNotificationsChatsUnread(messages);
+        setNumberOfNotificationsRequestsUnread(offers);
         if (messages > 0) {
           toast({
             title: "You have new messages",
             description: "You have new messages",
-          })
+          });
         }
         if (offers > 0) {
           toast({
             title: "You have new offers",
             description: "You have new offers",
-          })
+          });
         }
       } else {
-        setNumberOfNotificationsChatsUnread(0)
-        setNumberOfNotificationsRequestsUnread(0)
+        setNumberOfNotificationsChatsUnread(0);
+        setNumberOfNotificationsRequestsUnread(0);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }, [idToken])
+  }, [accessToken]);
 
   useEffect(() => {
-    const intervalId = setInterval(fetchUserBadges, 30000)
-    fetchUserBadges()
-    return () => clearInterval(intervalId)
-  }, [fetchUserBadges])
+    const intervalId = setInterval(fetchUserBadges, 30000);
+    fetchUserBadges();
+    return () => clearInterval(intervalId);
+  }, [fetchUserBadges]);
 
   const [unreadCounts, setUnreadCounts] = useState({
     dashboard: 0,
@@ -90,44 +105,44 @@ export default function AdminPanel({
     reviews: 0,
     settings: 0,
     chats: numberOfNotificationsChatsUnread,
-  })
+  });
 
   const resetUnreadCount = useCallback(
     (key: keyof typeof unreadCounts) => {
-      setUnreadCounts((prev) => ({ ...prev, [key]: 0 }))
-      ;(async () => {
-        let url
+      setUnreadCounts((prev) => ({ ...prev, [key]: 0 }));
+      (async () => {
+        let url;
         if (key === "chats") {
-          url = buildApiUrl("users/me/badges/chats")
+          url = buildApiUrl("users/me/badges/chats");
         } else if (key === "orders") {
-          url = buildApiUrl("users/me/badges/offers")
+          url = buildApiUrl("users/me/badges/offers");
         }
         if (url) {
           await fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${idToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
-          })
+          });
         }
-      })()
+      })();
     },
-    [idToken]
-  )
+    [accessToken]
+  );
 
   useEffect(() => {
     setUnreadCounts((prev) => ({
       ...prev,
       orders: numberOfNotificationsRequestsUnread,
-    }))
-  }, [numberOfNotificationsRequestsUnread])
+    }));
+  }, [numberOfNotificationsRequestsUnread]);
 
   const NavLink: React.FC<{
-    href: string
-    icon: React.ReactNode
-    text: string
-    countKey: keyof typeof unreadCounts
+    href: string;
+    icon: React.ReactNode;
+    text: string;
+    countKey: keyof typeof unreadCounts;
   }> = ({ href, icon, text, countKey }) => (
     <Link
       href={href}
@@ -142,10 +157,10 @@ export default function AdminPanel({
         </span>
       )}
     </Link>
-  )
+  );
 
   if (!user || user.role !== "contractor") {
-    return null // or a loading spinner
+    return null; // or a loading spinner
   }
 
   return (
@@ -241,7 +256,9 @@ export default function AdminPanel({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem><Link href="/admin/dashboard/profile">Profile</Link></DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/admin/dashboard/profile">Profile</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Link href="/contractor/dashboard/settings">Settings</Link>
                 </DropdownMenuItem>
@@ -255,10 +272,10 @@ export default function AdminPanel({
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto p-6">
-          <LiveChatWidget idToken={idToken!} />
+          <LiveChatWidget accessToken={accessToken!} />
           {children}
         </main>
       </div>
     </div>
-  )
+  );
 }

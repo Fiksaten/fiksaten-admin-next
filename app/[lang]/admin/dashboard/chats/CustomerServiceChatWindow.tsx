@@ -9,14 +9,14 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const CustomerServiceChatWindow = ({ 
-  selectedChat, 
-  userId, 
-  idToken 
-}: { 
-  selectedChat: Chat | undefined, 
-  userId: string, 
-  idToken: string | undefined
+const CustomerServiceChatWindow = ({
+  selectedChat,
+  userId,
+  accessToken,
+}: {
+  selectedChat: Chat | undefined;
+  userId: string;
+  accessToken: string | undefined;
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -28,16 +28,16 @@ const CustomerServiceChatWindow = ({
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!idToken || !selectedChat) return;
+    if (!accessToken || !selectedChat) return;
 
     const API_URL = process.env.NEXT_PUBLIC_WS_URL!;
     const newSocket = io(API_URL, {
       query: { userId },
-      auth: { token: idToken },
+      auth: { token: accessToken },
     });
 
-    newSocket.on('connect', () => {
-      console.log('Connected to socket server:', newSocket.id);
+    newSocket.on("connect", () => {
+      console.log("Connected to socket server:", newSocket.id);
       newSocket.emit("join", { userId: selectedChat.id, isSupportChat: true });
     });
 
@@ -61,7 +61,7 @@ const CustomerServiceChatWindow = ({
     return () => {
       newSocket.disconnect();
     };
-  }, [selectedChat, idToken, userId]);
+  }, [selectedChat, accessToken, userId]);
 
   // Use useLayoutEffect to ensure scrolling happens after DOM mutations
   useLayoutEffect(() => {
@@ -72,19 +72,19 @@ const CustomerServiceChatWindow = ({
     if (viewportRef.current) {
       viewportRef.current.scrollTo({
         top: viewportRef.current.scrollHeight,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
   };
 
   const handleSendMessage = () => {
     if (!inputMessage.trim() || !socketRef.current || !selectedChat) return;
-    
+
     socketRef.current.emit("supportMessage", {
       userId: selectedChat.id,
       content: inputMessage,
       isSenderSupport: true,
-      isImage: false
+      isImage: false,
     });
 
     setInputMessage("");
@@ -103,19 +103,29 @@ const CustomerServiceChatWindow = ({
       conversationId: selectedChat?.id,
       userId,
       isTyping,
-      isSupportChat: true
+      isSupportChat: true,
     });
 
     if (isTyping) {
-      typingTimeoutRef.current = setTimeout(() => handleTypingStatus(false), 3000);
+      typingTimeoutRef.current = setTimeout(
+        () => handleTypingStatus(false),
+        3000
+      );
     }
   };
 
   const renderMessages = () => (
-    <ScrollArea className="flex-1 p-4 overflow-y-auto" viewportRef={viewportRef}>
+    <ScrollArea
+      className="flex-1 p-4 overflow-y-auto"
+      viewportRef={viewportRef}
+    >
       <div className="flex flex-col space-y-4">
         {messages.map((message, index) => (
-          <MessageBubble key={index} message={message} isSender={message.isSenderSupport} />
+          <MessageBubble
+            key={index}
+            message={message}
+            isSender={message.isSenderSupport}
+          />
         ))}
         {isTyping && <TypingIndicator />}
         {/* Dummy div removed since we're using viewportRef to scroll */}
@@ -131,8 +141,8 @@ const CustomerServiceChatWindow = ({
     <div className="flex-1 flex flex-col h-full">
       <ChatHeader chat={selectedChat} />
       {isLoading ? <LoadingIndicator /> : renderMessages()}
-      <ChatInput 
-        inputMessage={inputMessage} 
+      <ChatInput
+        inputMessage={inputMessage}
         onInputChange={handleInputChange}
         onSendMessage={handleSendMessage}
       />
@@ -147,20 +157,36 @@ const ChatHeader = ({ chat }: { chat: Chat }) => (
         <h1 className="text-white">{chat.firstname.charAt(0).toUpperCase()}</h1>
       </Avatar>
       <div>
-        <p className="text-black font-semibold">{chat.firstname} {chat.lastname}</p>
+        <p className="text-black font-semibold">
+          {chat.firstname} {chat.lastname}
+        </p>
         <p className="text-sm text-gray-500">Online</p>
       </div>
     </div>
   </div>
 );
 
-const MessageBubble = ({ message, isSender }: { message: Message, isSender: boolean }) => (
-  <div className={`flex ${isSender ? 'justify-end' : 'justify-start'} mb-4`}>
-    <div className={`rounded-lg p-3 max-w-xs ${
-      isSender ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'
-    }`}>
+const MessageBubble = ({
+  message,
+  isSender,
+}: {
+  message: Message;
+  isSender: boolean;
+}) => (
+  <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
+    <div
+      className={`rounded-lg p-3 max-w-xs ${
+        isSender ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+      }`}
+    >
       {message.isImage ? (
-        <Image src={message.content} alt="Shared image" className="max-w-full rounded" width={300} height={300} />
+        <Image
+          src={message.content}
+          alt="Shared image"
+          className="max-w-full rounded"
+          width={300}
+          height={300}
+        />
       ) : (
         <p className="break-all">{message.content}</p>
       )}
@@ -179,14 +205,14 @@ const TypingIndicator = () => (
   </div>
 );
 
-const ChatInput = ({ 
-  inputMessage, 
-  onInputChange, 
-  onSendMessage 
-}: { 
-  inputMessage: string, 
-  onInputChange: (value: string) => void, 
-  onSendMessage: () => void 
+const ChatInput = ({
+  inputMessage,
+  onInputChange,
+  onSendMessage,
+}: {
+  inputMessage: string;
+  onInputChange: (value: string) => void;
+  onSendMessage: () => void;
 }) => (
   <div className="border-t border-gray-200 p-4 mt-auto mb-16">
     <div className="flex items-center">
@@ -202,7 +228,7 @@ const ChatInput = ({
         value={inputMessage}
         onChange={(e) => onInputChange(e.target.value)}
         className="flex-1 mx-2 text-black"
-        onKeyDown ={(e) => e.key === 'Enter' && onSendMessage()}
+        onKeyDown={(e) => e.key === "Enter" && onSendMessage()}
       />
       <Button onClick={onSendMessage} disabled={!inputMessage.trim()}>
         <Send className="h-5 w-5" />
@@ -215,8 +241,12 @@ const NoChatSelected = () => (
   <div className="flex-1 flex items-center justify-center bg-gray-50">
     <div className="text-center">
       <MessageCircle className="h-12 w-12 mx-auto text-gray-400" />
-      <h3 className="mt-2 text-sm font-medium text-gray-900">No chat selected</h3>
-      <p className="mt-1 text-sm text-gray-500">Select a chat from the sidebar to start messaging</p>
+      <h3 className="mt-2 text-sm font-medium text-gray-900">
+        No chat selected
+      </h3>
+      <p className="mt-1 text-sm text-gray-500">
+        Select a chat from the sidebar to start messaging
+      </p>
     </div>
   </div>
 );

@@ -1,6 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
@@ -9,19 +16,21 @@ import { ContractorResponse } from "@/app/lib/types";
 
 interface TableProps {
   items: ContractorResponse[];
-  idToken: string;
+  accessToken: string;
 }
 
-export const HelpersTable: React.FC<TableProps> = ({ items, idToken }) => {
+export const HelpersTable: React.FC<TableProps> = ({ items, accessToken }) => {
   const [helpersModalOpen, setHelpersTableModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = React.useState<ContractorResponse | undefined>();
+  const [selectedItem, setSelectedItem] = React.useState<
+    ContractorResponse | undefined
+  >();
 
   return (
     <div className="w-full overflow-auto">
       {helpersModalOpen && selectedItem && (
         <HelpersTableModal
           item={selectedItem}
-          idToken={idToken}
+          accessToken={accessToken}
           setHelpersTableModalOpen={setHelpersTableModalOpen}
         />
       )}
@@ -42,16 +51,26 @@ export const HelpersTable: React.FC<TableProps> = ({ items, idToken }) => {
               <TableCell className="text-black">
                 <Checkbox />
               </TableCell>
-              <TableCell className="text-black">{item.contractorName}</TableCell>
+              <TableCell className="text-black">
+                {item.contractorName}
+              </TableCell>
               <TableCell className="text-black">{`${item.firstname} ${item.lastname}`}</TableCell>
               <TableCell className="text-black">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  item.approvalStatus === "pending" ? "bg-yellow-200 text-yellow-800" : "bg-green-200 text-green-800"
-                }`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    item.approvalStatus === "pending"
+                      ? "bg-yellow-200 text-yellow-800"
+                      : "bg-green-200 text-green-800"
+                  }`}
+                >
                   {item.approvalStatus}
                 </span>
               </TableCell>
-              <TableCell className="text-black">{item.created_at ? new Date(item.created_at).toLocaleDateString() : ""}</TableCell>
+              <TableCell className="text-black">
+                {item.created_at
+                  ? new Date(item.created_at).toLocaleDateString()
+                  : ""}
+              </TableCell>
               <TableCell className="text-black">
                 <Button
                   variant="ghost"

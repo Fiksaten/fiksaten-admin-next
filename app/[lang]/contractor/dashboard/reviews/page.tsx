@@ -1,11 +1,14 @@
-import { getContractorData, getContractorReviews, getIdToken } from "@/app/lib/actions";
+import {
+  getContractorData,
+  getContractorReviews,
+  getaccessToken,
+} from "@/app/lib/actions";
 import ReviewsComponent from "./ReviewsComponent";
 
 export default async function ReviewsPage() {
-  const idToken = await getIdToken();
-  const contractor = await getContractorData(idToken);
-  const reviews = await getContractorReviews(idToken);
+  const accessToken = await getaccessToken();
+  const contractor = await getContractorData(accessToken);
+  const reviews = await getContractorReviews(accessToken);
   console.log(reviews);
   return <ReviewsComponent contractor={contractor} reviews={reviews.reviews} />;
 }
-

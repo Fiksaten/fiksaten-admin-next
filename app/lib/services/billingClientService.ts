@@ -1,0 +1,20 @@
+import { createStripeAccountLink } from "@/app/lib/openapi-client";
+import Cookies from "js-cookie";
+const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+
+const createAccountLink = async () => {
+  const accessToken = Cookies.get("accessToken");
+  const response = await createStripeAccountLink({
+    baseUrl: `${baseUrl}`,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  console.log("response", response);
+  if (response.error) {
+    throw new Error(response.error.message);
+  }
+  return response.data;
+};
+
+export { createAccountLink };

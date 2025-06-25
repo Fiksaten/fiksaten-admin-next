@@ -1,6 +1,12 @@
 "use client";
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { buildApiUrl } from "@/app/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -22,56 +28,53 @@ const InfoItem: React.FC<InfoItemProps> = ({ title, value }) => (
 
 interface HelpersTableModalProps {
   item: ContractorResponse;
-  idToken: string;
+  accessToken: string;
   setHelpersTableModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const HelpersTableModal: React.FC<HelpersTableModalProps> = ({
   item,
   setHelpersTableModalOpen,
-  idToken,
+  accessToken,
 }) => {
-  
-
   const handleAccept = async () => {
     const url = buildApiUrl("admin/contractor/approve");
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ userId: item.userId }),
     });
-    if(response.ok) {
+    if (response.ok) {
       setHelpersTableModalOpen(false);
     } else {
-        toast({
-            title: "Hyväksyminen epäonnistui",
-            description: "Laita viesti Jonille",
-            variant: "destructive",
-        });
+      toast({
+        title: "Hyväksyminen epäonnistui",
+        description: "Laita viesti Jonille",
+        variant: "destructive",
+      });
       console.error("Failed to accept contractor");
     }
   };
 
   const handleDecline = async () => {
-    
     const url = buildApiUrl("admin/contractor/decline");
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ userId: item.userId }),
     });
-    if(response.ok) {
+    if (response.ok) {
       setHelpersTableModalOpen(false);
     } else {
-        toast({
-            title: "Hylkääminen epäonnistui",
-            description: "Laita viesti Jonille",
-            variant: "destructive",
-        });
+      toast({
+        title: "Hylkääminen epäonnistui",
+        description: "Laita viesti Jonille",
+        variant: "destructive",
+      });
       console.error("Failed to decline contractor");
     }
   };
@@ -81,7 +84,17 @@ export const HelpersTableModal: React.FC<HelpersTableModalProps> = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
-            <Image src={item.contractorImageUrl !== "Unknown" ? item.contractorImageUrl : fallbackImage} alt="logo" className="w-8 h-8" width={32} height={32} />
+            <Image
+              src={
+                item.contractorImageUrl !== "Unknown"
+                  ? item.contractorImageUrl
+                  : fallbackImage
+              }
+              alt="logo"
+              className="w-8 h-8"
+              width={32}
+              height={32}
+            />
             <span>{item.contractorName}</span>
           </DialogTitle>
         </DialogHeader>
@@ -94,7 +107,10 @@ export const HelpersTableModal: React.FC<HelpersTableModalProps> = ({
           <InfoItem title="IBAN" value={item.contractorIban || ""} />
           <InfoItem title="Verkkosivut" value={item.contractorWebsite} />
           <InfoItem title="Profiili luotu" value={item.created_at} />
-          <InfoItem title="Valittu kategoria" value={item.contractorCategoryId} />
+          <InfoItem
+            title="Valittu kategoria"
+            value={item.contractorCategoryId}
+          />
           <InfoItem title="Tila" value={item.approvalStatus} />
           <InfoItem title="Kuvaus" value={item.contractorDescription} />
           <InfoItem title="BIC" value={item.contractorBic || ""} />

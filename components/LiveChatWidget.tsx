@@ -15,7 +15,11 @@ import { MessageCircle, Send, X } from "lucide-react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "./AuthProvider";
 
-export default function LiveChatWidget({ idToken }: { idToken: string }) {
+export default function LiveChatWidget({
+  accessToken,
+}: {
+  accessToken: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<SupportChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -48,7 +52,7 @@ export default function LiveChatWidget({ idToken }: { idToken: string }) {
       console.log("socket not initialized");
       const newSocket = io(API_URL, {
         query: { userId: user.id },
-        auth: { token: idToken },
+        auth: { token: accessToken },
       });
 
       newSocket.on("connect", () => {
@@ -82,7 +86,7 @@ export default function LiveChatWidget({ idToken }: { idToken: string }) {
 
       // Add typing event listener
       newSocket.on("userTyping", ({ userId, isTyping }) => {
-        console.log("Sending ", userId, isTyping)
+        console.log("Sending ", userId, isTyping);
         // Handle typing indicator
         // You might want to add a state for this and display it in the UI
       });
@@ -101,7 +105,7 @@ export default function LiveChatWidget({ idToken }: { idToken: string }) {
         console.error("Socket not initialized");
       }
     };
-  }, [user, isOpen, API_URL, idToken]);
+  }, [user, isOpen, API_URL, accessToken]);
 
   // Use useLayoutEffect to ensure scrolling happens after DOM mutations
   useLayoutEffect(() => {

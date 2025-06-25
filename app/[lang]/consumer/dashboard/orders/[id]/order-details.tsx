@@ -135,12 +135,12 @@ export default function OrderDetails({
   order,
   orderImages,
   contractor,
-  idToken,
+  accessToken,
 }: {
   order: OrderDetails;
   orderImages: string[];
   contractor?: Contractor | null;
-  idToken: string;
+  accessToken: string;
 }) {
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -167,7 +167,7 @@ export default function OrderDetails({
         }),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -190,7 +190,7 @@ export default function OrderDetails({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -229,7 +229,7 @@ export default function OrderDetails({
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(editedOrder),
     });

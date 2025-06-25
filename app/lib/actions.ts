@@ -6,9 +6,9 @@ import { cookies } from "next/headers";
 import { CreateCategory } from "../[lang]/admin/dashboard/settings/categories/category-form";
 import { Chat } from "../[lang]/admin/dashboard/chats/CustomerServiceChat";
 
-export async function getIdToken(): Promise<string> {
+export async function getaccessToken(): Promise<string> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("idToken");
+  const token = cookieStore.get("accessToken");
 
   if (!token) {
     throw new Error("No token found");
@@ -18,7 +18,7 @@ export async function getIdToken(): Promise<string> {
 }
 
 export const getReports = async () => {
-  const token = await getIdToken();
+  const token = await getaccessToken();
   const response = await fetch(buildApiUrl("/admin/metrics"), {
     method: "GET",
     headers: {
@@ -34,7 +34,7 @@ export const getReports = async () => {
 };
 
 export const getChats = async () => {
-  const token = await getIdToken();
+  const token = await getaccessToken();
   const response = await fetch(buildApiUrl("/chats/customer-service/all"), {
     method: "GET",
     headers: {
@@ -49,7 +49,7 @@ export const getChats = async () => {
 };
 
 export const getUsers = async (limit = 20, page = 1, search: string) => {
-  const token = await getIdToken();
+  const token = await getaccessToken();
   try {
     const response = await fetch(
       buildApiUrl(
@@ -74,7 +74,7 @@ export const getUsers = async (limit = 20, page = 1, search: string) => {
 };
 
 export const getCategories = async () => {
-  const token = await getIdToken();
+  const token = await getaccessToken();
   try {
     const response = await fetch(buildApiUrl(`/categories/all`), {
       method: "GET",
@@ -94,7 +94,7 @@ export const getCategories = async () => {
 };
 
 export const getContractorCategories = async () => {
-  const token = await getIdToken();
+  const token = await getaccessToken();
   try {
     const response = await fetch(buildApiUrl("/contractors/me/categories"), {
       method: "GET",
@@ -114,13 +114,13 @@ export const getContractorCategories = async () => {
 };
 
 export const createCategory = async (category: CreateCategory) => {
-  const idToken = await getIdToken();
+  const accessToken = await getaccessToken();
   try {
     const response = await fetch(buildApiUrl("/categories/create"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(category),
     });
@@ -135,13 +135,13 @@ export const createCategory = async (category: CreateCategory) => {
 };
 
 export const updateCategory = async (category: CreateCategory, id: string) => {
-  const idToken = await getIdToken();
+  const accessToken = await getaccessToken();
   try {
     const response = await fetch(buildApiUrl(`/categories/update/${id}`), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(category),
     });
@@ -156,13 +156,13 @@ export const updateCategory = async (category: CreateCategory, id: string) => {
 };
 
 export const deleteCategory = async (id: string) => {
-  const idToken = await getIdToken();
+  const accessToken = await getaccessToken();
   try {
     const response = await fetch(buildApiUrl(`/categories/delete/${id}`), {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     if (!response.ok) {
@@ -176,7 +176,7 @@ export const deleteCategory = async (id: string) => {
 };
 
 export const getUser = async (id: string) => {
-  const token = await getIdToken();
+  const token = await getaccessToken();
   try {
     const response = await fetch(buildApiUrl(`/users/${id}`), {
       method: "GET",
@@ -196,7 +196,7 @@ export const getUser = async (id: string) => {
 };
 
 export const getUserOrders = async (id: string, page = 1, limit = 5) => {
-  const token = await getIdToken();
+  const token = await getaccessToken();
   try {
     const response = await fetch(
       buildApiUrl(`/users/orders/${id}?page=${page}&limit=${limit}`),
@@ -219,7 +219,7 @@ export const getUserOrders = async (id: string, page = 1, limit = 5) => {
 };
 
 export const getContractorReports = async () => {
-  const token = await getIdToken();
+  const token = await getaccessToken();
   try {
     const response = await fetch(buildApiUrl("/contractors/me/metrics"), {
       method: "GET",
@@ -238,12 +238,12 @@ export const getContractorReports = async () => {
   }
 };
 
-export const getContractorData = async (idToken: string) => {
+export const getContractorData = async (accessToken: string) => {
   const response = await fetch(buildApiUrl("/contractors/me"), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     next: { revalidate: 60 }, // Cache for 1 minutes
   });
@@ -253,12 +253,12 @@ export const getContractorData = async (idToken: string) => {
   return await response.json();
 };
 
-export const getContractorReviews = async (idToken: string) => {
+export const getContractorReviews = async (accessToken: string) => {
   const response = await fetch(buildApiUrl("/contractors/me/reviews"), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     next: { revalidate: 60 }, // Cache for 1 minutes
   });
@@ -273,12 +273,12 @@ export const getContractorById = async (id: string) => {
   if (!id) {
     throw new Error("No id provided");
   }
-  const idToken = await getIdToken();
+  const accessToken = await getaccessToken();
   const response = await fetch(buildApiUrl(`/contractors/${id}`), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     next: { revalidate: 60 }, // Cache for 1 minutes
   });
@@ -289,13 +289,13 @@ export const getContractorById = async (id: string) => {
 };
 
 export const getContractorRequests = async () => {
-  const idToken = await getIdToken();
+  const accessToken = await getaccessToken();
   const url = buildApiUrl("/admin/contractors/requests");
   const response = await fetch(url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
   if (!response.ok) {
@@ -305,12 +305,12 @@ export const getContractorRequests = async () => {
 };
 
 export const getReviews = async () => {
-  const idToken = await getIdToken();
+  const accessToken = await getaccessToken();
   const response = await fetch(buildApiUrl("/reviews/unapproved"), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     next: { revalidate: 60 }, // Cache for 1 minutes
   });

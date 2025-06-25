@@ -37,52 +37,53 @@ export type OrderFormData = {
   locationMoreInfo: string;
   paymentMethod: "later" | "now";
   fetchedImages: string[] | null;
-}
+};
 
 const NewRequestFormComponent: React.FC<{
-  idToken: string;
+  accessToken: string;
   categories: Category[];
   dict: Dictionary;
-}> = ({ idToken, categories, dict }) => {
+}> = ({ accessToken, categories, dict }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   console.log("params", searchParams);
-  const step = searchParams.get("step") ? parseInt(searchParams.get("step") as string, 10) : 0;
-  
+  const step = searchParams.get("step")
+    ? parseInt(searchParams.get("step") as string, 10)
+    : 0;
+
   const [formData, setFormData] = useState<OrderFormData>({
-    orderId: '',
-    categoryId: '',
-    title: '',
-    description: '',
+    orderId: "",
+    categoryId: "",
+    title: "",
+    description: "",
     startDate: undefined,
     endDate: undefined,
     scheduleOption: ScheduleOption.AsSoonAsPossible,
-    budget: '',
-    orderStreet: '',
-    orderCity: '',
-    orderZip: '',
+    budget: "",
+    orderStreet: "",
+    orderCity: "",
+    orderZip: "",
     images: null,
-    locationMoreInfo: '',
-    paymentMethod: 'later' as 'later' | 'now',
+    locationMoreInfo: "",
+    paymentMethod: "later" as "later" | "now",
     fetchedImages: null,
   });
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCategoryClick = (categoryId: string) => {
-    setFormData(prev => ({ ...prev, categoryId }));
+    setFormData((prev) => ({ ...prev, categoryId }));
   };
 
-  const handleDateChange = (
-    date: Date ,
-    field: "startDate" | "endDate"
-  ) => {
-    setFormData(prev => ({ ...prev, [field]: date?.toISOString() || '' }));
+  const handleDateChange = (date: Date, field: "startDate" | "endDate") => {
+    setFormData((prev) => ({ ...prev, [field]: date?.toISOString() || "" }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +103,7 @@ const NewRequestFormComponent: React.FC<{
         }),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       if (response.ok) {
@@ -132,7 +133,7 @@ const NewRequestFormComponent: React.FC<{
           <InitialRequestStage
             dict={dict}
             goToStep={goToStep}
-            idToken={idToken}
+            accessToken={accessToken}
             setFormData={setFormData}
           />
         );
@@ -152,7 +153,9 @@ const NewRequestFormComponent: React.FC<{
             dict={dict}
             formData={formData}
             handleInputChange={handleInputChange}
-            handleDateChange={(date: Date, name: "startDate" | "endDate") => handleDateChange(date, name)}
+            handleDateChange={(date: Date, name: "startDate" | "endDate") =>
+              handleDateChange(date, name)
+            }
           />
         );
       case 3:

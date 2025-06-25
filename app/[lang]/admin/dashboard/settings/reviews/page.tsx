@@ -1,12 +1,11 @@
-import { getIdToken, getReviews } from "@/app/lib/actions";
+import { getaccessToken, getReviews } from "@/app/lib/actions";
 import ReviewAdminComponent from "./ReviewAdminComponent";
 
 export default async function Page() {
-    const reviews = await getReviews()
-    console.log("reviews", reviews)
-    const idToken = await getIdToken()
+  const reviews = await getReviews();
+  console.log("reviews", reviews);
+  const accessToken = await getaccessToken();
   return (
-    <ReviewAdminComponent initialReviews={reviews} idToken={idToken}/>
-
+    <ReviewAdminComponent initialReviews={reviews} accessToken={accessToken} />
   );
 }

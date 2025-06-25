@@ -37,10 +37,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 function OfferDetailsComponent({
   offers,
-  idToken,
+  accessToken,
 }: {
   offers: OfferDetails[];
-  idToken: string;
+  accessToken: string;
 }) {
   const handleMarkAsCompleted = async (offer: OfferDetails) => {
     const url = buildApiUrl(`/orders/completed`);
@@ -48,7 +48,7 @@ function OfferDetailsComponent({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ orderId: offer.orderId }),
     });
@@ -113,11 +113,11 @@ function OfferDetailsComponent({
 function OrderCard({
   order,
   isSelected,
-  idToken,
+  accessToken,
 }: {
   order: ExtendedOrder;
   isSelected: boolean;
-  idToken: string;
+  accessToken: string;
 }) {
   const router = useRouter();
   const handleChat = async (order: ExtendedOrder) => {
@@ -140,7 +140,7 @@ function OrderCard({
       }),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     if (response.ok) {
@@ -491,7 +491,7 @@ export default function OrdersPage({ token }: { token: string }) {
                         <OrderCard
                           order={order}
                           isSelected={order.orderId === selectedOrderId}
-                          idToken={token}
+                          accessToken={token}
                         />
                       </div>
                     ))
@@ -531,7 +531,10 @@ export default function OrdersPage({ token }: { token: string }) {
               </>
             ) : selectedOrder ? (
               offerDetails ? (
-                <OfferDetailsComponent offers={offerDetails} idToken={token} />
+                <OfferDetailsComponent
+                  offers={offerDetails}
+                  accessToken={token}
+                />
               ) : (
                 <p className="text-black">Loading offer details...</p>
               )

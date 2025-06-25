@@ -27,11 +27,11 @@ type Chat = {
 
 export default function ChatList({
   chats,
-  idToken,
+  accessToken,
   onSelectChat,
 }: {
   chats: Chat[];
-  idToken: string;
+  accessToken: string;
   onSelectChat: (chatId: string, partnerId: string) => void;
 }) {
   const [deleting, setDeleting] = useState(false);
@@ -42,7 +42,7 @@ export default function ChatList({
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ conversationId: id }),
     });

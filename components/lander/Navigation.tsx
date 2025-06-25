@@ -1,10 +1,15 @@
 "use client";
 
-import {useCallback, useEffect, useRef, useState} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {Sheet, SheetContent, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useAuth } from "@/components/AuthProvider";
 import { buildApiUrl } from "@/app/lib/utils";
 import Cookies from "js-cookie";
@@ -17,8 +22,8 @@ import MobileNav from "@/components/ui/MobileNav";
 import LanguageSelector from "@/components/LanguageSelector";
 
 export default function Navigation({ dict }: { dict: Dictionary }) {
-  const navRef = useRef<HTMLDivElement | null>(null)
-  const idToken = Cookies.get("idToken");
+  const navRef = useRef<HTMLDivElement | null>(null);
+  const accessToken = Cookies.get("accessToken");
   const [
     numberOfNotificationsChatsUnread,
     setNumberOfNotificationsChatsUnread,
@@ -37,7 +42,7 @@ export default function Navigation({ dict }: { dict: Dictionary }) {
 
   const { user } = useAuth();
   const isConsumer = user?.role === "consumer";
-  const isContractor = user?.role === "contractor"
+  const isContractor = user?.role === "contractor";
   const lang = useParams().lang;
 
   const fetchUserBadges = useCallback(async () => {
@@ -48,7 +53,7 @@ export default function Navigation({ dict }: { dict: Dictionary }) {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       const data = await response.json();
@@ -77,7 +82,7 @@ export default function Navigation({ dict }: { dict: Dictionary }) {
     } catch (error) {
       console.error(error);
     }
-  }, [idToken]);
+  }, [accessToken]);
 
   useEffect(() => {
     if (user) {
@@ -102,13 +107,13 @@ export default function Navigation({ dict }: { dict: Dictionary }) {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${idToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           });
         }
       })();
     },
-    [idToken]
+    [accessToken]
   );
 
   useEffect(() => {
@@ -119,91 +124,92 @@ export default function Navigation({ dict }: { dict: Dictionary }) {
   }, [numberOfNotificationsRequestsUnread]);
 
   return (
-      <div ref={navRef} className="flex flex-col items-center justify-center gap-4">
-        <div className="bg-[#007AFF] w-full text-white py-2">
-          <p className="text-center text-sm font-bold">
-            {dict.promotionHeader}
-          </p>
-        </div>
-        <nav className="container px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-primary">
-            <p className="text-2xl font-bold text-[#0E54FF]">Fiksaten</p>
-          </Link>
+    <div
+      ref={navRef}
+      className="flex flex-col items-center justify-center gap-4"
+    >
+      <div className="bg-[#007AFF] w-full text-white py-2">
+        <p className="text-center text-sm font-bold">{dict.promotionHeader}</p>
+      </div>
+      <nav className="container px-4 py-4 flex items-center justify-between">
+        <Link href="/" className="text-2xl font-bold text-primary">
+          <p className="text-2xl font-bold text-[#0E54FF]">Fiksaten</p>
+        </Link>
 
-          <ul className="hidden xl:flex space-x-6">
+        <ul className="hidden xl:flex space-x-6">
+          <li>
+            <Link
+              href="/register"
+              className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+            >
+              {dict.navigation.sendRequest}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/yrityksesta"
+              className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+            >
+              {dict.navigation.aboutUs}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/register?type=contractor"
+              className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+            >
+              {dict.navigation.joinUs}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/asiakaspalvelu"
+              className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+            >
+              {dict.navigation.customerService}
+            </Link>
+          </li>
+        </ul>
+        <UserNavComponent dict={dict} />
+        <MobileNav lang={lang as AvailableLocale} navRef={navRef} dict={dict}>
+          <ul className="flex flex-col">
             <li>
               <Link
-                  href="/register"
-                  className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+                href="/register"
+                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
               >
                 {dict.navigation.sendRequest}
               </Link>
             </li>
             <li>
               <Link
-                  href="/yrityksesta"
-                  className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+                href="/yrityksesta"
+                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
               >
                 {dict.navigation.aboutUs}
               </Link>
             </li>
             <li>
               <Link
-                  href="/register?type=contractor"
-                  className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+                href="/register?type=contractor"
+                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
               >
                 {dict.navigation.joinUs}
               </Link>
             </li>
             <li>
               <Link
-                  href="/asiakaspalvelu"
-                  className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+                href="/asiakaspalvelu"
+                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
               >
                 {dict.navigation.customerService}
               </Link>
             </li>
           </ul>
-          <UserNavComponent dict={dict} />
-          <MobileNav lang={lang as AvailableLocale} navRef={navRef} dict={dict}>
-            <ul className="flex flex-col">
-              <li>
-                <Link
-                    href="/register"
-                    className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
-                >
-                  {dict.navigation.sendRequest}
-                </Link>
-              </li>
-              <li>
-                <Link
-                    href="/yrityksesta"
-                    className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
-                >
-                  {dict.navigation.aboutUs}
-                </Link>
-              </li>
-              <li>
-                <Link
-                    href="/register?type=contractor"
-                    className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
-                >
-                  {dict.navigation.joinUs}
-                </Link>
-              </li>
-              <li>
-                <Link
-                    href="/asiakaspalvelu"
-                    className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
-                >
-                  {dict.navigation.customerService}
-                </Link>
-              </li>
-            </ul>
-            <UserNavComponent isMobile dict={dict} />
-          </MobileNav>
-        </nav>
-      </div>
+          <UserNavComponent isMobile dict={dict} />
+        </MobileNav>
+      </nav>
+    </div>
   );
 }
 

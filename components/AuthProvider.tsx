@@ -1,45 +1,34 @@
 "use client";
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { ContractorRegisterData, RegisterData } from "@/app/lib/types";
-import { buildApiUrl } from "@/app/lib/utils";
-import { login as apiLogin, register as apiRegister, contractorJoinRequest, getCurrentUser } from "@/app/lib/openapi-client";
+import {
+  login as apiLogin,
+  register as apiRegister,
+  contractorJoinRequest,
+  getCurrentUser,
+} from "@/app/lib/openapi-client";
 import { client as apiClient } from "@/app/lib/apiClient";
 import { toast } from "@/hooks/use-toast";
-
-export type UserMe = {
-  id: string;
-  sub: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  phoneNumber: string;
-  expoPushToken: string;
-  stripeCustomerId: string;
-  addressStreet: string;
-  addressDetail: string;
-  addressZip: string;
-  addressCountry: string;
-  badgeCountOffers: number;
-  badgeCountMessages: number;
-  role: string;
-  pushNotificationPermission: boolean;
-  smsPersmission: boolean;
-  emailPermission: boolean;
-  created_at: string;
-  updated_at: string;
-} | null;
+import { User } from "@/app/lib/types/userTypes";
+import dotenv from "dotenv";
+dotenv.config();
 
 type Tokens = {
   accessToken: string;
   refreshToken: string;
-  idToken: string;
   username: string;
 };
 
 type AuthContextType = {
-  user: UserMe;
+  user: User | null;
   tokens: Tokens | null;
   login: (email: string, password: string) => Promise<void>;
   register: (
@@ -47,13 +36,13 @@ type AuthContextType = {
     contractor: ContractorRegisterData | undefined
   ) => Promise<void>;
   logout: () => void;
-  verifyPhone: (code: string) => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserMe>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [tokens, setTokens] = useState<Tokens | null>(null);
   const router = useRouter();
 
@@ -61,13 +50,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (token: string) => {
       try {
         const { data } = await getCurrentUser({
-          client: apiClient,
+          baseUrl: `${baseUrl}`,
           headers: { Authorization: `Bearer ${token}` },
           throwOnError: true,
         });
-        const userData = data as UserMe;
-        setUser(userData);
-        return userData;
+        setUser(data);
+        return data;
       } catch (error) {
         toast({
           title: "Kirjaudu uudelleen",
@@ -81,16 +69,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    const idToken = Cookies.get("idToken");
-    if (idToken) {
-      fetchUserData(idToken);
+    const accessToken = Cookies.get("accessToken");
+    console.log("accessToken", accessToken);
+    if (accessToken) {
+      fetchUserData(accessToken);
     }
-  }, [fetchUserData]);
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
       const { data } = await apiLogin({
-        client: apiClient,
+        baseUrl: `${baseUrl}`,
         body: { email, password },
         throwOnError: true,
       });
@@ -98,28 +87,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const tokensData = {
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
-        idToken: data.accessToken,
         username: data.username,
-      } as Tokens;
+      };
 
       Cookies.set("accessToken", tokensData.accessToken, {
         secure: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
       Cookies.set("refreshToken", tokensData.refreshToken, {
         secure: true,
-        sameSite: "strict",
-      });
-      Cookies.set("idToken", tokensData.idToken, {
-        secure: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
       Cookies.set("username", tokensData.username, {
         secure: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
       setTokens(tokensData);
-      const fetchedUser = await fetchUserData(tokensData.idToken);
+      const fetchedUser = await fetchUserData(tokensData.accessToken);
 
       const userRole = fetchedUser?.role;
       console.log("userRole", userRole);
@@ -155,47 +139,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throwOnError: true,
       });
 
-      Cookies.set("accessToken", data.accessToken ?? data.AccessToken, {
+      Cookies.set("accessToken", data.accessToken ?? "", {
         secure: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
-      Cookies.set("refreshToken", data.refreshToken ?? '', {
+      Cookies.set("refreshToken", data.refreshToken ?? "", {
         secure: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
-      Cookies.set("idToken", data.accessToken ?? data.AccessToken, {
+      Cookies.set("username", data.username ?? "", {
         secure: true,
-        sameSite: "strict",
-      });
-      Cookies.set("username", data.username ?? '', {
-        secure: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
       setTokens({
-        accessToken: data.accessToken ?? data.AccessToken,
-        refreshToken: data.refreshToken ?? '',
-        idToken: data.accessToken ?? data.AccessToken,
-        username: data.username ?? '',
+        accessToken: data.accessToken ?? "",
+        refreshToken: data.refreshToken ?? "",
+        username: data.username ?? "",
       });
 
       if (contractor) {
         await contractorJoinRequest({
           client: apiClient,
-          headers: { Authorization: `Bearer ${data.accessToken ?? data.AccessToken}` },
+          headers: {
+            Authorization: `Bearer ${data.accessToken}`,
+          },
           body: {
-            companyName: contractor.companyName,
-            companyEmail: contractor.companyEmail,
-            companyPhone: contractor.companyPhone,
+            name: contractor.name,
+            email: contractor.email,
+            phone: contractor.phone,
             businessId: contractor.businessId,
-            companyDescription: contractor.companyDescription,
+            description: contractor.description,
+            imageUrl: contractor.imageUrl,
           },
         });
       }
 
-      if (data.accessToken || data.AccessToken) {
-        await fetchUserData(data.accessToken ?? data.AccessToken);
+      if (data.accessToken) {
+        await fetchUserData(data.accessToken);
       }
-
     } catch (error) {
       console.error("Login error:", error);
       throw new Error("Login error");
@@ -206,41 +187,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-    Cookies.remove("idToken");
     Cookies.remove("username");
     router.push("/");
   };
 
-  const verifyPhone = async (verificationCode: string) => {
-    console.log("verificationCode", verificationCode);
-    if (verificationCode === "090498") {
-      return true;
-    }
-    const url = buildApiUrl("/auth/verify-phone");
-    console.log("url", url);
-    console.log("tokens", tokens);
-    const verifyResponse = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        code: verificationCode,
-      }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-
-        Authorization: `Bearer ${tokens?.accessToken}`,
-      },
-    });
-    if (verifyResponse.status !== 200) {
-      return false;
-    }
-    return true;
-  };
-
   return (
-    <AuthContext.Provider
-      value={{ user, tokens, login, logout, register, verifyPhone }}
-    >
+    <AuthContext.Provider value={{ user, tokens, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

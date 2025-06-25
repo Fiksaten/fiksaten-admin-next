@@ -28,11 +28,11 @@ type Chat = {
 
 export default function ChatList({
   chats,
-  idToken,
+  accessToken,
   onSelectChat,
 }: {
   chats: Chat[];
-  idToken: string;
+  accessToken: string;
   onSelectChat: (chatId: string, partnerId: string) => void;
 }) {
   const [deleting, setDeleting] = useState(false);
@@ -43,7 +43,7 @@ export default function ChatList({
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ conversationId: id }),
     });
@@ -80,16 +80,21 @@ export default function ChatList({
               className="flex items-center px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer"
             >
               <Image
-                src={chat?.otherUser?.contractorImageUrl || "/default-profile.png"}
+                src={
+                  chat?.otherUser?.contractorImageUrl || "/default-profile.png"
+                }
                 alt="Contractor Image"
                 width={40}
                 height={40}
                 className="rounded mr-3"
               />
               <div>
-                
                 <p className="font-semibold">
-                {`${chat?.otherUser?.firstname} ${chat?.otherUser?.lastname?.charAt(0)}. (${chat?.otherUser?.contractorName})`}
+                  {`${
+                    chat?.otherUser?.firstname
+                  } ${chat?.otherUser?.lastname?.charAt(0)}. (${
+                    chat?.otherUser?.contractorName
+                  })`}
                 </p>
                 <p className="text-sm text-gray-500 truncate">
                   {chat?.lastMessage}

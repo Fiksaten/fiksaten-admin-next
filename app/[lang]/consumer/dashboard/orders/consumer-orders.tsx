@@ -63,10 +63,10 @@ export type OrdersMy = {
 
 export default function ConsumerOrdersComponent({
   orders,
-  idToken,
+  accessToken,
 }: {
   orders: OrdersMy[];
-  idToken: string;
+  accessToken: string;
 }) {
   const [activeTab, setActiveTab] = useState("active");
   const router = useRouter();
@@ -74,26 +74,24 @@ export default function ConsumerOrdersComponent({
     return <div>No orders found</div>;
   }
 
-  
-
   const activeOrders = orders?.filter((order) => order.status !== "done");
   const completedOrders = orders?.filter((order) => order.status === "done");
 
   const handleRemoveOrder = async (orderId: string) => {
     const url = buildApiUrl(`/orders/remove`);
-		const response = await fetch(url, {
-			method: "POST", 
+    const response = await fetch(url, {
+      method: "POST",
       body: JSON.stringify({ orderId }),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
-		if (!response.ok) {
-			console.error("Failed to remove order");
+    if (!response.ok) {
+      console.error("Failed to remove order");
     }
-			router.refresh();
-	}
+    router.refresh();
+  };
 
   const OrderCard = ({
     order,
@@ -136,7 +134,12 @@ export default function ConsumerOrdersComponent({
       </CardFooter>
       {isActive ? (
         <div className="flex justify-between p-2">
-          <Button onClick={()=>handleRemoveOrder(order.orderId)} variant="destructive">Cancel Order</Button>
+          <Button
+            onClick={() => handleRemoveOrder(order.orderId)}
+            variant="destructive"
+          >
+            Cancel Order
+          </Button>
           <Link href={`/consumer/dashboard/orders/${order.orderId}`} passHref>
             <Button
               variant="outline"

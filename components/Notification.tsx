@@ -27,8 +27,8 @@ const NotificationComponent = () => {
       }
 
       try {
-        //Get idToken from cookies
-        const idToken = Cookies.get("idToken");
+        //Get accessToken from cookies
+        const accessToken = Cookies.get("accessToken");
         const vapidKey = process.env.NEXT_PUBLIC_VAPID_KEY;
         // Register service worker
         console.log("vapidKey", vapidKey);
@@ -50,7 +50,7 @@ const NotificationComponent = () => {
             const url = buildApiUrl('/notifications/fcm-token');
             await fetch(url, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
               body: JSON.stringify({ token: currentToken }),
             });
           } else {
