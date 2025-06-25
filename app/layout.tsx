@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
+import { GatewayProvider } from "@/components/GatewayProvider";
 import { Toaster } from "@/components/ui/toaster";
 import CookieBanner from "@/components/CookieBanner";
 import { AvailableLocale, getDictionary } from "@/lib/dictionaries";
@@ -31,7 +32,8 @@ export default async function RootLayout(
   return (
     <html lang={lang || "fi"} className={inter.className}>
       <AuthProvider>
-        <body className={`bg-white text-black ${inter.className} antialiased`}>
+        <GatewayProvider>
+          <body className={`bg-white text-black ${inter.className} antialiased`}>
           <div className="flex flex-col min-h-screen">
             <header className="bg-white shadow-sm">
               <Navigation dict={dict} />
@@ -45,7 +47,8 @@ export default async function RootLayout(
             </main>
             <Footer dict={dict} />
           </div>
-        </body>
+          </body>
+        </GatewayProvider>
       </AuthProvider>
     </html>
   );
