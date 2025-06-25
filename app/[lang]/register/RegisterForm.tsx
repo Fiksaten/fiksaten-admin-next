@@ -20,6 +20,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Dictionary } from "@/lib/dictionaries";
 import { FormInput } from "@/components/FormInput";
 import {FormTextarea} from "@/components/FormTextarea";
+import { createAccountLink } from "@/app/lib/services/billingClientService";
 
 const getConsumerSchema = (dict: Dictionary) =>
   Yup.object().shape({
@@ -143,7 +144,18 @@ export default function RegisterForm({
         if (userType === "consumer") {
           router.push("/consumer/dashboard");
         } else {
-          router.push("/contractor");
+          try {
+            const res = await createAccountLink();
+            const url = res?.accountLink?.url;
+            if (url) {
+              router.replace(url);
+            } else {
+              router.push("/contractor/dashboard");
+            }
+          } catch (err) {
+            console.error("Error creating Stripe link:", err);
+            router.push("/contractor/dashboard");
+          }
         }
       } else {
         toast({
