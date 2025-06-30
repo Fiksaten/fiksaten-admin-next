@@ -1,46 +1,27 @@
+import createMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { match } from "@formatjs/intl-localematcher";
-import Negotiator from "negotiator";
+import { routing } from "./i18n/routing";
 
-const locales = ["en", "fi", "sv"];
-const defaultLocale = "fi";
+// Create the next-intl middleware
+const intlMiddleware = createMiddleware(routing);
 
-function getLocale(request: NextRequest): string {
-  const acceptLanguage = request.headers.get("accept-language") || "";
-  const negotiator = new Negotiator({
-    headers: { "accept-language": acceptLanguage },
-  });
-  const languages = negotiator.languages();
-  return match(languages, locales, defaultLocale);
-}
-
-export function middleware(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const token = request.cookies.get("accessToken")?.value;
+
   // Authentication check
-  if (!token && pathname.startsWith("/dashboard")) {
+  if (!token && pathname.includes("/dashboard")) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Locale handling
-  if (
-    !locales.some(
-      (locale) =>
-        pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-    ) &&
-    !pathname.startsWith("/_next") &&
-    !pathname.includes("/api/")
-  ) {
-    const locale = getLocale(request);
-    const url = request.nextUrl.clone();
-    url.pathname = `/${locale}${pathname}`;
-    return NextResponse.redirect(url);
-  }
-
-  return NextResponse.next();
+  // Apply the next-intl middleware
+  return intlMiddleware(request);
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images).*)"],
+  // Match all pathnames except for
+  // - … if they start with `/api`, `/trpc`, `/_next` or `/_vercel`
+  // - … the ones containing a dot (e.g. `favicon.ico`)
+  matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 };

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { useIntersectionObserver } from "./Observer";
-import { Dictionary } from "@/lib/dictionaries";
 import youngMoustacheMan from "@/public/images/young-moustache-man.webp";
+import { useTranslations } from "next-intl";
 
 const ImageContainer = () => (
   <div className="w-full h-full">
@@ -16,28 +16,36 @@ const ImageContainer = () => (
   </div>
 );
 
-const TextContainer = ({dict}: {dict: Dictionary}) => (
-  <div className="w-full h-full flex flex-col justify-start bg-[#FFF8CF] p-14 rounded-sm">
-    <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-black">
-      {dict.lander.findNearYouSection.title}
-    </h1>
-    <p className="text-base lg:text-lg text-gray-700 mb-6">
-      {dict.lander.findNearYouSection.description}
-    </p>
-  </div>
-);
+const TextContainer = () => {
+  const t = useTranslations();
+  return (
+    <div className="w-full h-full flex flex-col justify-start bg-[#FFF8CF] p-14 rounded-sm">
+      <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-black">
+        {t("lander.findNearYouSection.title")}
+      </h1>
+      <p className="text-base lg:text-lg text-gray-700 mb-6">
+        {t("lander.findNearYouSection.description")}
+      </p>
+    </div>
+  );
+};
 
-export default function FindNearYouSection({dict}: {dict: Dictionary}) {
+export default function FindNearYouSection() {
   const handleIntersection = (element: Element) => {
-    element.classList.add('visible');
+    element.classList.add("visible");
   };
 
-  const sectionRef = useIntersectionObserver(handleIntersection, { threshold: 0.5 });
+  const sectionRef = useIntersectionObserver(handleIntersection, {
+    threshold: 0.5,
+  });
 
   return (
-    <section ref={sectionRef} className="section transition-all transform duration-700 ease-out opacity-0 translate-y-10 flex flex-col lg:flex-row items-center justify-center py-8 lg:py-12 px-4 bg-white">
+    <section
+      ref={sectionRef}
+      className="section transition-all transform duration-700 ease-out opacity-0 translate-y-10 flex flex-col lg:flex-row items-center justify-center py-8 lg:py-12 px-4 bg-white"
+    >
       <div className="w-full lg:w-1/2 h-[400px] lg:h-[600px] mb-8 lg:mb-0 mx-2">
-        <TextContainer dict={dict} />
+        <TextContainer />
       </div>
       <div className="w-full lg:w-1/2 h-[400px] lg:h-[600px] mx-2">
         <ImageContainer />

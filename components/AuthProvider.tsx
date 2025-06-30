@@ -8,7 +8,6 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { ContractorRegisterData, RegisterData } from "@/app/lib/types";
 import {
   login as apiLogin,
   register as apiRegister,
@@ -19,6 +18,7 @@ import { client as apiClient } from "@/app/lib/apiClient";
 import { toast } from "@/hooks/use-toast";
 import { User } from "@/app/lib/types/userTypes";
 import dotenv from "dotenv";
+import { Register, ContractorRegisterData } from "@/app/lib/types/authTypes";
 dotenv.config();
 
 type Tokens = {
@@ -32,7 +32,7 @@ type AuthContextType = {
   tokens: Tokens | null;
   login: (email: string, password: string) => Promise<void>;
   register: (
-    registerData: RegisterData,
+    registerData: Register,
     contractor: ContractorRegisterData | undefined
   ) => Promise<void>;
   logout: () => void;
@@ -121,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (
-    registerData: RegisterData,
+    registerData: Register,
     contractor?: ContractorRegisterData | undefined
   ) => {
     try {
@@ -165,11 +165,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           },
           body: {
             name: contractor.name,
+            description: contractor.description,
+            website: contractor.website,
             email: contractor.email,
             phone: contractor.phone,
-            businessId: contractor.businessId,
-            description: contractor.description,
+            addressStreet: contractor.addressStreet,
+            addressDetail: contractor.addressDetail,
+            addressZip: contractor.addressZip,
+            addressCountry: contractor.addressCountry,
             imageUrl: contractor.imageUrl,
+            businessId: contractor.businessId,
+            businessType: contractor.businessType,
+            categoryId: contractor.categoryId,
+            iban: contractor.iban,
+            bic: contractor.bic,
           },
         });
       }

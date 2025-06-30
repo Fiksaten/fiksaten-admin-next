@@ -43,6 +43,7 @@
     "lucide-react": "^0.439.0",
     "negotiator": "^0.6.3",
     "next": "^15.2.4",
+    "next-intl": "^4.3.1",
     "posthog-js": "^1.166.0",
     "posthog-node": "^4.2.0",
     "react": "^19.0.0",

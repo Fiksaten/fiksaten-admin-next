@@ -3,8 +3,8 @@
 import { buildApiUrl } from "./utils";
 import { DashboardStatsResponse } from "./types";
 import { cookies } from "next/headers";
-import { CreateCategory } from "../[lang]/admin/dashboard/settings/categories/category-form";
-import { Chat } from "../[lang]/admin/dashboard/chats/CustomerServiceChat";
+import { CreateCategory } from "../[locale]/admin/dashboard/settings/categories/category-form";
+import { Chat } from "../[locale]/admin/dashboard/chats/CustomerServiceChat";
 
 export async function getaccessToken(): Promise<string> {
   const cookieStore = await cookies();
