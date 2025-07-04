@@ -6,11 +6,20 @@ import {
   getAllReviews,
 } from "../openapi-client";
 import { ReviewBody } from "../types/reviewTypes";
+import { resolveToken } from "./util";
 
-const acceptReview = async (accessToken: string, reviewId: string) => {
+const acceptReview = async (
+  accessToken: string | undefined,
+  reviewId: string,
+) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await acceptReviewApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: {
       reviewId: reviewId,
@@ -22,10 +31,18 @@ const acceptReview = async (accessToken: string, reviewId: string) => {
   return res.data;
 };
 
-const declineReview = async (accessToken: string, reviewId: string) => {
+const declineReview = async (
+  accessToken: string | undefined,
+  reviewId: string,
+) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await declineReviewApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: {
       reviewId: reviewId,
@@ -38,12 +55,17 @@ const declineReview = async (accessToken: string, reviewId: string) => {
 };
 
 const getContractorReviews = async (
-  accessToken: string,
+  accessToken: string | undefined,
   contractorId: string
 ) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getReviewsForContractor({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     path: {
       contractorId: contractorId,
@@ -56,16 +78,21 @@ const getContractorReviews = async (
 };
 
 const createReview = async (
-  accessToken: string,
+  accessToken: string | undefined,
   contractorId: string,
   review: ReviewBody
 ) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await addNewReviewForContractor({
     path: {
       contractorId: contractorId,
     },
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: review,
   });
@@ -75,10 +102,15 @@ const createReview = async (
   return res.data;
 };
 
-const getReviews = async (accessToken: string) => {
+const getReviews = async (accessToken?: string) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getAllReviews({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   if (res.error) {

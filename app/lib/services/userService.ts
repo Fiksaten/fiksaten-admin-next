@@ -5,11 +5,20 @@ import {
   getUserById as getUserByIdApi,
 } from "../openapi-client";
 import { RequestAccountDeletionBody, UserUpdateBody } from "../types/userTypes";
+import { resolveToken } from "./util";
 
-const updateUser = async (accessToken: string, userData: UserUpdateBody) => {
+const updateUser = async (
+  accessToken: string | undefined,
+  userData: UserUpdateBody,
+) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await updateCurrentUser({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: userData,
   });
@@ -20,12 +29,17 @@ const updateUser = async (accessToken: string, userData: UserUpdateBody) => {
 };
 
 const requestAccountDeletion = async (
-  accessToken: string,
+  accessToken: string | undefined,
   userData: RequestAccountDeletionBody
 ) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await requestAccountDeletionApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: userData,
   });
@@ -36,11 +50,16 @@ const requestAccountDeletion = async (
 };
 
 const getAllUsers = async (
-  accessToken: string,
+  accessToken: string | undefined,
   limit?: number,
   page?: number,
   search?: string
 ) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getAllUsersApi({
     query: {
       limit,
@@ -48,7 +67,7 @@ const getAllUsers = async (
       search,
     },
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   console.log("res", JSON.stringify(res, null, 2));
@@ -58,10 +77,15 @@ const getAllUsers = async (
   return res.data;
 };
 
-const getUserById = async (accessToken: string, userId: string) => {
+const getUserById = async (accessToken: string | undefined, userId: string) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getUserByIdApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     path: {
       id: userId,
