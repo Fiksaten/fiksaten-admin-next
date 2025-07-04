@@ -4,11 +4,16 @@ import {
   getOrdersByUserId as getUserOrdersApi,
   getExpressOrdersByUserId as getUserExpressOrdersApi,
 } from "../openapi-client";
+import { resolveToken } from "./util";
 
-const getOwnOrders = async (accessToken: string) => {
+const getOwnOrders = async (accessToken?: string) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getOwnOrdersApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   if (res.error) {
@@ -17,10 +22,14 @@ const getOwnOrders = async (accessToken: string) => {
   return res.data.orders;
 };
 
-const removeOrder = async (accessToken: string, orderId: string) => {
+const removeOrder = async (accessToken: string | undefined, orderId: string) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await removeOrderApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     path: {
       orderId,
@@ -33,14 +42,18 @@ const removeOrder = async (accessToken: string, orderId: string) => {
 };
 
 const getUserOrders = async (
-  accessToken: string,
+  accessToken: string | undefined,
   userId: string,
   page: number,
   limit: number
 ) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getUserOrdersApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     path: {
       userId,
@@ -53,14 +66,18 @@ const getUserOrders = async (
 };
 
 const getUserExpressOrders = async (
-  accessToken: string,
+  accessToken: string | undefined,
   userId: string,
   page: number,
   limit: number
 ) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getUserExpressOrdersApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     path: {
       userId,

@@ -4,11 +4,16 @@ import {
   deleteCategory as deleteCategoryApi,
 } from "../openapi-client";
 import { CreateCategoryBody } from "../types/categoryTypes";
+import { resolveToken } from "./util";
 
-const getCategories = async (accessToken: string) => {
+const getCategories = async (accessToken?: string) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getCategoriesApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   if (res.error) {
@@ -18,12 +23,16 @@ const getCategories = async (accessToken: string) => {
 };
 
 const createCategory = async (
-  accessToken: string,
+  accessToken: string | undefined,
   category: CreateCategoryBody
 ) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await createCategoryApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: category,
   });
@@ -33,10 +42,14 @@ const createCategory = async (
   return res.data;
 };
 
-const deleteCategory = async (accessToken: string, categoryId: string) => {
+const deleteCategory = async (accessToken: string | undefined, categoryId: string) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await deleteCategoryApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     path: {
       categoryId,

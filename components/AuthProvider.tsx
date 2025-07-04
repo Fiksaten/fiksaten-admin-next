@@ -9,7 +9,6 @@ import {
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import {
-  login as apiLogin,
   register as apiRegister,
   contractorJoinRequest,
   getCurrentUser,
@@ -69,41 +68,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    const accessToken = Cookies.get("accessToken");
-    console.log("accessToken", accessToken);
-    if (accessToken) {
-      fetchUserData(accessToken);
-    }
-  }, []);
+    const loadSession = async () => {
+      const res = await fetch("/api/auth/session");
+      if (!res.ok) return;
+      const session = await res.json();
+      if (session.accessToken) {
+        setTokens(session);
+        fetchUserData(session.accessToken);
+      }
+    };
+    loadSession();
+  }, [fetchUserData]);
 
   const login = async (email: string, password: string) => {
     try {
-      const { data } = await apiLogin({
-        baseUrl: `${baseUrl}`,
-        body: { email, password },
-        throwOnError: true,
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
+      if (!res.ok) {
+        throw new Error("Login failed");
+      }
 
-      const tokensData = {
+      const data = await res.json();
+      setTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
         username: data.username,
-      };
-
-      Cookies.set("accessToken", tokensData.accessToken, {
-        secure: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
-      Cookies.set("refreshToken", tokensData.refreshToken, {
-        secure: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      });
-      Cookies.set("username", tokensData.username, {
-        secure: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      });
-      setTokens(tokensData);
-      const fetchedUser = await fetchUserData(tokensData.accessToken);
+      const fetchedUser = await fetchUserData(data.accessToken);
 
       const userRole = fetchedUser?.role;
       console.log("userRole", userRole);
@@ -191,7 +185,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");

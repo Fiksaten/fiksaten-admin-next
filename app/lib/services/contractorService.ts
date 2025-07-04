@@ -13,11 +13,24 @@ import {
   ContractorJoinRequestBody,
   ContractorUpdateBody,
 } from "../types/contractorTypes";
+import Cookies from "js-cookie";
+import { resolveToken } from "./util";
 
-const approveContractor = async (accessToken: string, contractorId: string) => {
+const approveContractor = async (
+  accessToken: string | undefined,
+  contractorId: string,
+) => {
+  const token =
+    accessToken ??
+    (typeof window === "undefined"
+      ? getServerAccessToken()
+      : Cookies.get("accessToken") || "");
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await approveContractorApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: {
       contractorId: contractorId,
@@ -29,10 +42,18 @@ const approveContractor = async (accessToken: string, contractorId: string) => {
   return res.data;
 };
 
-const declineContractor = async (accessToken: string, contractorId: string) => {
+const declineContractor = async (
+  accessToken: string | undefined,
+  contractorId: string,
+) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await declineContractorApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: {
       contractorId: contractorId,
@@ -44,10 +65,18 @@ const declineContractor = async (accessToken: string, contractorId: string) => {
   return res.data;
 };
 
-const chooseCategories = async (accessToken: string, categoryIds: string[]) => {
+const chooseCategories = async (
+  accessToken: string | undefined,
+  categoryIds: string[],
+) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await chooseCategoriesAsContractor({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: {
       categoryIds: categoryIds,
@@ -60,12 +89,17 @@ const chooseCategories = async (accessToken: string, categoryIds: string[]) => {
 };
 
 const updateCurrentContractorData = async (
-  accessToken: string,
+  accessToken: string | undefined,
   contractorData: ContractorUpdateBody
 ) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await updateCurrentContractorDataApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: contractorData,
   });
@@ -76,12 +110,17 @@ const updateCurrentContractorData = async (
 };
 
 const requestJoinContractor = async (
-  accessToken: string,
+  accessToken: string | undefined,
   contractorData: ContractorJoinRequestBody
 ) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await requestJoinContractorApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     body: contractorData,
   });
@@ -91,10 +130,15 @@ const requestJoinContractor = async (
   return res.data;
 };
 
-const getAllContractorJoinRequests = async (accessToken: string) => {
+const getAllContractorJoinRequests = async (accessToken?: string) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getAllContractorJoinRequestsApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   if (res.error) {
@@ -103,10 +147,18 @@ const getAllContractorJoinRequests = async (accessToken: string) => {
   return res.data;
 };
 
-const getContractorData = async (accessToken: string, contractorId: string) => {
+const getContractorData = async (
+  accessToken: string | undefined,
+  contractorId: string,
+) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getContractorDataApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
     path: {
       contractorId,
@@ -118,10 +170,15 @@ const getContractorData = async (accessToken: string, contractorId: string) => {
   return res.data;
 };
 
-const getCurrentContractorData = async (accessToken: string) => {
+const getCurrentContractorData = async (accessToken?: string) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
   const res = await getCurrentContractorDataApi({
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   if (res.error) {
