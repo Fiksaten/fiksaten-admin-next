@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 
 export function ThemeToggle() {
   const { setTheme } = useTheme();
-  const t = useTranslations("ThemeToggle");
+  const t = useTranslations();
 
   return (
     <DropdownMenu>

@@ -22,7 +22,7 @@ const TextContainer = () => {
   const t = useTranslations();
   return (
     <div className="w-full h-full flex flex-col justify-center bg-white p-8 rounded-sm">
-      <h1 className="text-xl text-black lg:text-2xl font-semibold mb-4 italic">
+      <h1 className="text-xl text-black dark:text-white lg:text-2xl font-semibold mb-4 italic">
         {t("lander.recomendedSection.title")}
       </h1>
       <div className="my-12">

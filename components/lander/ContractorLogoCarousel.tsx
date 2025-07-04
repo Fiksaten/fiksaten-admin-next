@@ -20,7 +20,7 @@ export default async function ContractorLogoCarousel({
   return (
     <div className="w-full overflow-hidden bg-white px-4 py-10">
       <div className="my-2 flex justify-center">
-        <p className="text-xl text-black font-bold">
+        <p className="text-xl text-black dark:text-white font-bold">
           {t("contractorLogoCarousel.title")}
         </p>
       </div>

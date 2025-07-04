@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 export default async function Footer({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: "" });
   return (
-    <footer className="bg-white w-full mx-auto container border-solid border-t-2 border-gray-200 text-black pb-8">
+    <footer className="bg-white w-full mx-auto container border-solid border-t-2 border-gray-200 text-black dark:text-white pb-8">
       <div className="px-12 py-4 flex flex-col justify-center">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="flex gap-2 flex-col">

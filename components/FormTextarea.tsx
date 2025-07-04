@@ -20,7 +20,7 @@ export function FormTextarea({
 }: FormTextareaProps) {
   return (
     <div className="space-y-2">
-      <label htmlFor={id} className="text-black font-semibold">
+      <label htmlFor={id} className="text-black dark:text-white font-semibold">
         {label}
       </label>
       <textarea

@@ -15,13 +15,13 @@ const UserNavComponent = ({ isMobile = false }: { isMobile?: boolean }) => {
       } items-center gap-4`}
     >
       {user ? (
-        <div className={`flex ${isMobile ? "flex-col" : ""}`}>
-          <span className="text-black font-semibold">
+        <div className={`flex w-full ${isMobile ? "flex-col" : ""}`}>
+          <span className="text-black dark:text-white dark:text-white font-semibold">
             Moikka {user?.firstname} {user?.lastname?.charAt(0) || ""}!
           </span>
           <Button
             variant="outline"
-            className="text-[#6B7280] font-semibold"
+            className="text-[#6B7280] dark:text-white font-semibold"
             onClick={logout}
           >
             <LogOut className="mr-2 h-4 w-4" />
@@ -37,7 +37,7 @@ const UserNavComponent = ({ isMobile = false }: { isMobile?: boolean }) => {
               variant="outline"
               className={`${
                 isMobile ? "w-full font-semibold text-xl py-2 h-full" : ""
-              } text-black font-semibold`}
+              } text-black dark:text-white dark:text-white font-semibold`}
             >
               {t("navigation.login")}
             </Button>

@@ -20,7 +20,7 @@ const TextContainer = () => {
   const t = useTranslations();
   return (
     <div className="w-full h-full flex flex-col justify-start bg-[#FFF8CF] p-14 rounded-sm">
-      <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-black">
+      <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-black dark:text-white">
         {t("lander.findNearYouSection.title")}
       </h1>
       <p className="text-base lg:text-lg text-gray-700 mb-6">

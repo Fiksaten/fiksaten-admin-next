@@ -33,7 +33,7 @@ const TextContainer = () => {
   const t = useTranslations();
   return (
     <div className="w-full h-full flex flex-col justify-start bg-[#FFEFFC] p-14 rounded-sm">
-      <h1 className="text-4xl text-black lg:text-6xl font-bold mb-4">
+      <h1 className="text-4xl text-black dark:text-white lg:text-6xl font-bold mb-4">
         {t("lander.yourSupportSection.title")}
       </h1>
       <p className="text-base lg:text-lg text-gray-700 mb-6">

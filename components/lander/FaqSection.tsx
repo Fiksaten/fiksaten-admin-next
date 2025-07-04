@@ -42,7 +42,7 @@ export default function FAQSection() {
   return (
     <section className="w-full py-12 md:py-24 px-4 lg:py-32">
       <div>
-        <h2 className="text-4xl text-black font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-4">
+        <h2 className="text-4xl text-black dark:text-white font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-4">
           {t("lander.faqSection.title")}
         </h2>
         <p className="text-lg text-gray-500 mb-8 text-center">
@@ -57,10 +57,10 @@ export default function FAQSection() {
               className="bg-white"
             >
               <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left text-black text-3xl font-semibold">
+                <AccordionTrigger className="text-left text-black dark:text-white text-3xl font-semibold">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-black text-base">
+                <AccordionContent className="text-black dark:text-white text-base">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

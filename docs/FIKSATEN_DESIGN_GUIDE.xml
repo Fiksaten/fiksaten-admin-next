@@ -1,0 +1,286 @@
+<FiksatenExpressDesignLanguage>
+  <CoreDesignPrinciples>
+    <Principle>Modern Minimalism</Principle>
+    <Principle>Clean, uncluttered interfaces with purposeful white space</Principle>
+    <Principle>Focus on content hierarchy and user flow</Principle>
+    <Principle>Subtle shadows and borders for depth without distraction</Principle>
+    <Principle>User-Centric Functionality</Principle>
+    <Principle>Clear visual feedback for all interactive states</Principle>
+    <Principle>Intuitive navigation with recognizable patterns</Principle>
+    <Principle>Progressive disclosure of information</Principle>
+  </CoreDesignPrinciples>
+
+  <VisualIdentity>
+    <ColorPalette>
+      <PrimaryBlue>#0E54FF</PrimaryBlue>
+      <SuccessGreen>#35B537</SuccessGreen>
+      <WarningYellow>#F3D416</WarningYellow>
+      <ErrorRed>#E03616</ErrorRed>
+      <NeutralGrays>Text hierarchy and backgrounds</NeutralGrays>
+      <Black>#000000</Black>
+      <DarkGray>#4A4A4A</DarkGray>
+      <GrayText>#757575</GrayText>
+      <LightGray>#F4F4F4</LightGray>
+      <BGGray>#EDEEF1</BGGray>
+    </ColorPalette>
+
+    <Typography>
+      <FontSizes>12px, 14px, 16px, 18px, 20px, 22px</FontSizes>
+      <Hierarchy>Bold titles, medium body text, regular secondary text</Hierarchy>
+      <OverlayText>Text shadows on overlay content for readability</OverlayText>
+    </Typography>
+  </VisualIdentity>
+
+  <ComponentArchitecture>
+    <CardBasedLayout>
+      <Corners>Rounded-md, rounded-lg</Corners>
+      <Background>White with subtle shadows</Background>
+      <Padding>16-24px internal spacing</Padding>
+      <Borders>Border accents for state differentiation</Borders>
+    </CardBasedLayout>
+
+    <IconSystem>
+      <Container>40x40px rounded squares, 10% opacity background</Container>
+      <Library>AntDesign</Library>
+      <ColorCoding>Icons match section themes</ColorCoding>
+      <Sizes>16px, 20px</Sizes>
+    </IconSystem>
+
+    <ButtonDesign>
+      <Primary>Blue background, white text, rounded-full</Primary>
+      <Secondary>Light background, colored text, rounded-full</Secondary>
+      <Ghost>Transparent background, colored text and border</Ghost>
+      <States>Active, disabled, loading with feedback</States>
+    </ButtonDesign>
+  </ComponentArchitecture>
+
+  <LayoutPatterns>
+    <SingleCardApproach>
+      <Description>All content on a single screen should be presented within a single card unless otherwise needed.</Description>
+      <Benefit>Reduces visual noise and creates a unified, cohesive experience.</Benefit>
+      <Dividers>If content separation is needed, use a subtle line in gray color (#EDEEF1) as a divider.</Dividers>
+      <Headers>Section headers with icons for easy navigation</Headers>
+    </SingleCardApproach>
+
+    <GridSystem>
+      <HorizontalPadding>16-24px</HorizontalPadding>
+      <VerticalSpacing>Multiples of 4px</VerticalSpacing>
+      <Layouts>Full-width layouts with internal margins</Layouts>
+    </GridSystem>
+
+    <InformationHierarchy>
+      <Headers>Icon + title pattern</Headers>
+      <ContentSections>Proper spacing</ContentSections>
+      <Actions>Clearly separated from content</Actions>
+    </InformationHierarchy>
+  </LayoutPatterns>
+
+  <InteractiveElements>
+    <StateManagement>
+      <Default>Neutral colors and borders</Default>
+      <Focused>Blue accents and backgrounds</Focused>
+      <Success>Green accents and checkmarks</Success>
+      <Error>Red accents and warning icons</Error>
+      <Loading>Skeleton screens with animations</Loading>
+    </StateManagement>
+
+    <TouchTargets>
+      <MinimumHeight>44px</MinimumHeight>
+      <ActiveOpacity>0.8</ActiveOpacity>
+      <Spacing>Appropriate spacing between elements</Spacing>
+    </TouchTargets>
+
+    <VisualFeedback>
+      <Badges>
+        <Container>Rounded-full, 10% opacity background</Container>
+        <ColorCoding>Text matches badge background</ColorCoding>
+        <Labels>Small, concise</Labels>
+      </Badges>
+
+      <ProgressAndValidation>
+        <Validation>Real-time with color changes</Validation>
+        <Checkmarks>Success checkmarks</Checkmarks>
+        <ProgressiveColors>Gray → Blue → Green</ProgressiveColors>
+      </ProgressAndValidation>
+    </VisualFeedback>
+  </InteractiveElements>
+
+  <ContentPresentation>
+    <ImageTreatment>
+      <AspectRatios>Consistent</AspectRatios>
+      <Overlays>Dark overlays 40-60% opacity</Overlays>
+      <Corners>Rounded, matching theme</Corners>
+    </ImageTreatment>
+
+    <TextTruncation>
+      <CharacterLimits>Consistent</CharacterLimits>
+      <Overflow>Ellipsis</Overflow>
+      <ResponsiveSizing>Enabled</ResponsiveSizing>
+    </TextTruncation>
+  </ContentPresentation>
+
+  <AccessibilityFeatures>
+    <ColorContrast>High contrast text on backgrounds</ColorContrast>
+    <OverlayText>Text shadows on overlay content</OverlayText>
+    <VisualCues>Multiple cues beyond color</VisualCues>
+    <TouchAccessibility>
+      <Targets>Large touch targets</Targets>
+      <FocusStates>Clear</FocusStates>
+      <TabOrder>Logical</TabOrder>
+    </TouchAccessibility>
+  </AccessibilityFeatures>
+
+  <TableDesign>
+    <Overview>
+      <Description>Data tables are essential for displaying structured information in a scannable, organized format. They follow the single card principle while maintaining high performance and usability.</Description>
+      <Library>TanStack Table v8 for performant, headless table functionality</Library>
+      <Framework>Built with shadcn/ui table components for consistent styling</Framework>
+    </Overview>
+
+    <VisualStructure>
+      <Container>
+        <Background>White background within rounded card container</Background>
+        <Border>Subtle border (#EDEEF1) around entire table</Border>
+        <Shadows>Consistent with card shadow system (subtle elevation)</Shadows>
+      </Container>
+
+      <Headers>
+        <Background>Clean white background, no additional styling</Background>
+        <Typography>Medium weight, 14px text in #4A4A4A</Typography>
+        <Padding>12px vertical, 16px horizontal for optimal touch targets</Padding>
+        <Sorting>Interactive sorting with arrow icons and hover states</Sorting>
+        <Border>Bottom border only (#EDEEF1) to separate from data rows</Border>
+      </Headers>
+
+      <DataRows>
+        <Padding>12px vertical, 16px horizontal for readability</Padding>
+        <AlternateRows>No zebra striping - clean white background for all rows</AlternateRows>
+        <HoverState>Subtle background change (#F4F4F4) on row hover</HoverState>
+        <Typography>Regular weight, 14px text in #000000 for primary data</Typography>
+        <SecondaryText>12px text in #757575 for metadata and helper text</SecondaryText>
+      </DataRows>
+    </VisualStructure>
+
+    <InteractiveElements>
+      <Filtering>
+        <GlobalSearch>
+          <Icon>Search icon (16px) positioned left in input field</Icon>
+          <Placeholder>Clear, contextual placeholder text</Placeholder>
+          <Style>Standard input styling with left padding for icon</Style>
+        </GlobalSearch>
+        
+        <ColumnFilters>
+          <Dropdowns>Select components for categorical data (status, category)</Dropdowns>
+          <RangeInputs>Number inputs for budget/price ranges with min/max fields</RangeInputs>
+          <DatePickers>Calendar components for date range filtering</DatePickers>
+        </ColumnFilters>
+
+        <FilterChips>
+          <Container>Active filter badges displayed above table</Container>
+          <Style>Rounded pills with close buttons using badge styling</Style>
+          <Colors>Blue background (#0E54FF) with white text for active filters</Colors>
+        </FilterChips>
+      </Filtering>
+
+      <Sorting>
+        <Headers>Clickable header buttons with sort direction indicators</Headers>
+        <Icons>Arrow up/down icons (16px) to show sort direction</Icons>
+        <States>Neutral, ascending, descending with visual feedback</States>
+        <MultiSort>Support for multi-column sorting with priority indicators</MultiSort>
+      </Sorting>
+
+      <Pagination>
+        <Container>Bottom of table, right-aligned controls</Container>
+        <Elements>Previous/Next buttons, page size selector, row count display</Elements>
+        <PageSize>Dropdown with standard options: 10, 20, 30, 40, 50 rows</PageSize>
+        <Info>Display current range and total count (e.g., "1-10 of 47 orders")</Info>
+      </Pagination>
+    </InteractiveElements>
+
+    <DataPresentation>
+      <StatusBadges>
+        <Styling>Use standard badge component patterns</Styling>
+        <Colors>Green for completed, blue for active, gray for draft states</Colors>
+        <Text>Concise, single-word status labels when possible</Text>
+      </StatusBadges>
+
+      <Actions>
+        <ButtonGroup>Multiple action buttons grouped horizontally</ButtonGroup>
+        <PrimaryAction>Most important action uses primary button styling</PrimaryAction>
+        <SecondaryActions>Additional actions use outline or ghost variants</SecondaryActions>
+        <Icons>16px icons with 4px margin for visual clarity</Icons>
+      </Actions>
+
+      <Currency>
+        <Format>Bold formatting for monetary values</Format>
+        <Symbol>Euro symbol (€) positioned after the number</Symbol>
+        <Alignment>Right-aligned in numeric columns</Alignment>
+      </Currency>
+
+      <Dates>
+        <Format>MMM dd, yyyy format for readability (e.g., "Jan 15, 2024")</Format>
+        <Sorting>Proper datetime sorting regardless of display format</Sorting>
+        <Relative>Consider relative dates for recent items ("2 hours ago")</Relative>
+      </Dates>
+    </DataPresentation>
+
+    <ResponsiveDesign>
+      <Breakpoints>
+        <Mobile>Stack filters vertically, hide less critical columns</Mobile>
+        <Tablet>Show essential columns, horizontal scroll for overflow</Tablet>
+        <Desktop>Full table functionality with all columns visible</Desktop>
+      </Breakpoints>
+
+      <ColumnPriority>
+        <Essential>Always visible: primary identifier, status, actions</Essential>
+        <Important>Hidden on mobile: secondary data like dates, counts</Important>
+        <Supplementary>Desktop only: metadata and additional context</Supplementary>
+      </ColumnPriority>
+
+      <TouchTargets>
+        <Minimum>44px minimum height for all interactive elements</Minimum>
+        <Spacing>Adequate spacing between clickable areas</Spacing>
+        <Feedback>Visual and haptic feedback for touch interactions</Feedback>
+      </TouchTargets>
+    </ResponsiveDesign>
+
+    <PerformanceConsiderations>
+      <Virtualization>Use for tables with 100+ rows to maintain smooth scrolling</Virtualization>
+      <LazyLoading>Load data progressively for large datasets</LazyLoading>
+      <Memoization>Memoize column definitions and complex cell renderers</Memoization>
+      <Debouncing>Debounce search/filter inputs to reduce API calls</Debouncing>
+    </PerformanceConsiderations>
+
+    <AccessibilityFeatures>
+      <KeyboardNavigation>Full keyboard navigation with tab order</KeyboardNavigation>
+      <ScreenReaders>Proper ARIA labels and table structure</ScreenReaders>
+      <FocusManagement>Clear focus indicators and logical focus flow</FocusManagement>
+      <Announcements>Screen reader announcements for sort changes and updates</Announcements>
+    </AccessibilityFeatures>
+
+    <LoadingStates>
+      <Skeleton>Skeleton rows matching table structure during initial load</Skeleton>
+      <Shimmer>Subtle shimmer animation for skeleton elements</Shimmer>
+      <Pagination>Loading spinners for pagination navigation</Pagination>
+      <Filters>Disabled state for filters during data fetching</Filters>
+    </LoadingStates>
+  </TableDesign>
+
+  <PlatformConsiderations>
+    <ReactNativeOptimized>
+      <Tailwind>Uses Tailwind classes</Tailwind>
+      <Elevation>Proper elevation and shadows</Elevation>
+      <Platforms>Optimized for iOS and Android</Platforms>
+    </ReactNativeOptimized>
+
+    <Performance>
+      <Components>Efficient patterns</Components>
+      <LoadingStates>Proper handling</LoadingStates>
+      <Images>Optimized handling</Images>
+    </Performance>
+  </PlatformConsiderations>
+
+  <Summary>
+    This design language creates a cohesive, professional, and user-friendly experience that scales across the entire Fiksaten Express platform while maintaining brand consistency and usability standards.
+  </Summary>
+</FiksatenExpressDesignLanguage>

@@ -15,7 +15,10 @@ export default function Navigation() {
       className="flex flex-col items-center justify-center gap-4"
     >
       <nav className="container px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-primary">
+        <Link
+          href="/"
+          className="text-2xl font-bold text-primary dark:text-white"
+        >
           <p className="text-2xl font-bold text-[#0E54FF]">Fiksaten</p>
         </Link>
 
@@ -23,7 +26,7 @@ export default function Navigation() {
           <li>
             <Link
               href="/register"
-              className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+              className="flex items-center rounded-lg px-4 py-2 text-black dark:text-white dark:text-white dark:hover:bg-gray-800 hover:bg-gray-100 relative"
             >
               {t("navigation.sendRequest")}
             </Link>
@@ -31,7 +34,7 @@ export default function Navigation() {
           <li>
             <Link
               href="/yrityksesta"
-              className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+              className="flex items-center rounded-lg px-4 py-2 text-black dark:text-white dark:text-white dark:hover:bg-gray-800 hover:bg-gray-100 relative"
             >
               {t("navigation.aboutUs")}
             </Link>
@@ -39,7 +42,7 @@ export default function Navigation() {
           <li>
             <Link
               href="/register?type=contractor"
-              className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+              className="flex items-center rounded-lg px-4 py-2 text-black dark:text-white dark:text-white dark:hover:bg-gray-800 hover:bg-gray-100 relative"
             >
               {t("navigation.joinUs")}
             </Link>
@@ -47,7 +50,7 @@ export default function Navigation() {
           <li>
             <Link
               href="/asiakaspalvelu"
-              className="flex items-center rounded-lg px-4 py-2 text-black hover:bg-gray-100 relative"
+              className="flex items-center rounded-lg px-4 py-2 text-black dark:text-white dark:text-white dark:hover:bg-gray-800   hover:bg-gray-100 relative"
             >
               {t("navigation.customerService")}
             </Link>
@@ -59,7 +62,7 @@ export default function Navigation() {
             <li>
               <Link
                 href="/register"
-                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
+                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black dark:text-white dark:text-white dark:hover:bg-gray-800 hover:bg-gray-100 relative"
               >
                 {t("navigation.sendRequest")}
               </Link>
@@ -67,7 +70,7 @@ export default function Navigation() {
             <li>
               <Link
                 href="/yrityksesta"
-                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
+                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black dark:text-white dark:text-white dark:hover:bg-gray-800 hover:bg-gray-100 relative"
               >
                 {t("navigation.aboutUs")}
               </Link>
@@ -75,7 +78,7 @@ export default function Navigation() {
             <li>
               <Link
                 href="/register?type=contractor"
-                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
+                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black dark:text-white dark:text-white dark:hover:bg-gray-800 hover:bg-gray-100 relative"
               >
                 {t("navigation.joinUs")}
               </Link>
@@ -83,7 +86,7 @@ export default function Navigation() {
             <li>
               <Link
                 href="/asiakaspalvelu"
-                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black hover:bg-gray-100 relative"
+                className="flex font-semibold text-xl items-center rounded-lg py-2 text-black dark:text-white dark:text-white dark:hover:bg-gray-800 hover:bg-gray-100 relative"
               >
                 {t("navigation.customerService")}
               </Link>

@@ -69,6 +69,9 @@
       }
     }
   },
+  "light": "Vaalea",
+  "dark": "Tumma",
+  "system": "Järjestelmän mukainen",
   "navigation": {
     "dashboard": "Etusivu",
     "newRequest": "Uusi pyyntö",
@@ -96,7 +99,13 @@
     "companyPhone": "Yrityksen puhelinnumero",
     "businessId": "Y-tunnus",
     "companyDescription": "Yrityksen kuvaus",
-    "holder": "Syötä "
+    "holder": "Syötä ",
+    "selectType": "Valitse tilityyppi",
+    "personalInfo": "Henkilötiedot",
+    "companyInfo": "Yritystiedot",
+    "next": "Seuraava",
+    "back": "Takaisin",
+    "registering": "Rekisteröidään..."
   },
   "verification": {
     "phone": "",

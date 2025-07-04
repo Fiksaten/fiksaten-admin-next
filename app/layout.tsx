@@ -18,6 +18,21 @@ export const metadata: Metadata = {
   description: "Fiksaten",
 };
 
+function ConditionalNavigation({ pathname }: { pathname: string }) {
+  // Don't show main navigation for admin routes
+  const isAdminRoute = pathname.includes("/admin/dashboard");
+
+  if (isAdminRoute) {
+    return null;
+  }
+
+  return (
+    <header className="">
+      <Navigation />
+    </header>
+  );
+}
+
 export default async function RootLayout(
   props: Readonly<{
     children: React.ReactNode;
@@ -25,7 +40,6 @@ export default async function RootLayout(
   }>
 ) {
   const { locale } = await props.params;
-
   const { children } = props;
 
   return (
@@ -34,21 +48,9 @@ export default async function RootLayout(
         <AuthProvider>
           <GatewayProvider>
             <ThemeProvider>
-              <body
-                className={`bg-white text-black ${inter.className} antialiased`}
-              >
-                <div className="flex flex-col min-h-screen">
-                  <header className="bg-white shadow-sm">
-                    <Navigation />
-                  </header>
-                  <main className="w-full flex-grow justify-items-center justify-center items-center bg-white">
-                    <div className="container">
-                      <Toaster />
-                      {children}
-                    </div>
-                  </main>
-                  <Footer locale={locale} />
-                </div>
+              <body className={`${inter.className} antialiased`}>
+                <Toaster />
+                {children}
               </body>
             </ThemeProvider>
           </GatewayProvider>

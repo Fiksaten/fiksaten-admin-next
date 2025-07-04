@@ -176,7 +176,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             imageUrl: contractor.imageUrl,
             businessId: contractor.businessId,
             businessType: contractor.businessType,
-            categoryId: contractor.categoryId,
             iban: contractor.iban,
             bic: contractor.bic,
           },
