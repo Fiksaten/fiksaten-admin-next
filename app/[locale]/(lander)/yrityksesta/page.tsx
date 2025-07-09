@@ -20,7 +20,7 @@ export default async function Page({
           width={1000}
           height={1000}
           className="my-12 rounded-md w-full"
-          priority
+          loading="lazy"
         />
       </section>
 
