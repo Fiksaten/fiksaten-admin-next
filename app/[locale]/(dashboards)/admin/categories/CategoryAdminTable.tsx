@@ -14,8 +14,17 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { createCategory, deleteCategory } from "@/app/lib/services/categoryService";
-import { Categories, Category } from "@/app/lib/types/categoryTypes";
+import {
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "@/app/lib/services/categoryService";
+import {
+  Categories,
+  Category,
+  CreateCategoryBody,
+} from "@/app/lib/types/categoryTypes";
 
 interface Props {
   initialCategories: Categories;
@@ -57,11 +66,17 @@ export default function CategoryAdminTable({
     setLoading(true);
     try {
       if (editCategory) {
-        // TODO: implement updateCategory
-        toast({
-          title: "Not implemented",
-          description: "Update not implemented yet",
+        const updated = await updateCategory(accessToken, editCategory.id, {
+          name: form.name,
+          imageUrl: "",
+          description: "",
+          express: editCategory.express ?? false,
+          expressPrice: editCategory.expressPrice ?? null,
         });
+        setCategories((prev) =>
+          prev.map((c) => (c.id === editCategory.id ? { ...c, ...updated } : c))
+        );
+        toast({ title: "Category updated" });
       } else {
         const newCat = await createCategory(accessToken, {
           name: form.name,
