@@ -49,7 +49,7 @@ export default function DeleteMyData() {
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const res = await requestAccountDeletion(accessToken!, {
@@ -65,12 +65,12 @@ export default function DeleteMyData() {
         title: "Error",
         description: "Failed to request account deletion",
       });
-
       setIsSubmitted(true);
     }
+  };
 
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-2xl">
         <h1 className="text-3xl font-bold mb-6">{t("deleteMyData")}</h1>
 
         <Card className="mb-8">
@@ -111,7 +111,7 @@ export default function DeleteMyData() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={onSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="email">{t("emailAddress")}</Label>
                   <Input
@@ -179,5 +179,4 @@ export default function DeleteMyData() {
         )}
       </div>
     );
-  };
 }

@@ -48,11 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchUserData = useCallback(
     async (token: string) => {
       try {
-        console.log(
-          "Fetching user data with token:",
-          token.substring(0, 10) + "..."
-        );
-        console.log("Using baseUrl:", baseUrl);
+        // fetching user data
 
         const { data, error } = await getCurrentUser({
           baseUrl: baseUrl,
@@ -71,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return null;
         }
 
-        console.log("User data fetched successfully:", data);
+        // user data fetched
         setUser(data);
         return data;
       } catch (error) {
@@ -103,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      console.log("Attempting login for:", email);
+      // attempt login
 
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -115,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await res.json();
-      console.log("Login successful, tokens received");
+      // login successful
 
       setTokens({
         accessToken: data.accessToken,
@@ -123,7 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         username: data.username,
       });
 
-      console.log("Fetching user data...");
+      // fetch user data after login
       const fetchedUser = await fetchUserData(data.accessToken);
 
       if (!fetchedUser) {
@@ -132,19 +128,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const userRole = fetchedUser.role;
-      console.log("User role:", userRole);
+      // user role resolved
 
       // Add a small delay to ensure cookies are set
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       if (userRole === "admin") {
-        console.log("Redirecting to admin dashboard");
         window.location.href = "/admin/dashboard";
       } else if (userRole === "contractor") {
-        console.log("Redirecting to contractor dashboard");
         window.location.href = "/contractor/dashboard";
       } else {
-        console.log("Redirecting to consumer dashboard");
         window.location.href = "/consumer/dashboard";
       }
     } catch (error) {

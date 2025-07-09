@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   approveContractor,
   declineContractor,
@@ -29,7 +28,6 @@ export default function ContractorJoinRequestsTable({
 }: Props) {
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [requests, setRequests] = useState(joinRequests);
-  const router = useRouter();
 
   const handleAction = async (
     contractorId: string,
@@ -48,8 +46,9 @@ export default function ContractorJoinRequestsTable({
         toast({ title: "Declined", description: "Contractor declined." });
       }
       setRequests((prev) => prev.filter((c) => c.userId !== contractorId));
-    } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } catch (e: unknown) {
+      const error = e as Error;
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
       setLoadingId(null);
     }

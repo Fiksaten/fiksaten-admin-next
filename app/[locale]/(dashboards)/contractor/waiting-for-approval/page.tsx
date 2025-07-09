@@ -1,8 +1,5 @@
 import { getaccessToken } from "@/app/lib/actions";
-import {
-  getContractorData,
-  getCurrentContractorData,
-} from "@/app/lib/services/contractorService";
+import { getCurrentContractorData } from "@/app/lib/services/contractorService";
 import UnauthorizedContractor from "@/components/UnauthorizedContractor";
 
 export default async function Page() {

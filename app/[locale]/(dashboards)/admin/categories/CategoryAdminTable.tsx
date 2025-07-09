@@ -89,10 +89,11 @@ export default function CategoryAdminTable({
         toast({ title: "Category created" });
       }
       closeDialog();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -107,10 +108,11 @@ export default function CategoryAdminTable({
       await deleteCategory(accessToken, id);
       setCategories((prev) => prev.filter((c) => c.id !== id));
       toast({ title: "Category deleted" });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {

@@ -8,7 +8,7 @@ type PageProps = {
 
 export default async function Register({ params, searchParams }: PageProps) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "" });
+  await getTranslations({ locale, namespace: "" });
 
   return (
     <div className="min-h-screen bg-[#EDEEF1] flex flex-col justify-center py-12 px-4">
