@@ -38,3 +38,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Realtime Socket.IO Integration
 
 See [`docs/realtime-socketio.md`](docs/realtime-socketio.md) for details on connecting to the API's realtime Gateway using Socket.IO.
+
+## Analytics
+
+PostHog is used for basic page view analytics. Set `NEXT_PUBLIC_POSTHOG_KEY` and `NEXT_PUBLIC_POSTHOG_HOST` in your `.env` file to enable tracking.
