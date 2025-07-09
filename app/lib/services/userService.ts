@@ -70,7 +70,6 @@ const getAllUsers = async (
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log("res", JSON.stringify(res, null, 2));
   if (res.error) {
     throw new Error(res.error.message);
   }

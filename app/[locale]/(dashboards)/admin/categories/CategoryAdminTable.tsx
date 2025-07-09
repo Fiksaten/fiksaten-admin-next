@@ -17,6 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import {
   getCategories,
   createCategory,
+  updateCategory,
   deleteCategory,
 } from "@/app/lib/services/categoryService";
 import {
@@ -65,11 +66,17 @@ export default function CategoryAdminTable({
     setLoading(true);
     try {
       if (editCategory) {
-        // TODO: implement updateCategory
-        toast({
-          title: "Not implemented",
-          description: "Update not implemented yet",
+        const updated = await updateCategory(accessToken, editCategory.id, {
+          name: form.name,
+          imageUrl: "",
+          description: "",
+          express: editCategory.express ?? false,
+          expressPrice: editCategory.expressPrice ?? null,
         });
+        setCategories((prev) =>
+          prev.map((c) => (c.id === editCategory.id ? { ...c, ...updated } : c))
+        );
+        toast({ title: "Category updated" });
       } else {
         const newCat = await createCategory(accessToken, {
           name: form.name,
@@ -82,10 +89,11 @@ export default function CategoryAdminTable({
         toast({ title: "Category created" });
       }
       closeDialog();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -100,10 +108,11 @@ export default function CategoryAdminTable({
       await deleteCategory(accessToken, id);
       setCategories((prev) => prev.filter((c) => c.id !== id));
       toast({ title: "Category deleted" });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {

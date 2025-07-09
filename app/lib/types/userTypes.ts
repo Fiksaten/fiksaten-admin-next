@@ -1,6 +1,5 @@
 import {
   GetCurrentUserResponse,
-  GetCurrentUserResponses,
   RequestAccountDeletionData,
   UpdateCurrentUserData,
   GetAllUsersResponse as GetAllUsersResponseApi,

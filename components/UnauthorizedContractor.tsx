@@ -6,10 +6,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { useRouter } from "next/navigation";
-import {
-  ContractorResponse,
-  CurrentContractorResponse,
-} from "@/app/lib/types/contractorTypes";
+import { CurrentContractorResponse } from "@/app/lib/types/contractorTypes";
 import { requestJoinContractor } from "@/app/lib/services/contractorService";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
@@ -21,7 +18,6 @@ export default function UnauthorizedContractor({
   contractor: CurrentContractorResponse;
   accessToken: string;
 }) {
-  console.log("contractor", contractor);
 
   const router = useRouter();
   const t = useTranslations("Contractor.UnauthorizedContractor");

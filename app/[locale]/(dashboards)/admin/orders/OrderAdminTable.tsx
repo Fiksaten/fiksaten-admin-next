@@ -13,8 +13,12 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { removeOrder } from "@/app/lib/services/orderService";
 
+interface Order {
+  id: string;
+}
+
 interface Props {
-  initialOrders: any[];
+  initialOrders: Order[];
   accessToken: string;
 }
 
@@ -29,10 +33,11 @@ export default function OrderAdminTable({ initialOrders, accessToken }: Props) {
       await removeOrder(accessToken, orderId);
       setOrders((prev) => prev.filter((o) => o.id !== orderId));
       toast({ title: "Order deleted" });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {

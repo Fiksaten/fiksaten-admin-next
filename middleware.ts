@@ -31,17 +31,11 @@ export default async function middleware(request: NextRequest) {
 
   if (token) {
     user = await fetchUser(token);
-    console.log("[middleware] User fetched:", user);
   }
 
-  console.log("[middleware] Pathname:", pathname);
-  console.log(
-    "[middleware] accessToken:",
-    token ? token.substring(0, 10) + "..." : "none"
-  );
+  // debug logs removed
 
   const payload = token ? await verifyToken(token) : null;
-  console.log("[middleware] Token payload:", payload);
 
   if (
     !payload &&
@@ -49,26 +43,16 @@ export default async function middleware(request: NextRequest) {
       pathname.includes("/consumer") ||
       pathname.includes("/admin"))
   ) {
-    console.log("[middleware] No payload, redirecting to /login");
     return NextResponse.redirect(new URL("/login", request.url));
   }
   if (pathname.includes("/contractor") && !pathname.includes("/admin")) {
     if (!payload || payload.role !== "contractor") {
-      console.log(
-        "[middleware] Not contractor, redirecting to /consumer/dashboard"
-      );
+      // redirect non contractor
       return NextResponse.redirect(new URL("/consumer/dashboard", request.url));
     }
     // Check if contractor is approved or not
     const res = await getCurrentContractorData(token || "");
-    console.log(
-      "[middleware] Contractor approval status:",
-      res.contractor.approvalStatus
-    );
     if (res.contractor.approvalStatus !== "approved") {
-      console.log(
-        "[middleware] Contractor not approved, redirecting to /contractor/waiting-for-approval"
-      );
       return NextResponse.redirect(
         new URL("/contractor/waiting-for-approval", request.url)
       );
@@ -77,13 +61,11 @@ export default async function middleware(request: NextRequest) {
 
   if (pathname.includes("/admin")) {
     if (!user || user.role !== "admin") {
-      console.log("[middleware] Not admin, redirecting to /login");
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
   // Apply the next-intl middleware
-  console.log("[middleware] Passing through to intlMiddleware");
   return intlMiddleware(request);
 }
 

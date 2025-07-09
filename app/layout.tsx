@@ -19,20 +19,6 @@ export const metadata: Metadata = {
   description: "Fiksaten",
 };
 
-function ConditionalNavigation({ pathname }: { pathname: string }) {
-  // Don't show main navigation for admin routes
-  const isAdminRoute = pathname.includes("/admin/dashboard");
-
-  if (isAdminRoute) {
-    return null;
-  }
-
-  return (
-    <header className="">
-      <Navigation />
-    </header>
-  );
-}
 
 export default async function RootLayout(
   props: Readonly<{

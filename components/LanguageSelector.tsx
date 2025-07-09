@@ -39,9 +39,7 @@ export default function LanguageSelector({
     const newLang = value as AvailableLocale;
     setSelectedLanguage(newLang);
     const newPathname = pathname.replace(`/${currentLang}`, `/${newLang}`);
-    console.log(`New pathname: ${newPathname}`);
     router.push(newPathname);
-    console.log(`Language changed to: ${value}`);
   };
 
   return (
