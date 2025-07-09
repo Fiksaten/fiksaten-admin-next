@@ -38,7 +38,7 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -48,20 +48,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchUserData = useCallback(
     async (token: string) => {
       try {
-        const { data } = await getCurrentUser({
-          baseUrl: `${baseUrl}`,
+        console.log(
+          "Fetching user data with token:",
+          token.substring(0, 10) + "..."
+        );
+        console.log("Using baseUrl:", baseUrl);
+
+        const { data, error } = await getCurrentUser({
+          baseUrl: baseUrl,
           headers: { Authorization: `Bearer ${token}` },
-          throwOnError: true,
+          throwOnError: false,
         });
+
+        if (error) {
+          console.error("Error fetching user data:", error);
+          toast({
+            title: "Kirjaudu uudelleen",
+            description: "Kirjaudu uudelleen",
+            variant: "destructive",
+          });
+          router.replace("/login");
+          return null;
+        }
+
+        console.log("User data fetched successfully:", data);
         setUser(data);
         return data;
       } catch (error) {
+        console.error("Unexpected error in fetchUserData:", error);
         toast({
           title: "Kirjaudu uudelleen",
           description: "Kirjaudu uudelleen",
           variant: "destructive",
         });
         router.replace("/login");
+        return null;
       }
     },
     [router]
@@ -82,6 +103,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log("Attempting login for:", email);
+
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -92,21 +115,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await res.json();
+      console.log("Login successful, tokens received");
+
       setTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
         username: data.username,
       });
+
+      console.log("Fetching user data...");
       const fetchedUser = await fetchUserData(data.accessToken);
 
-      const userRole = fetchedUser?.role;
-      console.log("userRole", userRole);
+      if (!fetchedUser) {
+        console.error("Failed to fetch user data after login");
+        return;
+      }
+
+      const userRole = fetchedUser.role;
+      console.log("User role:", userRole);
+
+      // Add a small delay to ensure cookies are set
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       if (userRole === "admin") {
-        router.replace("/admin/dashboard");
+        console.log("Redirecting to admin dashboard");
+        window.location.href = "/admin/dashboard";
       } else if (userRole === "contractor") {
-        router.replace("/contractor/dashboard");
+        console.log("Redirecting to contractor dashboard");
+        window.location.href = "/contractor/dashboard";
       } else {
-        router.replace("/consumer/dashboard");
+        console.log("Redirecting to consumer dashboard");
+        window.location.href = "/consumer/dashboard";
       }
     } catch (error) {
       console.error("Login error:", error);

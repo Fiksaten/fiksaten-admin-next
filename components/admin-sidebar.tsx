@@ -55,6 +55,11 @@ const data = {
       icon: Home,
     },
     {
+      title: "Support Tickets",
+      url: "/admin/support-tickets",
+      icon: MessageSquare,
+    },
+    {
       title: "Orders",
       url: "/admin/orders",
       icon: Package,

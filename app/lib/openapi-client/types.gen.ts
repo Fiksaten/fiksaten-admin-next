@@ -687,6 +687,8 @@ export type ContractorJoinRequestData = {
         businessId?: string | null;
         businessType?: string | null;
         headerImageUrl?: string | null;
+        stripeConnectAccountId?: string | null;
+        stripeConnected?: boolean;
         iban?: string | null;
         bic?: string | null;
     };
@@ -1653,6 +1655,8 @@ export type GetContractorResponses = {
         businessId: string | null;
         businessType: string | null;
         headerImageUrl: string | null;
+        stripeConnectAccountId: string | null;
+        stripeConnected: boolean;
         iban: string | null;
         bic: string | null;
         stripeAccountId: string | null;
@@ -1754,6 +1758,8 @@ export type GetAvailableContractorsResponses = {
         businessId: string | null;
         businessType: string | null;
         headerImageUrl: string | null;
+        stripeConnectAccountId: string | null;
+        stripeConnected: boolean;
         iban: string | null;
         bic: string | null;
         stripeAccountId: string | null;
@@ -2079,6 +2085,8 @@ export type GetCurrentContractorDataResponses = {
             businessId: string | null;
             businessType: string | null;
             headerImageUrl: string | null;
+            stripeConnectAccountId: string | null;
+            stripeConnected: boolean;
             iban: string | null;
             bic: string | null;
             stripeAccountId: string | null;
@@ -2109,6 +2117,8 @@ export type UpdateCurrentContractorDataData = {
         businessId?: string | null;
         businessType?: string | null;
         headerImageUrl?: string | null;
+        stripeConnectAccountId?: string | null;
+        stripeConnected?: boolean;
         iban?: string | null;
         bic?: string | null;
         stripeAccountId?: string | null;
@@ -2200,12 +2210,12 @@ export type GetCurrentContractorOrdersResponses = {
             orderCity: string | null;
             orderZip: string | null;
             locationMoreInfo: string | null;
-            paymentMethod: 'now' | 'later';
             paymentIntentId: string | null;
             offersCount: number;
             doneAt: string | null;
             isDraft: boolean;
             draftStage: number;
+            receiptUrl: string | null;
             createdAt: string;
             updatedAt: string;
         }>;
@@ -2318,12 +2328,12 @@ export type GetOpenRequestsForContractorResponses = {
         orderCity: string | null;
         orderZip: string | null;
         locationMoreInfo: string | null;
-        paymentMethod: 'now' | 'later';
         paymentIntentId: string | null;
         offersCount: number;
         doneAt: string | null;
         isDraft: boolean;
         draftStage: number;
+        receiptUrl: string | null;
         createdAt: string;
         updatedAt: string;
         category: {
@@ -2402,12 +2412,12 @@ export type GetContractorSentRequestsResponses = {
         orderCity: string | null;
         orderZip: string | null;
         locationMoreInfo: string | null;
-        paymentMethod: 'now' | 'later';
         paymentIntentId: string | null;
         offersCount: number;
         doneAt: string | null;
         isDraft: boolean;
         draftStage: number;
+        receiptUrl: string | null;
         createdAt: string;
         updatedAt: string;
         category: {
@@ -2486,12 +2496,12 @@ export type GetContractorHistoryRequestsResponses = {
         orderCity: string | null;
         orderZip: string | null;
         locationMoreInfo: string | null;
-        paymentMethod: 'now' | 'later';
         paymentIntentId: string | null;
         offersCount: number;
         doneAt: string | null;
         isDraft: boolean;
         draftStage: number;
+        receiptUrl: string | null;
         createdAt: string;
         updatedAt: string;
         category: {
@@ -2570,12 +2580,12 @@ export type GetContractorInProgressRequestsResponses = {
         orderCity: string | null;
         orderZip: string | null;
         locationMoreInfo: string | null;
-        paymentMethod: 'now' | 'later';
         paymentIntentId: string | null;
         offersCount: number;
         doneAt: string | null;
         isDraft: boolean;
         draftStage: number;
+        receiptUrl: string | null;
         createdAt: string;
         updatedAt: string;
         category: {
@@ -2752,6 +2762,8 @@ export type GetContractorByOrderIdResponses = {
         reviewCount: number | null;
         verified: boolean | null;
         headerImageUrl: string | null;
+        stripeConnectAccountId: string | null;
+        stripeConnected: boolean;
     };
 };
 
@@ -2760,10 +2772,7 @@ export type GetContractorByOrderIdResponse = GetContractorByOrderIdResponses[key
 export type GetOwnOrdersData = {
     body?: never;
     path?: never;
-    query?: {
-        page?: number | null;
-        limit?: number | null;
-    };
+    query?: never;
     url: '/orders';
 };
 
@@ -2807,12 +2816,12 @@ export type GetOwnOrdersResponses = {
             orderCity: string | null;
             orderZip: string | null;
             locationMoreInfo: string | null;
-            paymentMethod: 'now' | 'later';
             paymentIntentId: string | null;
             offersCount: number;
             doneAt: string | null;
             isDraft: boolean;
             draftStage: number;
+            receiptUrl: string | null;
             createdAt: string;
             updatedAt: string;
             category: {
@@ -2835,9 +2844,6 @@ export type GetOwnOrdersResponses = {
                 phoneNumber: string | null;
             };
         }>;
-        total: number;
-        page: number;
-        limit: number;
     };
 };
 
@@ -2853,12 +2859,12 @@ export type CreateOrderData = {
         orderCity?: string | null;
         orderZip?: string | null;
         locationMoreInfo?: string | null;
-        paymentMethod?: 'now' | 'later';
         paymentIntentId?: string | null;
         offersCount?: number;
         doneAt?: string | null;
         isDraft?: boolean;
         draftStage?: number;
+        receiptUrl?: string | null;
     };
     path?: never;
     query?: never;
@@ -2905,12 +2911,12 @@ export type CreateOrderResponses = {
             orderCity: string | null;
             orderZip: string | null;
             locationMoreInfo: string | null;
-            paymentMethod: 'now' | 'later';
             paymentIntentId: string | null;
             offersCount: number;
             doneAt: string | null;
             isDraft: boolean;
             draftStage: number;
+            receiptUrl: string | null;
             createdAt: string;
             updatedAt: string;
         };
@@ -3011,12 +3017,12 @@ export type GetOrderDetailsResponses = {
             orderCity: string | null;
             orderZip: string | null;
             locationMoreInfo: string | null;
-            paymentMethod: 'now' | 'later';
             paymentIntentId: string | null;
             offersCount: number;
             doneAt: string | null;
             isDraft: boolean;
             draftStage: number;
+            receiptUrl: string | null;
             createdAt: string;
             updatedAt: string;
             category: {
@@ -3090,12 +3096,12 @@ export type UpdateOrderData = {
         orderCity?: string | null;
         orderZip?: string | null;
         locationMoreInfo?: string | null;
-        paymentMethod?: 'now' | 'later';
         paymentIntentId?: string | null;
         offersCount?: number;
         doneAt?: string | null;
         isDraft?: boolean;
         draftStage?: number;
+        receiptUrl?: string | null;
         createdAt?: string;
         updatedAt?: string;
     };
@@ -3152,12 +3158,12 @@ export type UpdateOrderResponses = {
             orderCity: string | null;
             orderZip: string | null;
             locationMoreInfo: string | null;
-            paymentMethod: 'now' | 'later';
             paymentIntentId: string | null;
             offersCount: number;
             doneAt: string | null;
             isDraft: boolean;
             draftStage: number;
+            receiptUrl: string | null;
             createdAt: string;
             updatedAt: string;
         };
@@ -3256,10 +3262,7 @@ export type RemoveDraftResponse = RemoveDraftResponses[keyof RemoveDraftResponse
 export type GetOwnDraftOrdersData = {
     body?: never;
     path?: never;
-    query?: {
-        page?: number | null;
-        limit?: number | null;
-    };
+    query?: never;
     url: '/orders/draft';
 };
 
@@ -3303,12 +3306,12 @@ export type GetOwnDraftOrdersResponses = {
             orderCity: string | null;
             orderZip: string | null;
             locationMoreInfo: string | null;
-            paymentMethod: 'now' | 'later';
             paymentIntentId: string | null;
             offersCount: number;
             doneAt: string | null;
             isDraft: boolean;
             draftStage: number;
+            receiptUrl: string | null;
             createdAt: string;
             updatedAt: string;
             category: {
@@ -3331,9 +3334,6 @@ export type GetOwnDraftOrdersResponses = {
                 phoneNumber: string | null;
             };
         }>;
-        total: number;
-        page: number;
-        limit: number;
     };
 };
 
@@ -3547,6 +3547,7 @@ export type CreateExpressOrderData = {
         chosenDay?: string | null;
         chosenStartTime?: string | null;
         userHasNeededTools?: boolean;
+        receiptUrl?: string | null;
         extraQuestionAnswers?: Array<{
             questionId: string;
             answer: string;
@@ -3603,6 +3604,7 @@ export type CreateExpressOrderResponses = {
             chosenStartTime: string | null;
             doneAt: string | null;
             userHasNeededTools: boolean;
+            receiptUrl: string | null;
             createdAt: string;
             updatedAt: string;
         };
@@ -3655,6 +3657,13 @@ export type GetExpressOrderOptionsResponses = {
             expressPrice: string | null;
             createdAt: string;
             updatedAt: string;
+            expressCategoryQuestions: Array<{
+                id: string;
+                categoryId: string;
+                questionText: string;
+                pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+                options: Array<string | null> | null;
+            }>;
         }>;
     };
 };
@@ -3664,10 +3673,7 @@ export type GetExpressOrderOptionsResponse = GetExpressOrderOptionsResponses[key
 export type GetOwnExpressOrdersData = {
     body?: never;
     path?: never;
-    query?: {
-        page?: number | null;
-        limit?: number | null;
-    };
+    query?: never;
     url: '/orders/me/express';
 };
 
@@ -3717,6 +3723,7 @@ export type GetOwnExpressOrdersResponses = {
             chosenStartTime: string | null;
             doneAt: string | null;
             userHasNeededTools: boolean;
+            receiptUrl: string | null;
             createdAt: string;
             updatedAt: string;
             category: {
@@ -3732,9 +3739,6 @@ export type GetOwnExpressOrdersResponses = {
                 cityName: string;
             };
         }>;
-        total: number;
-        page: number;
-        limit: number;
     };
 };
 
@@ -3790,6 +3794,7 @@ export type SearchExpressOrdersResponses = {
             chosenStartTime: string | null;
             doneAt: string | null;
             userHasNeededTools: boolean;
+            receiptUrl: string | null;
             createdAt: string;
             updatedAt: string;
             category: {
@@ -3804,6 +3809,19 @@ export type SearchExpressOrdersResponses = {
                 id: string;
                 cityName: string;
             };
+            qna: Array<{
+                id: string;
+                expressOrderId: string;
+                questionId: string;
+                answer: string;
+                question: {
+                    id: string;
+                    categoryId: string;
+                    questionText: string;
+                    pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+                    options: Array<string | null> | null;
+                };
+            }>;
         }>;
     };
 };
@@ -4016,6 +4034,7 @@ export type GetExpressOrderDetailsResponses = {
         chosenStartTime: string | null;
         doneAt: string | null;
         userHasNeededTools: boolean;
+        receiptUrl: string | null;
         createdAt: string;
         updatedAt: string;
         category: {
@@ -4037,6 +4056,19 @@ export type GetExpressOrderDetailsResponses = {
             email: string;
             phoneNumber: string | null;
         };
+        qna: Array<{
+            id: string;
+            expressOrderId: string;
+            questionId: string;
+            answer: string;
+            question: {
+                id: string;
+                categoryId: string;
+                questionText: string;
+                pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+                options: Array<string | null> | null;
+            };
+        }>;
     };
 };
 
@@ -4096,6 +4128,7 @@ export type GetExpressOrdersByUserIdResponses = {
         chosenStartTime: string | null;
         doneAt: string | null;
         userHasNeededTools: boolean;
+        receiptUrl: string | null;
         createdAt: string;
         updatedAt: string;
         category: {
@@ -4163,12 +4196,12 @@ export type GetOrdersByUserIdResponses = {
         orderCity: string | null;
         orderZip: string | null;
         locationMoreInfo: string | null;
-        paymentMethod: 'now' | 'later';
         paymentIntentId: string | null;
         offersCount: number;
         doneAt: string | null;
         isDraft: boolean;
         draftStage: number;
+        receiptUrl: string | null;
         createdAt: string;
         updatedAt: string;
     }>;
@@ -4200,10 +4233,27 @@ export type GetCustomerServiceTicketsResponses = {
      */
     200: Array<{
         id: string;
+        userId: string;
         content: string;
         status: string;
+        assignedAdminId: string | null;
         createdAt: string;
-        latestMessage: string | null;
+        updatedAt: string;
+        user: {
+            id: string;
+            firstname: string | null;
+            lastname: string | null;
+            email: string;
+            phoneNumber: string | null;
+            role: string;
+        };
+        messages: Array<{
+            id: string;
+            customerServiceTicketId: string;
+            message: string;
+            createdAt: string;
+            updatedAt: string;
+        }>;
     }>;
 };
 
@@ -4289,6 +4339,12 @@ export type AddCustomerServiceTicketMessageErrors = {
     401: {
         message: string;
     };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
 };
 
 export type AddCustomerServiceTicketMessageError = AddCustomerServiceTicketMessageErrors[keyof AddCustomerServiceTicketMessageErrors];
@@ -4303,6 +4359,52 @@ export type AddCustomerServiceTicketMessageResponses = {
 };
 
 export type AddCustomerServiceTicketMessageResponse = AddCustomerServiceTicketMessageResponses[keyof AddCustomerServiceTicketMessageResponses];
+
+export type UpdateCustomerServiceTicketData = {
+    body?: {
+        status: 'pending' | 'seen' | 'answered';
+        assignedAdminId: string | null;
+    };
+    path: {
+        ticketId: string;
+    };
+    query?: never;
+    url: '/customer-service/tickets/{ticketId}';
+};
+
+export type UpdateCustomerServiceTicketErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCustomerServiceTicketError = UpdateCustomerServiceTicketErrors[keyof UpdateCustomerServiceTicketErrors];
+
+export type UpdateCustomerServiceTicketResponses = {
+    /**
+     * Ticket updated
+     */
+    200: {
+        ticket: {
+            id: string;
+            userId: string;
+            content: string;
+            status: string;
+            assignedAdminId: string | null;
+        };
+    };
+};
+
+export type UpdateCustomerServiceTicketResponse = UpdateCustomerServiceTicketResponses[keyof UpdateCustomerServiceTicketResponses];
 
 export type GetNotificationsData = {
     body?: never;
@@ -4332,7 +4434,7 @@ export type GetNotificationsResponses = {
         title: string;
         message: string;
         read: boolean;
-        type: 'info' | 'newExpressOrder' | 'expressOrderUpdated' | 'newOrder' | 'newOrderMoreInfoRequest' | 'newOrderMoreInfoRequestResponse' | 'newOrderMoreInfoRequestResponseImage' | 'expressOrderCompleted' | 'expressOrderCancelled' | 'expressOrderAccepted' | 'expressOrderWaitingForPayment' | 'supportTicketResponse' | 'supportTicketNew' | 'supportTicketNewMessage' | 'newContractorRating' | 'paymentSuccess' | 'paymentFailed' | 'paymentRefunded' | 'paymentRefundFailed' | 'paymentRefundPending' | 'contractorApproved' | 'contractorRejected' | 'contractorMoreInfoNeeded' | 'newContractor' | 'offerExpired' | 'newOffer' | 'offerAccepted' | 'orderCancelled' | 'orderReminder' | 'orderRescheduled' | 'offerWithdrawn' | 'orderDeadlineApproaching' | 'welcomeMessage' | 'inactiveUserReminder' | 'newFeaturesAvailable' | 'maintenanceNotification' | 'promotionalOffer' | 'reviewRequest' | 'reviewResponse' | 'disputeOpened' | 'disputeResolved' | 'qualityAssurance' | 'areaNowAvailable' | 'contractorAvailable' | 'serviceAreaExpanded' | 'accountSecurityAlert' | 'passwordChanged' | 'emailChanged' | 'twoFactorEnabled' | 'sessionExpired' | 'weeklySummary' | 'monthlyReport' | 'revenueMilestone' | 'orderMilestone' | 'ticketEscalated' | 'ticketResolved' | 'feedbackRequest' | 'surveyInvitation' | 'invoiceGenerated' | 'paymentReminder' | 'stripeAccountUpdated' | 'contractorVerificationUpdated' | 'contractorProfileUpdated';
+        type: 'info' | 'newExpressOrder' | 'newOrder' | 'newOrderMoreInfoRequest' | 'newOrderMoreInfoRequestResponse' | 'newOrderMoreInfoRequestResponseImage' | 'expressOrderCompleted' | 'expressOrderCancelled' | 'expressOrderAccepted' | 'expressOrderWaitingForPayment' | 'supportTicketResponse' | 'supportTicketNew' | 'newContractorRating' | 'contractorApproved' | 'contractorRejected' | 'contractorMoreInfoNeeded' | 'newContractor' | 'offerExpired' | 'newOffer' | 'offerAccepted' | 'orderCancelled' | 'orderReminder' | 'orderRescheduled' | 'offerWithdrawn' | 'orderDeadlineApproaching' | 'welcomeMessage' | 'inactiveUserReminder' | 'newFeaturesAvailable' | 'maintenanceNotification' | 'promotionalOffer' | 'reviewRequest' | 'reviewResponse' | 'disputeOpened' | 'disputeResolved' | 'qualityAssurance' | 'areaNowAvailable' | 'contractorAvailable' | 'serviceAreaExpanded' | 'ticketEscalated' | 'ticketResolved' | 'stripeAccountUpdated' | 'stripeConnectionNeeded';
         content: string | number | boolean | null | {
             [key: string]: unknown;
         } | Array<unknown>;
@@ -4536,6 +4638,11 @@ export type AddCategoryData = {
         expressPrice?: string | null;
         createdAt?: string;
         updatedAt?: string;
+        extraQuestions?: Array<{
+            questionText: string;
+            pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+            options: Array<string | null> | null;
+        }>;
     };
     path?: never;
     query?: never;
@@ -4935,6 +5042,8 @@ export type GetAllContractorJoinRequestsResponses = {
         businessId: string | null;
         businessType: string | null;
         headerImageUrl: string | null;
+        stripeConnectAccountId: string | null;
+        stripeConnected: boolean;
         iban: string | null;
         bic: string | null;
         stripeAccountId: string | null;
@@ -5095,10 +5204,6 @@ export type GetLandingPageAnalyticsResponses = {
             totalRevenue: number;
             outstandingPayments: number;
             avgOrderValue: number;
-            paymentMethodDist: Array<{
-                paymentMethod: string | null;
-                count: number;
-            }>;
             refundStats: Array<{
                 type: string;
                 count: number;
@@ -5344,7 +5449,6 @@ export type AddNewReviewForContractorResponse = AddNewReviewForContractorRespons
 
 export type CreatePaymentIntentData = {
     body?: {
-        email?: string;
         offerId: string;
     };
     path?: never;

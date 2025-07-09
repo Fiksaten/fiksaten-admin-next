@@ -61,12 +61,7 @@ export default function AdminDashboardClient({
       express_order_count: Number(c.express_order_count),
     })
   );
-  const paymentMethodData = analytics.finance.paymentMethodDist.map(
-    (p: { paymentMethod: string | null; count: number }) => ({
-      paymentMethod: p.paymentMethod ?? "Unknown",
-      count: p.count,
-    })
-  );
+
   const revenueByCategoryData = analytics.finance.revenueByCategory.map(
     (c: { name: string; revenue: string }) => ({
       name: c.name,
@@ -98,18 +93,6 @@ export default function AdminDashboardClient({
       (acc: ChartConfig, cur: { role: string }, i: number) => {
         acc[cur.role] = {
           label: cur.role,
-          color: `var(--chart-${(i % 5) + 1})`,
-        };
-        return acc;
-      },
-      {} as ChartConfig
-    ),
-  };
-  const paymentChartConfig: ChartConfig = {
-    ...paymentMethodData.reduce(
-      (acc: ChartConfig, cur: { paymentMethod: string }, i: number) => {
-        acc[cur.paymentMethod] = {
-          label: cur.paymentMethod,
           color: `var(--chart-${(i % 5) + 1})`,
         };
         return acc;
@@ -352,39 +335,7 @@ export default function AdminDashboardClient({
             </ResponsiveContainer>
           </CardContent>
         </Card>
-        {/* Payment Method Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Payment Method Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={paymentChartConfig}
-              className="min-h-[250px] w-full"
-            >
-              <PieChart>
-                <Pie
-                  data={paymentMethodData}
-                  dataKey="count"
-                  nameKey="paymentMethod"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  label
-                >
-                  {paymentMethodData.map((entry: any, i: number) => (
-                    <Cell
-                      key={`cell-${i}`}
-                      fill={`var(--chart-${(i % 5) + 1})`}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
+
         {/* Revenue by Category */}
         <Card>
           <CardHeader>

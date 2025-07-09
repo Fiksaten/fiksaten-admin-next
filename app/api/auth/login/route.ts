@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { login } from '@/app/lib/openapi-client';
+import { NextRequest, NextResponse } from "next/server";
+import { login } from "@/app/lib/openapi-client";
 
-const baseUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
+const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   });
 
   if (error) {
-    return NextResponse.json({ message: error.message }, { status: error.status ?? 500 });
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 
   const res = NextResponse.json({
@@ -20,28 +20,28 @@ export async function POST(req: NextRequest) {
     refreshToken: data.refreshToken,
   });
   res.cookies.set({
-    name: 'accessToken',
+    name: "accessToken",
     value: data.accessToken,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
   });
   res.cookies.set({
-    name: 'refreshToken',
+    name: "refreshToken",
     value: data.refreshToken,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
   });
   res.cookies.set({
-    name: 'username',
+    name: "username",
     value: data.username,
     httpOnly: false,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
   });
   return res;
 }

@@ -27,9 +27,13 @@ import {
 
 interface Props {
   initialCategories: Categories;
+  accessToken: string;
 }
 
-export default function CategoryAdminTable({ initialCategories }: Props) {
+export default function CategoryAdminTable({
+  initialCategories,
+  accessToken,
+}: Props) {
   const [categories, setCategories] = useState(initialCategories);
   const [open, setOpen] = useState(false);
   const [editCategory, setEditCategory] = useState<Category | null>(null);
@@ -67,7 +71,13 @@ export default function CategoryAdminTable({ initialCategories }: Props) {
           description: "Update not implemented yet",
         });
       } else {
-        const newCat = await createCategory({ name: form.name });
+        const newCat = await createCategory(accessToken, {
+          name: form.name,
+          imageUrl: "",
+          description: "",
+          express: false,
+          expressPrice: null,
+        });
         setCategories((prev) => [...prev, newCat]);
         toast({ title: "Category created" });
       }
@@ -87,7 +97,7 @@ export default function CategoryAdminTable({ initialCategories }: Props) {
     if (!confirm("Delete this category?")) return;
     setLoading(true);
     try {
-      await deleteCategory(id);
+      await deleteCategory(accessToken, id);
       setCategories((prev) => prev.filter((c) => c.id !== id));
       toast({ title: "Category deleted" });
     } catch (err: any) {
