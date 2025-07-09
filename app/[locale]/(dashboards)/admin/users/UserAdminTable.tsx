@@ -52,7 +52,7 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
     if (!editUser) return;
     setLoading(true);
     try {
-      const updated = await updateUser(accessToken, {
+      await updateUser(accessToken, {
         ...form,
         email: form.email || "",
       });
@@ -61,10 +61,11 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
       );
       toast({ title: "User updated" });
       closeDialog();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -79,10 +80,11 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
       await requestAccountDeletion(accessToken, { email: user.email });
       setUsers((prev) => prev.filter((u) => u.id !== user.id));
       toast({ title: "User deleted" });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {

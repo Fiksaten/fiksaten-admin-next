@@ -44,8 +44,6 @@ const removeOrder = async (accessToken: string | undefined, orderId: string) => 
 const getUserOrders = async (
   accessToken: string | undefined,
   userId: string,
-  page: number,
-  limit: number
 ) => {
   const token = resolveToken(accessToken);
   if (!token) {
@@ -68,8 +66,6 @@ const getUserOrders = async (
 const getUserExpressOrders = async (
   accessToken: string | undefined,
   userId: string,
-  page: number,
-  limit: number
 ) => {
   const token = resolveToken(accessToken);
   if (!token) {

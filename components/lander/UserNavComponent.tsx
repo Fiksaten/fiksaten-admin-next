@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { ArrowRight, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useAuth } from "../AuthProvider";
 import { useTranslations } from "next-intl";
 

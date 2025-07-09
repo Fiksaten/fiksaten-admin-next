@@ -1,5 +1,4 @@
 import {
-  PromotionHeader,
   HeroSection,
   SecondaryHero,
   ContractorLogoCarousel,
@@ -10,7 +9,6 @@ import {
   CallToActionDownload,
   Footer,
 } from "@/components/lander";
-import Navigation from "@/components/lander/Navigation";
 
 export default async function Page({
   params,

@@ -12,7 +12,6 @@ const getSupportTickets = async (accessToken?: string) => {
   const res = await getCustomerServiceTickets({
     headers: { Authorization: `Bearer ${token}` },
   });
-  console.log(res);
   if (res.error) throw new Error(res.error.message);
   return res.data;
 };

@@ -10,7 +10,7 @@ import {
 } from './utils';
 
 type ReqInit = Omit<RequestInit, 'body' | 'headers'> & {
-  body?: any;
+  body?: unknown;
   headers: ReturnType<typeof mergeHeaders>;
 };
 
@@ -26,7 +26,7 @@ export const createClient = (config: Config = {}): Client => {
 
   const interceptors = createInterceptors<Response, unknown, RequestOptions>();
 
-  // @ts-expect-error
+  // @ts-expect-error - typed generics are incompatible
   const request: Client['request'] = async (options) => {
     const opts = {
       ..._config,
@@ -92,7 +92,7 @@ export const createClient = (config: Config = {}): Client => {
           ? getParseAs(response.headers.get('Content-Type'))
           : opts.parseAs) ?? 'json';
 
-      let data: any;
+      let data: unknown;
       switch (parseAs) {
         case 'arrayBuffer':
         case 'blob':

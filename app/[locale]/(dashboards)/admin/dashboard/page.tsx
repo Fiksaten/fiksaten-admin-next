@@ -5,6 +5,5 @@ import AdminDashboardClient from "./AdminDashboardClient";
 export default async function AdminDashboard() {
   const accessToken = await getaccessToken();
   const analytics = await getLandingPageAnalytics(accessToken);
-  console.log("analytics", JSON.stringify(analytics));
   return <AdminDashboardClient analytics={analytics} />;
 }

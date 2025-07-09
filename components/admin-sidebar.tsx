@@ -2,16 +2,13 @@
 
 import * as React from "react";
 import {
-  BarChart3,
   Building2,
-  Calendar,
   FileText,
   Home,
   Settings,
   Shield,
   Users,
   Package,
-  TrendingUp,
   MessageSquare,
   CreditCard,
   LogOut,
@@ -32,7 +29,6 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -1,6 +1,4 @@
 "use client";
-import { getLandingPageAnalytics } from "@/app/lib/services/analyticsService";
-import { getaccessToken } from "@/app/lib/actions";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import {
   Card,
@@ -25,10 +23,20 @@ import {
   Legend,
 } from "recharts";
 
+interface Analytics {
+  operations: {
+    orderStatusBreakdown: { status: string; count: number }[];
+  };
+  marketing: {
+    userGrowth: { date: string; count: number }[];
+    userRoles: { role: string; count: number }[];
+  };
+}
+
 export default function AdminDashboardClient({
   analytics,
 }: {
-  analytics: any;
+  analytics: Analytics;
 }) {
   // Prepare chart data
   const orderStatusData = analytics.operations.orderStatusBreakdown.map(
@@ -266,7 +274,7 @@ export default function AdminDashboardClient({
                   outerRadius={80}
                   label
                 >
-                  {userRoleData.map((entry: any, i: number) => (
+                  {userRoleData.map((entry: { role: string; count: number }, i: number) => (
                     <Cell
                       key={`cell-${i}`}
                       fill={`var(--chart-${(i % 5) + 1})`}

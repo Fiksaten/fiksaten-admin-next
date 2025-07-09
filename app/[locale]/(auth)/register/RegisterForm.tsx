@@ -54,7 +54,7 @@ const StepIndicator = ({
 );
 
 // Consumer form schema
-const getConsumerSchema = () => {
+const useConsumerSchema = () => {
   const t = useTranslations("");
   return Yup.object().shape({
     firstname: Yup.string().required(
@@ -80,12 +80,12 @@ const getConsumerSchema = () => {
 };
 
 // Personal info form schema (step 1 for contractors)
-const getContractorPersonalSchema = () => {
-  return getConsumerSchema();
+const useContractorPersonalSchema = () => {
+  return useConsumerSchema();
 };
 
 // Company info form schema (step 2 for contractors)
-const getContractorCompanySchema = () => {
+const useContractorCompanySchema = () => {
   const t = useTranslations("");
   return Yup.object().shape({
     companyName: Yup.string().required(
@@ -137,18 +137,18 @@ export default function RegisterForm({
   const { register: authRegister } = useAuth();
 
   // Personal info form (Step 1 for contractors, only step for consumers)
+  const consumerSchema = useConsumerSchema();
+  const contractorPersonalSchema = useContractorPersonalSchema();
+  const personalSchema =
+    userType === "consumer" ? consumerSchema : contractorPersonalSchema;
   const personalForm = useForm<ConsumerFormData>({
-    resolver: yupResolver(
-      userType === "consumer"
-        ? getConsumerSchema()
-        : getContractorPersonalSchema()
-    ),
+    resolver: yupResolver(personalSchema),
     mode: "onBlur",
   });
 
   // Company info form (Step 2 for contractors)
   const companyForm = useForm<ContractorCompanyFormData>({
-    resolver: yupResolver(getContractorCompanySchema()),
+    resolver: yupResolver(useContractorCompanySchema()),
     mode: "onBlur",
   });
 
