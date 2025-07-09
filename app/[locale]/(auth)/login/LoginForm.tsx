@@ -2,8 +2,6 @@
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,7 +9,7 @@ import * as yup from "yup";
 import { FormInput } from "@/components/FormInput";
 import { useTranslations } from "next-intl";
 
-const getLoginSchema = () => {
+const useLoginSchema = () => {
   const t = useTranslations("");
   return yup.object().shape({
     email: yup
@@ -40,7 +38,7 @@ export default function LoginForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: yupResolver(getLoginSchema()),
+    resolver: yupResolver(useLoginSchema()),
     mode: "onBlur",
   });
 

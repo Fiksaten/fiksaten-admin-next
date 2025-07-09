@@ -14,16 +14,8 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import {
-  getCategories,
-  createCategory,
-  deleteCategory,
-} from "@/app/lib/services/categoryService";
-import {
-  Categories,
-  Category,
-  CreateCategoryBody,
-} from "@/app/lib/types/categoryTypes";
+import { createCategory, deleteCategory } from "@/app/lib/services/categoryService";
+import { Categories, Category } from "@/app/lib/types/categoryTypes";
 
 interface Props {
   initialCategories: Categories;
@@ -82,10 +74,11 @@ export default function CategoryAdminTable({
         toast({ title: "Category created" });
       }
       closeDialog();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -100,10 +93,11 @@ export default function CategoryAdminTable({
       await deleteCategory(accessToken, id);
       setCategories((prev) => prev.filter((c) => c.id !== id));
       toast({ title: "Category deleted" });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {

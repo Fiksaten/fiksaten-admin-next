@@ -4,7 +4,6 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { GatewayProvider } from "@/components/GatewayProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { Inter } from "next/font/google";
-import { Footer, Navigation } from "@/components/lander";
 import { ThemeProvider } from "@/app/lib/themeProvider";
 import { NextIntlClientProvider } from "next-intl";
 
@@ -18,20 +17,6 @@ export const metadata: Metadata = {
   description: "Fiksaten",
 };
 
-function ConditionalNavigation({ pathname }: { pathname: string }) {
-  // Don't show main navigation for admin routes
-  const isAdminRoute = pathname.includes("/admin/dashboard");
-
-  if (isAdminRoute) {
-    return null;
-  }
-
-  return (
-    <header className="">
-      <Navigation />
-    </header>
-  );
-}
 
 export default async function RootLayout(
   props: Readonly<{

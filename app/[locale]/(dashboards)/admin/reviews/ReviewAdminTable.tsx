@@ -43,10 +43,11 @@ export default function ReviewAdminTable({
         toast({ title: "Review declined" });
         setReviews((prev) => prev.filter((r) => r.id !== reviewId));
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       toast({
         title: "Error",
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {

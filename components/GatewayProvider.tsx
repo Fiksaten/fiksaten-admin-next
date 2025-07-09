@@ -21,12 +21,12 @@ export function GatewayProvider({ children }: { children: React.ReactNode }) {
     const s = connect(tokens.accessToken);
     socketRef.current = s;
 
-    const handleExpress = ({ orderId }: { orderId: string }) => {
-      console.log('New express order', orderId);
+    const handleExpress = () => {
+      // handle express order
     };
 
-    const handleTicket = ({ userId }: { userId: string }) => {
-      console.log('New support ticket from', userId);
+    const handleTicket = () => {
+      // handle support ticket
     };
 
     s.on('express:new', handleExpress);

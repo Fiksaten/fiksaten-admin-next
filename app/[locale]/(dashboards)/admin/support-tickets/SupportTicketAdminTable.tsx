@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { Eye, MessageSquare, Clock, User, Mail, Phone } from "lucide-react";
@@ -121,7 +120,7 @@ export default function SupportTicketAdminTable({
       });
       setReplyMessage("");
       handleCloseDialog();
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to send reply. Please try again.",
@@ -145,7 +144,7 @@ export default function SupportTicketAdminTable({
         title: "Status updated",
         description: `Ticket status changed to ${newStatus}.`,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update status. Please try again.",
