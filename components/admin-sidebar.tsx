@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/components/AuthProvider";
+import { isSuperAdmin, isAdminRole } from "@/lib/permissions";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -97,11 +98,13 @@ const data = {
       title: "Settings",
       url: "/admin/settings",
       icon: Settings,
+      role: "admin",
     },
     {
       title: "Security",
       url: "/admin/security",
       icon: Shield,
+      role: "superadmin",
     },
   ],
 };
@@ -179,20 +182,28 @@ export function AdminSidebar({
           <SidebarGroupLabel>System</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.system.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === item.url}
-                    className="w-full"
-                  >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {data.system
+                .filter(
+                  (item) =>
+                    !item.role ||
+                    (item.role === "superadmin"
+                      ? isSuperAdmin(user?.role)
+                      : isAdminRole(user?.role))
+                )
+                .map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === item.url}
+                      className="w-full"
+                    >
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -218,7 +229,9 @@ export function AdminSidebar({
                     <span className="truncate font-semibold">
                       {user?.firstname} {user?.lastname}
                     </span>
-                    <span className="truncate text-xs">Administrator</span>
+                    <span className="truncate text-xs">
+                      {isSuperAdmin(user?.role) ? "Super Admin" : "Administrator"}
+                    </span>
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>

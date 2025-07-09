@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { routing } from "./i18n/routing";
 import { verifyToken } from "./lib/auth";
+import { isAdminRole } from "./lib/permissions";
 import { getCurrentContractorData } from "./app/lib/services/contractorService";
 
 // Create the next-intl middleware
@@ -76,8 +77,8 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (pathname.includes("/admin")) {
-    if (!user || user.role !== "admin") {
-      console.log("[middleware] Not admin, redirecting to /login");
+    if (!user || !isAdminRole(user.role)) {
+      console.log("[middleware] Not authorized for admin, redirecting to /login");
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
