@@ -5,24 +5,20 @@ import { routing } from "./i18n/routing";
 import { verifyToken } from "./lib/auth";
 import { isAdminRole } from "./lib/permissions";
 import { getCurrentContractorData } from "./app/lib/services/contractorService";
+import { getCurrentUser } from "./app/lib/openapi-client";
 
-// Create the next-intl middleware
 const intlMiddleware = createMiddleware(routing);
 
 async function fetchUser(token: string) {
-  // Use your own API endpoint to get the user info
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/users/me`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  if (!res.ok) {
-    return null;
+  const res = await getCurrentUser({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (res.error) {
+    throw new Error(res.error.message);
   }
-  return res.json();
+  return res.data;
 }
 
 export default async function middleware(request: NextRequest) {
@@ -33,8 +29,6 @@ export default async function middleware(request: NextRequest) {
   if (token) {
     user = await fetchUser(token);
   }
-
-  // debug logs removed
 
   const payload = token ? await verifyToken(token) : null;
 
@@ -61,21 +55,14 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (pathname.includes("/admin")) {
-
     if (!user || !isAdminRole(user.role)) {
-
-
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
-  // Apply the next-intl middleware
   return intlMiddleware(request);
 }
 
 export const config = {
-  // Match all pathnames except for
-  // - … if they start with `/api`, `/trpc`, `/_next` or `/_vercel`
-  // - … the ones containing a dot (e.g. `favicon.ico`)
   matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 };

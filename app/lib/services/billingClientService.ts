@@ -1,6 +1,6 @@
 import { createStripeAccountLink } from "@/app/lib/openapi-client";
 import Cookies from "js-cookie";
-const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const createAccountLink = async () => {
   const accessToken = Cookies.get("accessToken");

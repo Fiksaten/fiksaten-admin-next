@@ -1,7 +1,7 @@
 import { createStripeAccountLink } from "@/app/lib/openapi-client";
 import { getServerAccessToken } from "@/app/lib/serverAuth";
 
-const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const createAccountLink = async () => {
   const accessToken = await getServerAccessToken();

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { login } from "@/app/lib/openapi-client";
 
-const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
