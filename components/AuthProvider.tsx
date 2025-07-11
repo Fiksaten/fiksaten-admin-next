@@ -1,139 +1,144 @@
 "use client";
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { ContractorRegisterData, RegisterData } from "@/app/lib/types";
-import { buildApiUrl } from "@/app/lib/utils";
+import {
+  register as apiRegister,
+  contractorJoinRequest,
+  getCurrentUser,
+} from "@/app/lib/openapi-client";
+import { client as apiClient } from "@/app/lib/apiClient";
 import { toast } from "@/hooks/use-toast";
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export type UserMe = {
-  id: string;
-  sub: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  phoneNumber: string;
-  expoPushToken: string;
-  stripeCustomerId: string;
-  addressStreet: string;
-  addressDetail: string;
-  addressZip: string;
-  addressCountry: string;
-  badgeCountOffers: number;
-  badgeCountMessages: number;
-  role: string;
-  pushNotificationPermission: boolean;
-  smsPersmission: boolean;
-  emailPermission: boolean;
-  created_at: string;
-  updated_at: string;
-} | null;
+import { User } from "@/app/lib/types/userTypes";
+import dotenv from "dotenv";
+import { Register, ContractorRegisterData } from "@/app/lib/types/authTypes";
+dotenv.config();
 
 type Tokens = {
   accessToken: string;
   refreshToken: string;
-  idToken: string;
   username: string;
 };
 
 type AuthContextType = {
-  user: UserMe;
+  user: User | null;
   tokens: Tokens | null;
   login: (email: string, password: string) => Promise<void>;
   register: (
-    registerData: RegisterData,
+    registerData: Register,
     contractor: ContractorRegisterData | undefined
   ) => Promise<void>;
   logout: () => void;
-  verifyPhone: (code: string) => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserMe>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [tokens, setTokens] = useState<Tokens | null>(null);
   const router = useRouter();
 
-  const fetchUserData = useCallback(async (idToken: string) => {
-    try {
-      const userResponse = await fetch(`${API_URL}/api/v1/users/me`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        next: { revalidate: 600 }, // Cache for 10 minutes
-      });
-      if (!userResponse.ok) {
+  const fetchUserData = useCallback(
+    async (token: string) => {
+      try {
+        // fetching user data
+
+        const { data, error } = await getCurrentUser({
+          baseUrl: baseUrl,
+          headers: { Authorization: `Bearer ${token}` },
+          throwOnError: false,
+        });
+
+        if (error) {
+          console.error("Error fetching user data:", error);
+          toast({
+            title: "Kirjaudu uudelleen",
+            description: "Kirjaudu uudelleen",
+            variant: "destructive",
+          });
+          router.replace("/login");
+          return null;
+        }
+
+        // user data fetched
+        setUser(data);
+        return data;
+      } catch (error) {
+        console.error("Unexpected error in fetchUserData:", error);
         toast({
           title: "Kirjaudu uudelleen",
           description: "Kirjaudu uudelleen",
           variant: "destructive",
         });
         router.replace("/login");
+        return null;
       }
-      const userData: UserMe = await userResponse.json();
-      console.log("userData", userData);
-      setUser(userData);
-      return userData;
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  }, [router]);
+    },
+    [router]
+  );
 
   useEffect(() => {
-    const idToken = Cookies.get("idToken");
-    if (idToken) {
-      fetchUserData(idToken);
-    }
+    const loadSession = async () => {
+      const res = await fetch("/api/auth/session");
+      if (!res.ok) return;
+      const session = await res.json();
+      if (session.accessToken) {
+        setTokens(session);
+        fetchUserData(session.accessToken);
+      }
+    };
+    loadSession();
   }, [fetchUserData]);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch(`${API_URL}/api/v1/auth/login`, {
+      // attempt login
+
+      const res = await fetch("/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
-      if (!response.ok) {
-        console.error("Login failed:", response.statusText);
+      if (!res.ok) {
         throw new Error("Login failed");
       }
 
-      const data: Tokens = await response.json();
+      const data = await res.json();
+      // login successful
 
-      Cookies.set("accessToken", data.accessToken, {
-        secure: true,
-        sameSite: "strict",
+      setTokens({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        username: data.username,
       });
-      Cookies.set("refreshToken", data.refreshToken, {
-        secure: true,
-        sameSite: "strict",
-      });
-      Cookies.set("idToken", data.idToken, {
-        secure: true,
-        sameSite: "strict",
-      });
-      Cookies.set("username", data.username, {
-        secure: true,
-        sameSite: "strict",
-      });
-      setTokens(data);
-      const fetchedUser = await fetchUserData(data.idToken);
 
-      const userRole = fetchedUser?.role;
-      console.log("userRole", userRole);
+      // fetch user data after login
+      const fetchedUser = await fetchUserData(data.accessToken);
+
+      if (!fetchedUser) {
+        console.error("Failed to fetch user data after login");
+        return;
+      }
+
+      const userRole = fetchedUser.role;
+      // user role resolved
+
+      // Add a small delay to ensure cookies are set
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       if (userRole === "admin") {
-        router.replace("/admin/dashboard");
+        window.location.href = "/admin/dashboard";
       } else if (userRole === "contractor") {
-        router.replace("/contractor/dashboard");
+        window.location.href = "/contractor/dashboard";
       } else {
-        router.replace("/consumer/dashboard");
+        window.location.href = "/consumer/dashboard";
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -142,117 +147,87 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (
-    registerData: RegisterData,
+    registerData: Register,
     contractor?: ContractorRegisterData | undefined
   ) => {
     try {
       const { email, firstname, lastname, password, phoneNumber } =
         registerData;
-      const response = await fetch(`${API_URL}/api/v1/auth/register`, {
-        method: "POST",
-        body: JSON.stringify({
+      const { data } = await apiRegister({
+        client: apiClient,
+        body: {
           email,
           firstname,
           lastname,
           password,
           phoneNumber,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
         },
+        throwOnError: true,
       });
 
-      if (!response.ok) {
-        console.error("Login failed:", response.statusText);
-        throw new Error("Login failed");
-      }
-
-      const data = await response.json();
-
-      Cookies.set("accessToken", data.AccessToken, {
+      Cookies.set("accessToken", data.accessToken ?? "", {
         secure: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
-      Cookies.set("refreshToken", data.refreshToken, {
+      Cookies.set("refreshToken", data.refreshToken ?? "", {
         secure: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
-      Cookies.set("idToken", data.idToken, {
+      Cookies.set("username", data.username ?? "", {
         secure: true,
-        sameSite: "strict",
-      });
-      Cookies.set("username", data.username, {
-        secure: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       });
       setTokens({
-        accessToken: data.AccessToken,
-        refreshToken: data.refreshToken,
-        idToken: data.idToken,
-        username: data.username,
+        accessToken: data.accessToken ?? "",
+        refreshToken: data.refreshToken ?? "",
+        username: data.username ?? "",
       });
 
       if (contractor) {
-        const url = buildApiUrl("/users/contractor/request");
-        const contractorResponse = await fetch(url, {
-          method: "POST",
-          body: JSON.stringify({
-            ...contractor,
-          }),
+        await contractorJoinRequest({
+          client: apiClient,
+          headers: {
+            Authorization: `Bearer ${data.accessToken}`,
+          },
+          body: {
+            name: contractor.name,
+            description: contractor.description,
+            website: contractor.website,
+            email: contractor.email,
+            phone: contractor.phone,
+            addressStreet: contractor.addressStreet,
+            addressDetail: contractor.addressDetail,
+            addressZip: contractor.addressZip,
+            addressCountry: contractor.addressCountry,
+            imageUrl: contractor.imageUrl,
+            businessId: contractor.businessId,
+            businessType: contractor.businessType,
+            iban: contractor.iban,
+            bic: contractor.bic,
+          },
         });
-        if (!contractorResponse.ok) {
-          console.error("lol");
-        }
       }
 
-      await fetchUserData(data.idToken);
-
+      if (data.accessToken) {
+        await fetchUserData(data.accessToken);
+      }
     } catch (error) {
       console.error("Login error:", error);
       throw new Error("Login error");
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-    Cookies.remove("idToken");
     Cookies.remove("username");
     router.push("/");
   };
 
-  const verifyPhone = async (verificationCode: string) => {
-    console.log("verificationCode", verificationCode);
-    if (verificationCode === "090498") {
-      return true;
-    }
-    const url = buildApiUrl("/auth/verify-phone");
-    console.log("url", url);
-    console.log("tokens", tokens);
-    const verifyResponse = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        code: verificationCode,
-      }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-
-        Authorization: `Bearer ${tokens?.accessToken}`,
-      },
-    });
-    if (verifyResponse.status !== 200) {
-      return false;
-    }
-    return true;
-  };
-
   return (
-    <AuthContext.Provider
-      value={{ user, tokens, login, logout, register, verifyPhone }}
-    >
+    <AuthContext.Provider value={{ user, tokens, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

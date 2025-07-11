@@ -34,3 +34,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Realtime Socket.IO Integration
+
+See [`docs/realtime-socketio.md`](docs/realtime-socketio.md) for details on connecting to the API's realtime Gateway using Socket.IO.
+
+## Analytics
+
+PostHog is used for basic page view analytics. Set `NEXT_PUBLIC_POSTHOG_KEY` and `NEXT_PUBLIC_POSTHOG_HOST` in your `.env` file to enable tracking.

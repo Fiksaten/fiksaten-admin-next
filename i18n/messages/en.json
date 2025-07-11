@@ -1,0 +1,278 @@
+{
+  "lander": {
+    "callToActionDownload": {
+      "title": "Lataa Fiksaten mobiilisovellus",
+      "description": "Fiksaten mobiilisovelluksella lähetät avuntarvepyynnön helposti. Apulaiset lähellä sinua vastaavat tarjouspyynnöillä ja voit valita juuri sinulle sopivan tarjouksen."
+    },
+    "heroSection": {
+      "title": "Löydä kodin apulainen helposti ja nopeasti",
+      "description": "Tarvitsetko apua uuden vaatekaapin asennukselle tai vaikkapa TV:n asennukselle seinään? Fiksaten avulla löydät luotettavan tekijän helposti, jopa samana päivänä.",
+      "actionPrimary": "Ilmoita avuntarve",
+      "actionSecondary": "Katso miten Fiksaten toimii"
+    },
+    "secondaryHero": {
+      "title": "Kilpailuta helposti mikä tahansa työ",
+      "description": "Voit kilpailuttaa pienenkin työn helposti ja nopeasti. Lähetä vain avuntarvepyyntö työstäsi ja valitse sopiva tarjous palveluista. Kotona tehtävä työ on kotitalousvähennyskelpoinen.",
+      "actionPrimary": "Ilmoita avuntarve"
+    },
+    "contractorLogoCarousel": {
+      "title": "Yhteistyössä"
+    },
+    "findNearYouSection": {
+      "title": "Löydä tekijä läheltä sinua",
+      "description": "Voit kilpailuttaa pienenkin työn helposti ja nopeasti. Lähetä vain avuntarvepyyntö työstäsi ja valitse sopiva tarjous apulaiselta. Kotona tehtävä työ on kotitalousvähennyskelpoinen."
+    },
+    "yourSupportSection": {
+      "title": "Fiksaten on tukenasi",
+      "description": "Asiakaspalvelumme auttaa tarvittaessa missä tahansa kysymyksissä. Voit olla yhteydessä asiakaspalveluumme sähköpostitse tai kätevästi chatin välityksellä.",
+      "additionalDescription": "Asiakaspalvelu palvelee arkisin 9-18 välisenä aikana.",
+      "actionPrimary": "Liity apulaiseksi",
+      "imageTitle": "Haluatko liittyä apulaiseksi?",
+      "imageDescription": "Fiksaten tarjoaa kätevän ja helpon tavan löytää asiakkaat läheltä sinua. Saat käyttöösi kaikki tarvittavat ohjelmisto-työkalut ja vapauden päättää omat työajat. Näet myös raportit tekemistä töistä ja tilityksistä."
+    },
+    "recomendedSection": {
+      "title": "“Fiksatenin avulla sain uuden TV:n seinään jopa muutamassa tunnissa ilmoituksen jättämisestä. Tulen käyttämään jatkossakin",
+      "description": "Pekka Puupää",
+      "additionalDescription": "Sun mutsi",
+      "actionPrimary": "Katso trustpilot"
+    },
+    "faqSection": {
+      "title": "Usein kysytyt kysymykset",
+      "description": "Vastaamme kaikkiin kysymyksiisi",
+      "faq1": {
+        "question": "Miten Fiksaten toimii?",
+        "answer": "En kerro :D"
+      },
+      "faq2": {
+        "question": "Miten tarjouspyynnön lähettäminen toimii?",
+        "answer": "En kerro :D"
+      },
+      "faq3": {
+        "question": "Mikä on asiakkaan budjetti?",
+        "answer": "En kerro :D"
+      },
+      "faq4": {
+        "question": "Työpyyntö peruuntui, kuinka toimin?",
+        "answer": "En kerro :D"
+      },
+      "faq5": {
+        "question": "Apulainen ei ilmestynyt paikalle, mitä teen?",
+        "answer": "Mikäli apulainen  ei saapunut paikalle sovittuna aikana ja työpyyntö oli avoimena, otathan yhteyttä Fiksatenin asiakaspalveluun. Tiimimme auttaa selvittämään mikä on mennyt pieleen ja tarvittaessa voimme auttaa etsimään toisen apulaisen haluamallesi työlle."
+      },
+      "faq6": {
+        "question": "Mitä maksutapoja teillä on käytössä?",
+        "answer": "En kerro :D"
+      },
+      "faq7": {
+        "question": "Miten voin liittyä apulaiseksi?",
+        "answer": "En kerro :D"
+      }
+    }
+  },
+  "navigation": {
+    "dashboard": "Etusivu",
+    "newRequest": "Uusi pyyntö",
+    "orders": "Tilaukset",
+    "settings": "Asetukset",
+    "logout": "Kirjaudu ulos",
+    "sendRequest": "Ilmoita avuntarve",
+    "aboutUs": "Mikä on Fiksaten",
+    "joinUs": "Liity apulaiseksi",
+    "customerService": "Asiakaspalvelu",
+    "login": "Kirjaudu sisään",
+    "register": "Rekisteröidy"
+  },
+  "register": {
+    "register": "Register",
+    "consumer": "Consumer",
+    "contractor": "Contractor",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "phone": "Phone Number",
+    "companyName": "Company Name",
+    "companyEmail": "Company Email",
+    "companyPhone": "Company Phone",
+    "businessId": "Business ID",
+    "companyDescription": "Company Description",
+    "holder": "Enter ",
+    "selectType": "Select Account Type",
+    "personalInfo": "Personal Information",
+    "companyInfo": "Company Information",
+    "next": "Next",
+    "back": "Back",
+    "registering": "Registering..."
+  },
+  "verification": {
+    "phone": "",
+    "enter": "",
+    "send": "",
+    "registerSuccess": "Registration Successful",
+    "registerSuccessDescription": "Please verify your phone number.",
+    "registerFailed": "Registration Failed",
+    "registerFailedDescription": "An error occurred during registration.",
+    "verificationSuccess": "Phone Verified",
+    "verificationSuccessDescription": "Your phone number has been successfully verified.",
+    "verificationFailed": "Verification Failed",
+    "verificationFailedDescription": "Please check the code and try again."
+  },
+  "validation": {
+    "required": " on pakollinen",
+    "invalid": " on virheellinen",
+    "password": {
+      "lowercase": "Salasanan tulee sisältää pieniä kirjaimia",
+      "uppercase": "Salasanan tulee sisältää isoja kirjaimia",
+      "number": "Salasanan tulee sisältää vähintään yksi numero",
+      "special": "Salasanan tulee sisältää erikoismerkkejä (!@#$%^&*+:)",
+      "min": "Salasanan tulee olla vähintään {{min}} merkkiä pitkä"
+    }
+  },
+  "media": {
+    "toMedia": "Medialle",
+    "description": "Voit ottaa yhteyttä tiimiimme mediaan liittyvissä asioissa.",
+    "emailFor": "Sähköposti medialle"
+  },
+  "contact": {
+    "title": "Ota yhteyttä",
+    "description": "Haluatko ottaa yhteyttä asiakaspalveluumme? Voit lähettää meille viestin\n ja olemme pian yhteydessä.",
+    "emailFor": "Lähetä viesti",
+    "callFor": "Soita meille"
+  },
+  "privacy": {
+    "mainTitle": "Tietosuoja- ja evästekäytännöt",
+    "lastUpdated": "11.7.2024 — Fiksaten Group Oy",
+    "dataControllerTitle": "Fiksaten henkilötietojesi rekisterinpitäjänä",
+    "dataControllerDescription": "Fiksatenin liiketoiminnan keskeisenä tarkoituksena on pyrkiä tuotteillaan ja palveluillaan tarjoamaan voimaannuttavia kokemuksia asiakkailleen...",
+    "privacyPolicyTitle": "Tietosuojakäytäntö",
+    "privacyPolicyDescription": "Tämä tietosuojakäytäntö koskee Fiksaten.fi-verkkosivua, mobiilisovellusta ja sen käyttäjiä...",
+    "section1Title": "1. Kerättävät tiedot",
+    "section1Intro": "Keräämme seuraavia tietoja käyttäjiltämme:",
+    "section1DataPoints": {
+      "personal": "Henkilötiedot: nimi, osoite, puhelinnumero, sähköpostiosoite.",
+      "location": "Sijaintitiedot: käyttäjän laitteesta kerätyt sijaintitiedot palvelun toiminnan mahdollistamiseksi.",
+      "payment": "Maksutiedot: maksutietoja käsitellään turvallisesti kolmannen osapuolen maksupalveluiden kautta.",
+      "usage": "Sovelluksen käyttöön liittyvät tiedot: laitteiden tunnisteet, IP-osoitteet, käyttöjärjestelmätiedot."
+    },
+    "section2Title": "2. Tietojen käyttö",
+    "section2Intro": "Käytämme kerättyjä tietoja seuraaviin tarkoituksiin:",
+    "section2Purposes": {
+      "service": "Palvelun tarjoaminen ja käyttäjäkokemuksen parantaminen.",
+      "communication": "Käyttäjien ja urakoitsijoiden välisen yhteydenpidon mahdollistaminen.",
+      "payments": "Maksutapahtumien käsittely.",
+      "marketing": "Markkinointi ja viestintä käyttäjien suuntaan, heidän suostumuksellaan.",
+      "analytics": "Analytiikka ja tilastolliset tarkoitukset."
+    },
+    "section3Title": "3. Tietojen säilytys",
+    "section3Content": "Säilytämme henkilötietoja niin kauan kuin se on tarpeen palvelun tarjoamisen ja lakisääteisten velvoitteiden täyttämiseksi...",
+    "section4Title": "4. Tietojen luovuttaminen",
+    "section4Intro": "Emme luovuta käyttäjien henkilötietoja kolmansille osapuolille, paitsi seuraavissa tapauksissa:",
+    "section4Conditions": {
+      "consent": "Jos käyttäjä antaa meille suostumuksen.",
+      "legal": "Jos tämä on vaadittu lakisääteisten velvoitteiden täyttämiseksi.",
+      "providers": "Palvelun toimittamiseksi tarvittaville palveluntarjoajille (esim. maksupalvelut)."
+    },
+    "section5Title": "5. Käyttäjän oikeudet",
+    "section5Intro": "Käyttäjillä on seuraavat oikeudet:",
+    "section5Rights": {
+      "access": "Oikeus tarkistaa itseään koskevat tiedot.",
+      "correction": "Oikeus tietojen oikaisemiseen tai poistamiseen.",
+      "restriction": "Oikeus käsittelyn rajoittamiseen.",
+      "objection": "Oikeus vastustaa tietojen käsittelyä.",
+      "portability": "Oikeus tietojen siirrettävyyteen."
+    },
+    "contactInfo": "Yhteydenotot tietosuoja-asioissa voi osoittaa sähköpostitse osoitteeseen asiakaspalvelu@fiksaten.fi.",
+    "cookiePolicyTitle": "Evästekäytäntö",
+    "cookiePolicyIntro": "Tämä evästekäytäntö selittää, miten Fiksaten.fi käyttää evästeitä ja vastaavia teknologioita käyttäjien laitteilla...",
+    "cookieSection1Title": "1. Mitä evästeet ovat?",
+    "cookieSection1Content": "Evästeet ovat pieniä tekstitiedostoja, jotka tallennetaan käyttäjän laitteelle heidän vieraillessaan verkkosivuilla...",
+    "cookieSection2Title": "2. Evästeiden käyttö",
+    "cookieSection2Functional": "Toiminnalliset evästeet: Nämä evästeet ovat välttämättömiä palvelun toiminnan kannalta...",
+    "cookieSection2Analytics": "Analytiikkaevästeet: Nämä evästeet keräävät tietoa siitä, miten käyttäjät käyttävät palveluamme...",
+    "cookieSection2Marketing": "Markkinointievästeet: Nämä evästeet keräävät tietoa käyttäjän selaustottumuksista...",
+    "cookieSection3Title": "3. Evästeiden hallinta",
+    "cookieSection3Content": "Käyttäjät voivat hallita evästeasetuksiaan selaimensa asetuksista...",
+    "cookieSection4Title": "4. Kolmannen osapuolen evästeet",
+    "cookieSection4Content": "Sovelluksemme voi käyttää kolmansien osapuolten evästeitä, kuten analytiikka- ja mainontapalveluja tarjoavia evästeitä...",
+    "cookieContact": "Yhteydenotot evästeisiin liittyvissä asioissa voi osoittaa sähköpostitse osoitteeseen asiakaspalvelu@fiksaten.fi",
+    "cookieChanges": "Nämä käytännöt voivat muuttua aika ajoin. Suosittelemme käyttäjiä tarkistamaan nämä sivut säännöllisesti..."
+  },
+  "company": {
+    "badge": "Mikä on Fiksaten?",
+    "title": "Fiksaten, uuden ajan sovellus kodin askareisiin",
+    "subtitle": "Halusimme helpottaa kodin palveluiden tilaamista kaikille.",
+    "imageAlt": "Wow katso kattoa",
+    "about": {
+      "heading": "Me Fiksatenilla halusimme muuttaa tapaa, jolla pientenkin arkiaskareiden tekijän voi löytää uudella ja helpolla tavalla.",
+      "description": "Fiksaten on mobiilisovellus, joka yhdistää ensisijaisesti kodinomistajat, vuokralaiset ja kiinteistösijoittajat alustan valittuihin urakoitsijoihin kiinteällä hinnalla ja tehokkaalla tavalla. Tämä tekee kodin palveluiden tilaamisesta ja kodin kunnostusprojekteista entistä helpompaa ja läpinäkyvämpää kummallekin osapuolelle."
+    },
+    "citiesHeading": "Palvelemme tällä hetkellä seuraavilla alueilla:",
+    "cities": {
+      "helsinki": {
+        "name": "Helsinki",
+        "population": "Asukkaita yhteensä 675 952"
+      },
+      "espoo": {
+        "name": "Espoo",
+        "population": "Asukkaita yhteensä 314 150"
+      },
+      "vantaa": {
+        "name": "Vantaa",
+        "population": "Asukkaita yhteensä 251 235"
+      }
+    }
+  },
+  "login": {
+    "email": "Sähköposti",
+    "emailHolder": "Syötä sähköposti",
+    "password": "Salasana",
+    "passwordHolder": "Syötä salasana",
+    "forgot": "Unohditko salasanasi?",
+    "title": "Kirjaudu sisään",
+    "titleSecondary": "Kirjaudu Fiksaten tilillesi ja voit ilmoittaa avuntarvepyynnön heti.",
+    "or": "TAI",
+    "donthaveaccount": "Eikö sinulla ole vielä tiliä?",
+    "register": "Rekisteröidy",
+    "loginFailed": "Kirjautuminen epäonnistui. Tarkista käyttäjätunnus ja salasana."
+  },
+  "footer": {
+    "company": {
+      "title": "YRITYS",
+      "aboutUs": "Tietoa meistä",
+      "faq": "Usein kysytyt kysymykset",
+      "privacy": "Tietosuoja",
+      "team": "Tiimi",
+      "recruiment": "Rekrytointi"
+    },
+    "consumers": {
+      "title": "KULUTTAJILLE",
+      "howItWorks": "Miten Fiksaten toimii",
+      "request": "Ilmoita avuntarve",
+      "blog": "Blogi"
+    },
+    "companies": {
+      "title": "YRITYKSILLE",
+      "join": "Liity apulaiseksi",
+      "info": "Tietoa yrityksille",
+      "terms": "Käyttöehdot",
+      "support": "Asiakaspalvelu"
+    },
+    "download": {
+      "title": "LATAA SOVELLUS",
+      "subtitle": "Lataa Fiksaten mobiilisovellus"
+    },
+    "bottom": {
+      "logo": "Fiksaten",
+      "privacy": "Tietosuoja",
+      "terms": "Käyttöehdot",
+      "cookies": "Evästeasetukset",
+      "facebook": "Facebook - Aukeaa uudessa välilehdessä",
+      "twitter": "X / Twitter - Aukeaa uudessa välilehdessä",
+      "instagram": "Instagram - Aukeaa uudessa välilehdessä",
+      "linkedin": "Linkedin - Aukeaa uudessa välilehdessä",
+      "youtube": "Youtube - Aukeaa uudessa välilehdessä",
+      "tiktok": "Tiktok - Aukeaa uudessa välilehdessä"
+    }
+  },
+  "promotionHeader": "Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti."
+}
