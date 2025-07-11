@@ -1,42 +1,30 @@
 import {
-  getCategories as getCategoriesApi,
-  addCategory as createCategoryApi,
-  deleteCategory as deleteCategoryApi,
-  updateCategory as updateCategoryApi,
+  sendCustomNotificationToUser,
+  sendCustomNotificationToAllUsers,
+  sendCustomNotificationToAllConsumers,
+  sendCustomNotificationToAllContractors,
 } from "../openapi-client";
-import { CreateCategoryBody } from "../types/categoryTypes";
+import {
+  SendNotificationToUserBody,
+  SendNotificationToAllUsersBody,
+  SendNotificationToAllConsumersBody,
+  SendNotificationToAllContractorsBody,
+} from "../types/notificationTypes";
 import { resolveToken } from "./util";
 
-const getCategories = async (accessToken?: string) => {
-  const token = resolveToken(accessToken);
-  if (!token) {
-    throw new Error("No access token available");
-  }
-  const res = await getCategoriesApi({
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  console.log(res);
-  if (res.error) {
-    throw new Error(res.error.message);
-  }
-  return res.data;
-};
-
-const createCategory = async (
+const sendNotificationToUser = async (
   accessToken: string | undefined,
-  category: CreateCategoryBody
+  notificationData: SendNotificationToUserBody
 ) => {
   const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
-  const res = await createCategoryApi({
+  const res = await sendCustomNotificationToUser({
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    body: category,
+    body: notificationData,
   });
   if (res.error) {
     throw new Error(res.error.message);
@@ -44,23 +32,19 @@ const createCategory = async (
   return res.data;
 };
 
-const updateCategory = async (
+const sendNotificationToAllUsers = async (
   accessToken: string | undefined,
-  categoryId: string,
-  category: CreateCategoryBody
+  notificationData: SendNotificationToAllUsersBody
 ) => {
   const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
-  const res = await updateCategoryApi({
+  const res = await sendCustomNotificationToAllUsers({
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    path: {
-      id: categoryId,
-    },
-    body: category,
+    body: notificationData,
   });
   if (res.error) {
     throw new Error(res.error.message);
@@ -68,21 +52,19 @@ const updateCategory = async (
   return res.data;
 };
 
-const deleteCategory = async (
+const sendNotificationToAllConsumers = async (
   accessToken: string | undefined,
-  categoryId: string
+  notificationData: SendNotificationToAllConsumersBody
 ) => {
   const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
-  const res = await deleteCategoryApi({
+  const res = await sendCustomNotificationToAllConsumers({
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    path: {
-      categoryId,
-    },
+    body: notificationData,
   });
   if (res.error) {
     throw new Error(res.error.message);
@@ -90,4 +72,29 @@ const deleteCategory = async (
   return res.data;
 };
 
-export { getCategories, createCategory, updateCategory, deleteCategory };
+const sendNotificationToAllContractors = async (
+  accessToken: string | undefined,
+  notificationData: SendNotificationToAllContractorsBody
+) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
+  const res = await sendCustomNotificationToAllContractors({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: notificationData,
+  });
+  if (res.error) {
+    throw new Error(res.error.message);
+  }
+  return res.data;
+};
+
+export {
+  sendNotificationToUser,
+  sendNotificationToAllUsers,
+  sendNotificationToAllConsumers,
+  sendNotificationToAllContractors,
+};

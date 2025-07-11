@@ -1,4 +1,5 @@
 import { getLandingPageAnalytics as getLandingPageAnalyticsApi } from "../openapi-client";
+import { LandingPageAnalytics } from "../types/analyticsTypes";
 import { resolveToken } from "./util";
 
 type CacheEntry<T> = {
@@ -16,7 +17,7 @@ const getLandingPageAnalytics = async (accessToken?: string) => {
   }
   const cached = analyticsCache.get(token);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION_MS) {
-    return cached.data as unknown;
+    return cached.data as LandingPageAnalytics;
   }
   const res = await getLandingPageAnalyticsApi({
     headers: {
@@ -27,7 +28,7 @@ const getLandingPageAnalytics = async (accessToken?: string) => {
     throw new Error(res.error.message);
   }
   analyticsCache.set(token, { data: res.data, timestamp: Date.now() });
-  return res.data;
+  return res.data as LandingPageAnalytics;
 };
 
 export { getLandingPageAnalytics };

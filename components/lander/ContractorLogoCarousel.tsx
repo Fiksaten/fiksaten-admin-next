@@ -18,7 +18,7 @@ export default async function ContractorLogoCarousel({
 }) {
   const t = await getTranslations({ locale, namespace: "lander" });
   return (
-    <div className="w-full overflow-hidden bg-white px-4 py-10">
+    <div className="w-full overflow-hidden  px-4 py-10">
       <div className="my-2 flex justify-center">
         <p className="text-xl text-black dark:text-white font-bold">
           {t("contractorLogoCarousel.title")}

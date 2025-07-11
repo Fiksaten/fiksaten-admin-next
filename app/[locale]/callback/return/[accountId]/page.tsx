@@ -1,10 +1,11 @@
 import Link from "next/link";
 
 interface PageProps {
-  params: { accountId: string };
+  params: Promise<{ accountId: string }>;
 }
 
-export default function StripeReturnSuccessPage({ params }: PageProps) {
+export default async function StripeReturnSuccessPage({ params }: PageProps) {
+  const { accountId } = await params;
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-12 px-4">
       <svg
@@ -30,7 +31,7 @@ export default function StripeReturnSuccessPage({ params }: PageProps) {
       </svg>
       <h1 className="text-2xl font-bold mb-2">Stripe-tili yhdistetty!</h1>
       <p className="mb-4 text-center text-gray-600">
-        Stripe-tilisi ({params.accountId}) on yhdistetty onnistuneesti.
+        Stripe-tilisi ({accountId}) on yhdistetty onnistuneesti.
         <br />
         Voit nyt vastaanottaa maksuja alustalla.
       </p>

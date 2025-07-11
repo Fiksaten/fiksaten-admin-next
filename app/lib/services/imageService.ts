@@ -25,4 +25,23 @@ const getSignedUrl = async (
   return res.data;
 };
 
-export { getSignedUrl };
+// Enhanced wrapper for upload flow
+const getUploadUrlAndImageUrl = async (
+  accessToken: string | undefined,
+  fileType: string,
+  fileName: string
+) => {
+  const signedUrlData = await getSignedUrl(accessToken, fileType, fileName);
+
+  // Extract the base URL from the signed URL to construct the final image URL
+  // The signed URL contains query parameters for uploading, but the final image URL is just the base URL
+  const signedUrl = signedUrlData.url;
+  const baseUrl = signedUrl.split("?")[0]; // Remove query parameters
+
+  return {
+    signedUrl,
+    imageUrl: baseUrl,
+  };
+};
+
+export { getSignedUrl, getUploadUrlAndImageUrl };

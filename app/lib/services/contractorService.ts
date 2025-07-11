@@ -12,18 +12,20 @@ import {
 import {
   ContractorJoinRequestBody,
   ContractorUpdateBody,
+  CurrentContractorResponse,
 } from "../types/contractorTypes";
 import Cookies from "js-cookie";
 import { resolveToken } from "./util";
+import { getaccessToken } from "../actions";
 
 const approveContractor = async (
   accessToken: string | undefined,
-  contractorId: string,
+  contractorId: string
 ) => {
   const token =
     accessToken ??
     (typeof window === "undefined"
-      ? getServerAccessToken()
+      ? getaccessToken()
       : Cookies.get("accessToken") || "");
   if (!token) {
     throw new Error("No access token available");
@@ -44,10 +46,9 @@ const approveContractor = async (
 
 const declineContractor = async (
   accessToken: string | undefined,
-  contractorId: string,
+  contractorId: string
 ) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -67,10 +68,9 @@ const declineContractor = async (
 
 const chooseCategories = async (
   accessToken: string | undefined,
-  categoryIds: string[],
+  categoryIds: string[]
 ) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -92,8 +92,7 @@ const updateCurrentContractorData = async (
   accessToken: string | undefined,
   contractorData: ContractorUpdateBody
 ) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -113,8 +112,7 @@ const requestJoinContractor = async (
   accessToken: string | undefined,
   contractorData: ContractorJoinRequestBody
 ) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -131,8 +129,7 @@ const requestJoinContractor = async (
 };
 
 const getAllContractorJoinRequests = async (accessToken?: string) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -149,10 +146,9 @@ const getAllContractorJoinRequests = async (accessToken?: string) => {
 
 const getContractorData = async (
   accessToken: string | undefined,
-  contractorId: string,
+  contractorId: string
 ) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -171,8 +167,7 @@ const getContractorData = async (
 };
 
 const getCurrentContractorData = async (accessToken?: string) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -184,7 +179,7 @@ const getCurrentContractorData = async (accessToken?: string) => {
   if (res.error) {
     throw new Error(res.error.message);
   }
-  return res.data;
+  return res.data as CurrentContractorResponse;
 };
 
 export {

@@ -15,15 +15,11 @@ export default function UnauthorizedContractor({
   contractor,
   accessToken,
 }: {
-  contractor: CurrentContractorResponse;
+  contractor: CurrentContractorResponse | undefined;
   accessToken: string;
 }) {
-
   const router = useRouter();
   const t = useTranslations("Contractor.UnauthorizedContractor");
-  if (contractor.contractor.approvalStatus === "approved") {
-    router.replace("/contractor/dashboard");
-  }
   const [formData, setFormData] = useState({
     companyName: contractor ? contractor.contractor.name : "",
     companyEmail: contractor ? contractor.contractor.email : "",
@@ -31,6 +27,12 @@ export default function UnauthorizedContractor({
     businessId: contractor ? contractor.contractor.businessId : "",
     companyDescription: contractor ? contractor.contractor.description : "",
   });
+  if (!contractor) {
+    return <div>No contractor data</div>;
+  }
+  if (contractor.contractor.approvalStatus === "approved") {
+    router.replace("/contractor/dashboard");
+  }
 
   const handleSubmit = async () => {
     const res = await requestJoinContractor(accessToken, {

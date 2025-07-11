@@ -1,10 +1,11 @@
 import Link from "next/link";
 
 interface PageProps {
-  params: { accountId: string };
+  params: Promise<{ accountId: string }>;
 }
 
-export default function StripeRefreshCallbackPage({ params }: PageProps) {
+export default async function StripeRefreshCallbackPage({ params }: PageProps) {
+  const { accountId } = await params;
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-12 px-4">
       <svg
@@ -30,7 +31,7 @@ export default function StripeRefreshCallbackPage({ params }: PageProps) {
       </svg>
       <h1 className="text-2xl font-bold mb-2">Yhdistäminen keskeytyi</h1>
       <p className="mb-4 text-center text-gray-600">
-        Stripe-tilin yhdistäminen ({params.accountId}) keskeytyi tai vaatii
+        Stripe-tilin yhdistäminen ({accountId}) keskeytyi tai vaatii
         päivityksen.
         <br />
         Yritä uudelleen tai palaa hallintapaneeliin.

@@ -50,12 +50,7 @@ export default function FAQSection() {
         </p>
         <div className="max-w-[80%] mx-auto">
           {faqs.map((faq, index) => (
-            <Accordion
-              key={index}
-              type="single"
-              collapsible
-              className="bg-white"
-            >
+            <Accordion key={index} type="single" collapsible className="">
               <AccordionItem key={index} value={`item-${index}`}>
                 <AccordionTrigger className="text-left text-black dark:text-white text-3xl font-semibold">
                   {faq.question}

@@ -469,7 +469,7 @@ export type GetExpressCategoriesResponses = {
         expressPrice: string | null;
         createdAt: string;
         updatedAt: string;
-        extraQuestions?: Array<{
+        expressCategoryQuestions?: Array<{
             id: string;
             categoryId: string;
             questionText: string;
@@ -1854,7 +1854,7 @@ export type GetCurrentUserChosenCategoriesResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
-            extraQuestions?: Array<{
+            expressCategoryQuestions?: Array<{
                 id: string;
                 categoryId: string;
                 questionText: string;
@@ -5228,6 +5228,232 @@ export type GetLandingPageAnalyticsResponses = {
 
 export type GetLandingPageAnalyticsResponse = GetLandingPageAnalyticsResponses[keyof GetLandingPageAnalyticsResponses];
 
+export type SendCustomNotificationToUserData = {
+    body?: {
+        userId: string;
+        title: string;
+        message: string;
+        type?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/admin/notifications/user';
+};
+
+export type SendCustomNotificationToUserErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * User not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type SendCustomNotificationToUserError = SendCustomNotificationToUserErrors[keyof SendCustomNotificationToUserErrors];
+
+export type SendCustomNotificationToUserResponses = {
+    /**
+     * Notification sent
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type SendCustomNotificationToUserResponse = SendCustomNotificationToUserResponses[keyof SendCustomNotificationToUserResponses];
+
+export type SendCustomNotificationToAllUsersData = {
+    body?: {
+        title: string;
+        message: string;
+        type?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/admin/notifications/all';
+};
+
+export type SendCustomNotificationToAllUsersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type SendCustomNotificationToAllUsersError = SendCustomNotificationToAllUsersErrors[keyof SendCustomNotificationToAllUsersErrors];
+
+export type SendCustomNotificationToAllUsersResponses = {
+    /**
+     * Notifications sent
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type SendCustomNotificationToAllUsersResponse = SendCustomNotificationToAllUsersResponses[keyof SendCustomNotificationToAllUsersResponses];
+
+export type SendCustomNotificationToAllConsumersData = {
+    body?: {
+        title: string;
+        message: string;
+        type?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/admin/notifications/consumers';
+};
+
+export type SendCustomNotificationToAllConsumersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type SendCustomNotificationToAllConsumersError = SendCustomNotificationToAllConsumersErrors[keyof SendCustomNotificationToAllConsumersErrors];
+
+export type SendCustomNotificationToAllConsumersResponses = {
+    /**
+     * Notifications sent
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type SendCustomNotificationToAllConsumersResponse = SendCustomNotificationToAllConsumersResponses[keyof SendCustomNotificationToAllConsumersResponses];
+
+export type SendCustomNotificationToAllContractorsData = {
+    body?: {
+        title: string;
+        message: string;
+        type?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/admin/notifications/contractors';
+};
+
+export type SendCustomNotificationToAllContractorsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type SendCustomNotificationToAllContractorsError = SendCustomNotificationToAllContractorsErrors[keyof SendCustomNotificationToAllContractorsErrors];
+
+export type SendCustomNotificationToAllContractorsResponses = {
+    /**
+     * Notifications sent
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type SendCustomNotificationToAllContractorsResponse = SendCustomNotificationToAllContractorsResponses[keyof SendCustomNotificationToAllContractorsResponses];
+
+export type UpdateCategoryData = {
+    body?: {
+        id?: string;
+        name: string;
+        imageUrl: string;
+        description?: string | null;
+        express?: boolean;
+        expressPrice?: string | null;
+        createdAt?: string;
+        updatedAt?: string;
+        extraQuestions?: Array<{
+            questionText: string;
+            pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+            options: Array<string | null> | null;
+        }>;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/categories/{id}';
+};
+
+export type UpdateCategoryErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Categories not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCategoryError = UpdateCategoryErrors[keyof UpdateCategoryErrors];
+
+export type UpdateCategoryResponses = {
+    /**
+     * Categories fetched successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type UpdateCategoryResponse = UpdateCategoryResponses[keyof UpdateCategoryResponses];
+
 export type GetCategoriesData = {
     body?: never;
     path?: never;
@@ -5277,7 +5503,7 @@ export type GetCategoriesResponses = {
         expressPrice: string | null;
         createdAt: string;
         updatedAt: string;
-        extraQuestions?: Array<{
+        expressCategoryQuestions?: Array<{
             id: string;
             categoryId: string;
             questionText: string;

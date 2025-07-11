@@ -63,7 +63,7 @@ export default function MobileNav({
         className="fixed left-0 right-0 z-50 max-h-screen overflow-y-auto pointer-events-none"
       >
         <div
-          className={`w-full justify-items-center bg-white py-4 shadow-lg transition-transform duration-300 ${
+          className={`w-full justify-items-center  py-4 shadow-lg transition-transform duration-300 ${
             open ? "translate-y-0 pointer-events-auto" : "-translate-y-full"
           }`}
         >

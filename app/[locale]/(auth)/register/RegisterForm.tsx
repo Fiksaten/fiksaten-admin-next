@@ -189,7 +189,6 @@ export default function RegisterForm({
       imageUrl: "",
       businessId: companyData.businessId,
       businessType: "",
-      categoryId: "",
       iban: "",
       bic: "",
     };
@@ -251,7 +250,7 @@ export default function RegisterForm({
 
   return (
     <div className="w-full flex justify-center">
-      <Card className="w-full max-w-[800px] bg-white shadow-lg rounded-lg">
+      <Card className="w-full max-w-[800px]  shadow-lg rounded-lg">
         <CardHeader className="pb-6">
           <div className="flex items-center justify-center mb-4">
             <div className="flex items-center space-x-3">

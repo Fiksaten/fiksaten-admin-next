@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
-import { GatewayProvider } from "@/components/GatewayProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { Inter } from "next/font/google";
-import { Footer, Navigation } from "@/components/lander";
 import { ThemeProvider } from "@/app/lib/themeProvider";
 import PostHogProvider from "@/components/PostHogProvider";
 import { NextIntlClientProvider } from "next-intl";
@@ -18,7 +16,6 @@ export const metadata: Metadata = {
   title: "Fiksaten",
   description: "Fiksaten",
 };
-
 
 export default async function RootLayout(
   props: Readonly<{
@@ -34,14 +31,12 @@ export default async function RootLayout(
       <NextIntlClientProvider>
         <PostHogProvider>
           <AuthProvider>
-            <GatewayProvider>
-              <ThemeProvider>
-                <body className={`${inter.className} antialiased`}>
-                  <Toaster />
-                  {children}
-                </body>
-              </ThemeProvider>
-            </GatewayProvider>
+            <ThemeProvider>
+              <body className={`${inter.className} antialiased`}>
+                <Toaster />
+                {children}
+              </body>
+            </ThemeProvider>
           </AuthProvider>
         </PostHogProvider>
       </NextIntlClientProvider>

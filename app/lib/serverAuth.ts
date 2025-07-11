@@ -1,12 +1,14 @@
-import { cookies } from 'next/headers';
-import { type NextRequest } from 'next/server';
+import { cookies } from "next/headers";
+import { type NextRequest } from "next/server";
 
-export function getAccessTokenFromRequest(req?: NextRequest): string | null {
-  const cookieStore = req ? req.cookies : cookies();
-  const token = cookieStore.get('accessToken')?.value;
+export async function getAccessTokenFromRequest(
+  req?: NextRequest
+): Promise<string | null> {
+  const cookieStore = req ? req.cookies : await cookies();
+  const token = cookieStore.get("accessToken")?.value;
   return token ?? null;
 }
 
-export function getServerAccessToken(): string | null {
+export async function getServerAccessToken(): Promise<string | null> {
   return getAccessTokenFromRequest();
 }

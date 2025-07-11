@@ -19,7 +19,7 @@ export default function Navigation() {
           href="/"
           className="text-2xl font-bold text-primary dark:text-white"
         >
-          <p className="text-2xl font-bold text-[#0E54FF]">Fiksaten</p>
+          <p className="text-2xl font-bold text-primary">Fiksaten</p>
         </Link>
 
         <ul className="hidden xl:flex space-x-6">

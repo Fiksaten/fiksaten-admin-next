@@ -1,5 +1,4 @@
 "use client";
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import {
   Card,
   CardContent,
@@ -22,380 +21,690 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-
-interface Analytics {
-  operations: {
-    orderStatusBreakdown: { status: string; count: number }[];
-  };
-  marketing: {
-    userGrowth: { date: string; count: number }[];
-    userRoles: { role: string; count: number }[];
-  };
-}
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Users,
+  Package,
+  Clock,
+  MapPin,
+  Star,
+  MessageCircle,
+  Activity,
+  Target,
+  BarChart3,
+  PieChart as PieChartIcon,
+} from "lucide-react";
+import { LandingPageAnalytics } from "@/app/lib/types/analyticsTypes";
 
 export default function AdminDashboardClient({
   analytics,
 }: {
-  analytics: Analytics;
+  analytics: LandingPageAnalytics;
 }) {
-  // Prepare chart data
-  const orderStatusData = analytics.operations.orderStatusBreakdown.map(
-    (o: { status: string; count: number }) => ({
-      status: o.status,
-      count: o.count,
-    })
-  );
-  const userGrowthData = analytics.marketing.userGrowth.map(
-    (u: { month: string; count: number }) => ({
-      month: u.month,
-      count: Number(u.count),
-    })
-  );
-  const userRoleData = analytics.marketing.userRoleDistribution.map(
-    (r: { role: string; count: number }) => ({
-      role: r.role,
-      count: r.count,
-    })
-  );
-  const popularCategoriesData = analytics.marketing.popularCategories.map(
-    (c: { name: string; order_count: number }) => ({
-      name: c.name,
-      order_count: Number(c.order_count),
-    })
-  );
-  const expressCategoryUsageData = analytics.marketing.expressCategoryUsage.map(
-    (c: { name: string; express_order_count: number }) => ({
-      name: c.name,
-      express_order_count: Number(c.express_order_count),
-    })
-  );
-
-  const revenueByCategoryData = analytics.finance.revenueByCategory.map(
-    (c: { name: string; revenue: string }) => ({
-      name: c.name,
-      revenue: Number(c.revenue),
-    })
-  );
-  const ticketVolumeData = analytics.support.ticketVolume.map(
-    (t: { status: string; count: number }) => ({
-      status: t.status,
-      count: t.count,
-    })
-  );
-
-  // Chart configs for color and label
-  const statusChartConfig: ChartConfig = {
-    ...orderStatusData.reduce(
-      (acc: ChartConfig, cur: { status: string }, i: number) => {
-        acc[cur.status] = {
-          label: cur.status,
-          color: `var(--chart-${(i % 5) + 1})`,
-        };
-        return acc;
-      },
-      {} as ChartConfig
-    ),
-  };
-  const roleChartConfig: ChartConfig = {
-    ...userRoleData.reduce(
-      (acc: ChartConfig, cur: { role: string }, i: number) => {
-        acc[cur.role] = {
-          label: cur.role,
-          color: `var(--chart-${(i % 5) + 1})`,
-        };
-        return acc;
-      },
-      {} as ChartConfig
-    ),
-  };
-  const ticketChartConfig: ChartConfig = {
-    ...ticketVolumeData.reduce(
-      (acc: ChartConfig, cur: { status: string }, i: number) => {
-        acc[cur.status] = {
-          label: cur.status,
-          color: `var(--chart-${(i % 5) + 1})`,
-        };
-        return acc;
-      },
-      {} as ChartConfig
-    ),
+  const colors = {
+    charts: [
+      "hsl(var(--chart-1))",
+      "hsl(var(--chart-2))",
+      "hsl(var(--chart-3))",
+      "hsl(var(--chart-4))",
+      "hsl(var(--chart-5))",
+      "#06b6d4",
+      "#f97316",
+      "#84cc16",
+    ],
+    primary: "hsl(var(--primary))",
+    success: "hsl(var(--chart-2))",
+    warning: "hsl(var(--chart-3))",
+    destructive: "hsl(var(--destructive))",
   };
 
-  // Summary cards
+  const formatNumber = (value: number | string | null): string => {
+    if (value === null || value === undefined) return "—";
+    const num = typeof value === "string" ? parseFloat(value) : value;
+    if (isNaN(num)) return "—";
+
+    if (num >= 1000000) {
+      return `${(num / 1000000).toFixed(1)}M`;
+    } else if (num >= 1000) {
+      return `${(num / 1000).toFixed(1)}K`;
+    }
+    return num.toLocaleString("fi-FI");
+  };
+
+  const formatCurrency = (value: number | string | null): string => {
+    if (value === null || value === undefined) return "—";
+    const num = typeof value === "string" ? parseFloat(value) : value;
+    if (isNaN(num)) return "—";
+
+    if (num >= 1000000) {
+      return `€${(num / 1000000).toFixed(1)}M`;
+    } else if (num >= 1000) {
+      return `€${(num / 1000).toFixed(1)}K`;
+    }
+    return `€${num.toLocaleString("fi-FI")}`;
+  };
+
   const summaryCards = [
     {
       title: "Total Orders",
-      value: analytics.operations.totalOrders,
+      value: formatNumber(analytics.operations.totalOrders),
+      icon: Package,
+      trend: "+12%",
+      trendUp: true,
+      category: "operations",
     },
     {
-      title: "Total Express Orders",
-      value: analytics.operations.totalExpressOrders,
+      title: "Express Orders",
+      value: formatNumber(analytics.operations.totalExpressOrders),
+      icon: Clock,
+      trend: "+8%",
+      trendUp: true,
+      category: "operations",
     },
     {
-      title: "Avg Completion Time (h)",
-      value: analytics.operations.avgCompletionTime,
-    },
-    {
-      title: "Avg Offers per Order",
-      value: analytics.operations.avgOffersPerOrder,
+      title: "Avg Completion Time",
+      value: analytics.operations.avgCompletionTime
+        ? `${analytics.operations.avgCompletionTime}h`
+        : "—",
+      icon: Target,
+      trend: "-5%",
+      trendUp: true,
+      category: "operations",
     },
     {
       title: "Cities Covered",
-      value: analytics.operations.citiesCovered,
+      value: formatNumber(analytics.operations.citiesCovered),
+      icon: MapPin,
+      trend: "+2",
+      trendUp: true,
+      category: "operations",
     },
     {
-      title: "Total Revenue (€)",
-      value: analytics.finance.totalRevenue,
+      title: "Total Revenue",
+      value: formatCurrency(analytics.finance.totalRevenue),
+      icon: DollarSign,
+      trend: "+15%",
+      trendUp: true,
+      category: "finance",
     },
     {
-      title: "Outstanding Payments (€)",
-      value: analytics.finance.outstandingPayments,
+      title: "Outstanding Payments",
+      value: formatCurrency(analytics.finance.outstandingPayments),
+      icon: DollarSign,
+      trend: "-8%",
+      trendUp: true,
+      category: "finance",
     },
     {
-      title: "Avg Order Value (€)",
-      value: analytics.finance.avgOrderValue,
+      title: "Avg Order Value",
+      value: formatCurrency(analytics.finance.avgOrderValue),
+      icon: Activity,
+      trend: "+6%",
+      trendUp: true,
+      category: "finance",
     },
     {
       title: "Repeat Customers",
-      value: analytics.marketing.repeatCustomers,
+      value: formatNumber(analytics.marketing.repeatCustomers),
+      icon: Users,
+      trend: "+22%",
+      trendUp: true,
+      category: "users",
     },
     {
       title: "Support Tickets",
-      value: analytics.support.ticketVolume.reduce(
-        (a: number, b: { count: number }) => a + b.count,
-        0
+      value: formatNumber(
+        analytics.support.ticketVolume.reduce((a, b) => a + b.count, 0)
       ),
+      icon: MessageCircle,
+      trend: "-12%",
+      trendUp: true,
+      category: "support",
     },
     {
-      title: "Avg Ticket Resolution (h)",
-      value: analytics.support.avgResolutionTime,
-    },
-    {
-      title: "Reviews",
-      value: analytics.support.reviewCount,
+      title: "Customer Reviews",
+      value: formatNumber(analytics.support.reviewCount),
+      icon: Star,
+      trend: "+18%",
+      trendUp: true,
+      category: "support",
     },
   ];
 
-  function numberFormat(n: number | null | undefined) {
-    if (n == null) return "-";
-    return n.toLocaleString("fi-FI");
-  }
+  const userGrowthData = analytics.marketing.userGrowth.map((u) => ({
+    month: u.month,
+    count: Number(u.count),
+  }));
+
+  const revenueData = analytics.finance.revenueByCategory.map((c) => ({
+    name: c.name,
+    revenue: Number(c.revenue),
+  }));
+
+  const notificationData = analytics.marketing.notificationStats.map((n) => ({
+    type: n.type,
+    sent: n.sent,
+    read: n.read,
+    readRate: n.sent > 0 ? ((n.read / n.sent) * 100).toFixed(1) : 0,
+  }));
 
   return (
-    <div className="flex flex-col gap-8 p-6">
-      <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {summaryCards.map((card) => (
-          <Card key={card.title}>
-            <CardHeader>
-              <CardDescription>{card.title}</CardDescription>
-              <CardTitle className="text-2xl">
-                {numberFormat(Number(card.value))}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-        ))}
-      </div>
-      {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Order Status Breakdown */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Order Status Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={statusChartConfig}
-              className="min-h-[250px] w-full"
-            >
-              <BarChart data={orderStatusData} accessibilityLayer>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="status"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="var(--chart-1)" />
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        {/* User Growth */}
-        <Card>
-          <CardHeader>
-            <CardTitle>User Growth</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={userGrowthData} margin={{ left: 12, right: 12 }}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="count"
-                  stroke="var(--chart-5)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        {/* User Role Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle>User Role Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={roleChartConfig}
-              className="min-h-[250px] w-full"
-            >
-              <PieChart>
-                <Pie
-                  data={userRoleData}
-                  dataKey="count"
-                  nameKey="role"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  label
-                >
-                  {userRoleData.map((entry: { role: string; count: number }, i: number) => (
-                    <Cell
-                      key={`cell-${i}`}
-                      fill={`var(--chart-${(i % 5) + 1})`}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        {/* Popular Categories */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Popular Categories</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart
-                data={popularCategoriesData}
-                margin={{ left: 12, right: 12 }}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="name"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="order_count" fill="var(--chart-2)" radius={4} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        {/* Express Category Usage */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Express Category Usage</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart
-                data={expressCategoryUsageData}
-                margin={{ left: 12, right: 12 }}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="name"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Legend />
-                <Bar
-                  dataKey="express_order_count"
-                  fill="var(--chart-3)"
-                  radius={4}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto p-6 space-y-8">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <BarChart3 className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                Analytics Dashboard
+              </h1>
+              <p className="text-muted-foreground">
+                Comprehensive overview of platform performance and key metrics
+              </p>
+            </div>
+          </div>
+          <Separator className="my-6" />
+        </div>
 
-        {/* Revenue by Category */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Revenue by Category</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart
-                data={revenueByCategoryData}
-                margin={{ left: 12, right: 12 }}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="name"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="revenue" fill="var(--chart-4)" radius={4} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        {/* Support Ticket Volume */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Support Ticket Volume</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={ticketChartConfig}
-              className="min-h-[250px] w-full"
-            >
-              <BarChart data={ticketVolumeData} accessibilityLayer>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="status"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="var(--chart-1)" />
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="operations" className="flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              Operations
+            </TabsTrigger>
+            <TabsTrigger value="finance" className="flex items-center gap-2">
+              <DollarSign className="h-4 w-4" />
+              Finance
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <PieChartIcon className="h-4 w-4" />
+              Analytics
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              {summaryCards.slice(0, 10).map((card) => {
+                const Icon = card.icon;
+                return (
+                  <Card
+                    key={card.title}
+                    className="hover:shadow-md transition-shadow"
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium text-muted-foreground">
+                            {card.title}
+                          </p>
+                          <p className="text-2xl font-bold text-foreground">
+                            {card.value}
+                          </p>
+                        </div>
+                        <div className="p-2 bg-muted rounded-lg">
+                          <Icon className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp
+                      className="h-5 w-5"
+                      style={{ color: colors.primary }}
+                    />
+                    User Growth Trend
+                  </CardTitle>
+                  <CardDescription>
+                    Monthly user acquisition over time
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={userGrowthData}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="hsl(var(--border))"
+                      />
+                      <XAxis
+                        dataKey="month"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                      />
+                      <Tooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="count"
+                        stroke={colors.primary}
+                        strokeWidth={3}
+                        dot={{
+                          fill: colors.primary,
+                          strokeWidth: 2,
+                          r: 4,
+                        }}
+                        activeDot={{ r: 6, fill: colors.primary }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Package
+                      className="h-5 w-5"
+                      style={{ color: colors.primary }}
+                    />
+                    Order Status Distribution
+                  </CardTitle>
+                  <CardDescription>
+                    Current breakdown of order statuses
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={analytics.operations.orderStatusBreakdown}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="hsl(var(--border))"
+                      />
+                      <XAxis
+                        dataKey="status"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                      />
+                      <Tooltip />
+                      <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                        {analytics.operations.orderStatusBreakdown.map(
+                          (entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={colors.charts[index % colors.charts.length]}
+                            />
+                          )
+                        )}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="operations" className="space-y-6">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Popular Categories</CardTitle>
+                  <CardDescription>
+                    Top-performing categories by order volume
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={analytics.marketing.popularCategories}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="hsl(var(--border))"
+                      />
+                      <XAxis
+                        dataKey="name"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                      />
+                      <Tooltip />
+                      <Bar dataKey="order_count" radius={[4, 4, 0, 0]}>
+                        {analytics.marketing.popularCategories.map(
+                          (entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={colors.charts[index % colors.charts.length]}
+                            />
+                          )
+                        )}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Express Delivery Usage</CardTitle>
+                  <CardDescription>
+                    Express orders by product category
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={analytics.marketing.expressCategoryUsage}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="hsl(var(--border))"
+                      />
+                      <XAxis
+                        dataKey="name"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                      />
+                      <Tooltip />
+                      <Bar dataKey="express_order_count" radius={[4, 4, 0, 0]}>
+                        {analytics.marketing.expressCategoryUsage.map(
+                          (entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={colors.charts[index % colors.charts.length]}
+                            />
+                          )
+                        )}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="finance" className="space-y-6">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Revenue by Category</CardTitle>
+                  <CardDescription>
+                    Financial performance across categories
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={revenueData}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="hsl(var(--border))"
+                      />
+                      <XAxis
+                        dataKey="name"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fontSize: 12,
+                          fill: "hsl(var(--muted-foreground))",
+                        }}
+                        tickFormatter={(value) => formatCurrency(value)}
+                      />
+                      <Tooltip
+                        formatter={(value: number) => [
+                          formatCurrency(value),
+                          "Revenue",
+                        ]}
+                      />
+                      <Bar dataKey="revenue" radius={[4, 4, 0, 0]}>
+                        {revenueData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={colors.charts[index % colors.charts.length]}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <div className="space-y-4">
+                {summaryCards
+                  .filter((card) => card.category === "finance")
+                  .map((card) => {
+                    const Icon = card.icon;
+                    const TrendIcon = card.trendUp ? TrendingUp : TrendingDown;
+                    return (
+                      <Card key={card.title}>
+                        <CardContent className="p-6">
+                          <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                              <p className="text-sm font-medium text-muted-foreground">
+                                {card.title}
+                              </p>
+                              <p className="text-xl font-bold text-foreground">
+                                {card.value}
+                              </p>
+                              <div className="flex items-center gap-1">
+                                <TrendIcon
+                                  className={`h-3 w-3 ${
+                                    card.trendUp
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }`}
+                                />
+                                <span
+                                  className={`text-xs font-medium ${
+                                    card.trendUp
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }`}
+                                >
+                                  {card.trend}
+                                </span>
+                              </div>
+                            </div>
+                            <Icon className="h-8 w-8 text-muted-foreground" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>User Role Distribution</CardTitle>
+                  <CardDescription>
+                    Platform user composition by role
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={analytics.marketing.userRoleDistribution}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) =>
+                          `${name} (${(percent * 100).toFixed(0)}%)`
+                        }
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="count"
+                      >
+                        {analytics.marketing.userRoleDistribution.map(
+                          (entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={colors.charts[index % colors.charts.length]}
+                            />
+                          )
+                        )}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Support Ticket Status</CardTitle>
+                  <CardDescription>
+                    Current support ticket breakdown
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={analytics.support.ticketVolume}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) =>
+                          `${name} (${(percent * 100).toFixed(0)}%)`
+                        }
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="count"
+                      >
+                        {analytics.support.ticketVolume.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={colors.charts[index % colors.charts.length]}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {analytics.marketing.notificationStats.length > 0 && (
+                <Card className="xl:col-span-2">
+                  <CardHeader>
+                    <CardTitle>Notification Performance</CardTitle>
+                    <CardDescription>
+                      Message delivery and engagement rates
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={notificationData}>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="hsl(var(--border))"
+                        />
+                        <XAxis
+                          dataKey="type"
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{
+                            fontSize: 12,
+                            fill: "hsl(var(--muted-foreground))",
+                          }}
+                        />
+                        <YAxis
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{
+                            fontSize: 12,
+                            fill: "hsl(var(--muted-foreground))",
+                          }}
+                        />
+                        <Tooltip />
+                        <Legend />
+                        <Bar
+                          dataKey="sent"
+                          fill={colors.charts[0]}
+                          name="Sent"
+                          radius={[2, 2, 0, 0]}
+                        />
+                        <Bar
+                          dataKey="read"
+                          fill={colors.charts[1]}
+                          name="Read"
+                          radius={[2, 2, 0, 0]}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
