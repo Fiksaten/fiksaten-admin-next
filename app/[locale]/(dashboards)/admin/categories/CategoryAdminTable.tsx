@@ -426,6 +426,8 @@ export default function CategoryAdminTable({
                         <Image
                           src={cat.imageUrl}
                           alt={cat.name}
+                          width={80}
+                          height={80}
                           className="w-full h-full object-cover"
                         />
                       ) : (
@@ -552,6 +554,8 @@ export default function CategoryAdminTable({
                           <Image
                             src={form.imageUrl}
                             alt="Category preview"
+                            width={80}
+                            height={80}
                             className="w-full h-full object-cover"
                           />
                         </div>
