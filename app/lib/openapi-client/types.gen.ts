@@ -5992,5 +5992,5 @@ export type CreateOfferResponses = {
 export type CreateOfferResponse = CreateOfferResponses[keyof CreateOfferResponses];
 
 export type ClientOptions = {
-    baseUrl: 'https://fiksaten-api-v2.onrender.com' | (string & {});
+    baseUrl: 'http://localhost:3000' | (string & {});
 };
