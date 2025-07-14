@@ -20,6 +20,15 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useAuth } from "@/components/AuthProvider";
 import { toast } from "@/hooks/use-toast";
 import { Eye, MessageSquare, Clock, User, Mail, Phone } from "lucide-react";
 import {
@@ -43,6 +52,12 @@ export default function SupportTicketAdminTable({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [replyMessage, setReplyMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  const [ticketList, setTicketList] = useState(tickets);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [assignedFilter, setAssignedFilter] = useState<"all" | "assigned" | "unassigned">("all");
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<"newest" | "oldest" | "status" | "admin">("newest");
 
   const parseContent = (content: string) => {
     try {
@@ -91,6 +106,40 @@ export default function SupportTicketAdminTable({
     }
   };
 
+  const filteredTickets = ticketList
+    .filter((t) =>
+      statusFilter === "all" ? true : t.status === statusFilter
+    )
+    .filter((t) =>
+      assignedFilter === "all"
+        ? true
+        : assignedFilter === "assigned"
+        ? Boolean(t.assignedAdminId)
+        : !t.assignedAdminId
+    )
+    .filter((t) => {
+      if (!search.trim()) return true;
+      const q = search.toLowerCase();
+      return (
+        t.user.email.toLowerCase().includes(q) ||
+        t.user.id.toLowerCase().includes(q)
+      );
+    })
+    .sort((a, b) => {
+      switch (sort) {
+        case "newest":
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        case "oldest":
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case "status":
+          return a.status.localeCompare(b.status);
+        case "admin":
+          return (a.assignedAdminId || "").localeCompare(b.assignedAdminId || "");
+        default:
+          return 0;
+      }
+    });
+
   const handleViewTicket = (
     ticket: GetCustomerServiceTicketsResponse[number]
   ) => {
@@ -119,6 +168,43 @@ export default function SupportTicketAdminTable({
         description: "Your reply has been sent to the customer.",
       });
       setReplyMessage("");
+      setSelectedTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              messages: [
+                ...prev.messages,
+                {
+                  id: Math.random().toString(),
+                  customerServiceTicketId: prev.id,
+                  message: replyMessage,
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                },
+              ],
+            }
+          : prev
+      );
+      setTicketList((list) =>
+        list.map((t) =>
+          t.id === selectedTicket.id
+            ? {
+                ...t,
+                messages: [
+                  ...t.messages,
+                  {
+                    id: Math.random().toString(),
+                    customerServiceTicketId: t.id,
+                    message: replyMessage,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  },
+                ],
+                updatedAt: new Date().toISOString(),
+              }
+            : t
+        )
+      );
       handleCloseDialog();
     } catch {
       toast({
@@ -144,6 +230,11 @@ export default function SupportTicketAdminTable({
         title: "Status updated",
         description: `Ticket status changed to ${newStatus}.`,
       });
+      setTicketList((prev) =>
+        prev.map((t) =>
+          t.id === ticketId ? { ...t, status: newStatus } : t
+        )
+      );
     } catch {
       toast({
         title: "Error",
@@ -155,22 +246,98 @@ export default function SupportTicketAdminTable({
     }
   };
 
+  const handleAssign = async (ticketId: string, adminId: string | null) => {
+    setIsLoading(true);
+    try {
+      await updateCustomerServiceTicket(
+        accessToken,
+        ticketId,
+        (ticketList.find((t) => t.id === ticketId)?.status || "pending") as
+          "pending" | "seen" | "answered",
+        adminId
+      );
+      toast({
+        title: adminId ? "Ticket assigned" : "Ticket unassigned",
+      });
+      setTicketList((prev) =>
+        prev.map((t) =>
+          t.id === ticketId ? { ...t, assignedAdminId: adminId } : t
+        )
+      );
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to update assignment.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="bg-card rounded-lg shadow border">
+        <div className="flex flex-wrap items-end gap-2 p-4">
+          <Input
+            placeholder="Search user id or email"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="max-w-xs"
+          />
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="open">Open</SelectItem>
+              <SelectItem value="closed">Closed</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={assignedFilter}
+            onValueChange={(v) => setAssignedFilter(v as "all" | "assigned" | "unassigned")}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Assignment" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="assigned">Assigned</SelectItem>
+              <SelectItem value="unassigned">Unassigned</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={sort}
+            onValueChange={(v: "newest" | "oldest" | "status" | "admin") => setSort(v)}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Sort" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="oldest">Oldest</SelectItem>
+              <SelectItem value="status">Status</SelectItem>
+              <SelectItem value="admin">Assigned Admin</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Customer</TableHead>
               <TableHead>Subject</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Assigned</TableHead>
               <TableHead>Messages</TableHead>
               <TableHead>Created</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tickets.map((ticket) => (
+            {filteredTickets.map((ticket) => (
               <TableRow key={ticket.id}>
                 <TableCell>
                   <div className="flex flex-col">
@@ -193,6 +360,9 @@ export default function SupportTicketAdminTable({
                   </div>
                 </TableCell>
                 <TableCell>{getStatusBadge(ticket.status)}</TableCell>
+                <TableCell>
+                  {ticket.assignedAdminId ? ticket.assignedAdminId : "Unassigned"}
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1">
                     <MessageSquare className="h-4 w-4" />
@@ -231,6 +401,24 @@ export default function SupportTicketAdminTable({
                       >
                         Close
                       </Button>
+                    )}
+                    {user && (
+                      ticket.assignedAdminId === user.id ? (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => handleAssign(ticket.id, null)}
+                        >
+                          Unassign
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          onClick={() => handleAssign(ticket.id, user.id)}
+                        >
+                          Assign to me
+                        </Button>
+                      )
                     )}
                   </div>
                 </TableCell>
@@ -273,7 +461,12 @@ export default function SupportTicketAdminTable({
                       <Label>Email</Label>
                       <div className="flex items-center gap-2">
                         <Mail className="h-4 w-4" />
-                        <p>{selectedTicket.user.email}</p>
+                        <a
+                          href={`mailto:${selectedTicket.user.email}`}
+                          className="underline"
+                        >
+                          {selectedTicket.user.email}
+                        </a>
                       </div>
                     </div>
                     <div>
@@ -282,6 +475,16 @@ export default function SupportTicketAdminTable({
                         <Phone className="h-4 w-4" />
                         <p>{selectedTicket.user.phoneNumber}</p>
                       </div>
+                    </div>
+                    <div>
+                      <Label>Total Tickets</Label>
+                      <p>
+                        {
+                          ticketList.filter(
+                            (t) => t.user.id === selectedTicket.user.id
+                          ).length
+                        }
+                      </p>
                     </div>
                   </div>
                 </CardContent>
