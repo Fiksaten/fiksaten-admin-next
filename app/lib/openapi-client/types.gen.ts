@@ -821,6 +821,136 @@ export type UpdateCurrentUserPermissionsResponses = {
 
 export type UpdateCurrentUserPermissionsResponse = UpdateCurrentUserPermissionsResponses[keyof UpdateCurrentUserPermissionsResponses];
 
+export type GetUserNotificationPreferencesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/user/me/notification-preferences';
+};
+
+export type GetUserNotificationPreferencesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetUserNotificationPreferencesError = GetUserNotificationPreferencesErrors[keyof GetUserNotificationPreferencesErrors];
+
+export type GetUserNotificationPreferencesResponses = {
+    /**
+     * User notification preferences retrieved successfully
+     */
+    200: {
+        preferences: {
+            [key: string]: {
+                pushEnabled: boolean;
+                emailEnabled: boolean;
+                smsEnabled: boolean;
+            };
+        };
+        generalPermissions: {
+            pushNotificationPermission: boolean;
+            emailPermission: boolean;
+            smsPermission: boolean;
+        };
+    };
+};
+
+export type GetUserNotificationPreferencesResponse = GetUserNotificationPreferencesResponses[keyof GetUserNotificationPreferencesResponses];
+
+export type UpdateUserNotificationPreferencesData = {
+    body?: {
+        preferences: Array<{
+            notificationType: string;
+            pushEnabled: boolean;
+            emailEnabled: boolean;
+            smsEnabled: boolean;
+        }>;
+    };
+    path?: never;
+    query?: never;
+    url: '/user/me/notification-preferences';
+};
+
+export type UpdateUserNotificationPreferencesErrors = {
+    /**
+     * Invalid request data
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateUserNotificationPreferencesError = UpdateUserNotificationPreferencesErrors[keyof UpdateUserNotificationPreferencesErrors];
+
+export type UpdateUserNotificationPreferencesResponses = {
+    /**
+     * Notification preferences updated successfully
+     */
+    200: {
+        message: string;
+        updatedCount: number;
+    };
+};
+
+export type UpdateUserNotificationPreferencesResponse = UpdateUserNotificationPreferencesResponses[keyof UpdateUserNotificationPreferencesResponses];
+
+export type DisableAllNotificationsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/user/me/disable-all-notifications';
+};
+
+export type DisableAllNotificationsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type DisableAllNotificationsError = DisableAllNotificationsErrors[keyof DisableAllNotificationsErrors];
+
+export type DisableAllNotificationsResponses = {
+    /**
+     * All notifications disabled successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DisableAllNotificationsResponse = DisableAllNotificationsResponses[keyof DisableAllNotificationsResponses];
+
 export type GetCurrentUserBadgesData = {
     body?: never;
     path?: never;
@@ -1369,7 +1499,6 @@ export type GetSignedUrlData = {
     path?: never;
     query: {
         fileType: string;
-        fileName: string;
     };
     url: '/images/signed-url';
 };
@@ -1397,6 +1526,7 @@ export type GetSignedUrlResponses = {
      */
     200: {
         url: string;
+        fileName: string;
     };
 };
 
@@ -2762,8 +2892,6 @@ export type GetContractorByOrderIdResponses = {
         reviewCount: number | null;
         verified: boolean | null;
         headerImageUrl: string | null;
-        stripeConnectAccountId: string | null;
-        stripeConnected: boolean;
     };
 };
 
@@ -4212,7 +4340,11 @@ export type GetOrdersByUserIdResponse = GetOrdersByUserIdResponses[keyof GetOrde
 export type GetCustomerServiceTicketsData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        page?: string;
+        limit?: string;
+        userTimezone?: string;
+    };
     url: '/customer-service/tickets';
 };
 
@@ -4229,38 +4361,63 @@ export type GetCustomerServiceTicketsError = GetCustomerServiceTicketsErrors[key
 
 export type GetCustomerServiceTicketsResponses = {
     /**
-     * List
+     * Paginated tickets with timezone conversion
      */
-    200: Array<{
-        id: string;
-        userId: string;
-        content: string;
-        status: string;
-        assignedAdminId: string | null;
-        createdAt: string;
-        updatedAt: string;
-        user: {
+    200: {
+        tickets: Array<{
             id: string;
-            firstname: string | null;
-            lastname: string | null;
-            email: string;
-            phoneNumber: string | null;
-            role: string;
-        };
-        messages: Array<{
-            id: string;
-            customerServiceTicketId: string;
-            message: string;
+            userId: string;
+            content: string;
+            status: string;
+            assignedAdminId: string | null;
+            category: string;
+            priority: string;
+            userTimezone: string;
             createdAt: string;
             updatedAt: string;
+            localCreatedAt: string;
+            localUpdatedAt: string;
+            isArchived: boolean;
+            lastActivityAt: string;
+            unreadCount: number;
+            user: {
+                id: string;
+                firstname: string | null;
+                lastname: string | null;
+                email: string;
+                phoneNumber: string | null;
+                role: string;
+            };
+            messages: Array<{
+                id: string;
+                customerServiceTicketId: string;
+                message: string;
+                sender: string;
+                senderUserId: string | null;
+                senderName: string | null;
+                createdAt: string;
+                updatedAt: string;
+                localCreatedAt: string;
+                localUpdatedAt: string;
+            }>;
         }>;
-    }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            hasMore: boolean;
+        };
+    };
 };
 
 export type GetCustomerServiceTicketsResponse = GetCustomerServiceTicketsResponses[keyof GetCustomerServiceTicketsResponses];
 
 export type CreateCustomerServiceTicketData = {
-    body?: string;
+    body?: {
+        message: string;
+        category?: 'technical' | 'billing' | 'general' | 'bug_report';
+        userTimezone?: string;
+    };
     path?: never;
     query?: never;
     url: '/customer-service/tickets';
@@ -4299,7 +4456,9 @@ export type GetCustomerServiceTicketData = {
     path: {
         id: string;
     };
-    query?: never;
+    query?: {
+        userTimezone?: string;
+    };
     url: '/customer-service/tickets/{id}';
 };
 
@@ -4310,6 +4469,18 @@ export type GetCustomerServiceTicketErrors = {
     401: {
         message: string;
     };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
 };
 
 export type GetCustomerServiceTicketError = GetCustomerServiceTicketErrors[keyof GetCustomerServiceTicketErrors];
@@ -4318,12 +4489,49 @@ export type GetCustomerServiceTicketResponses = {
     /**
      * Ticket
      */
-    200: unknown;
+    200: {
+        ticket: {
+            id: string;
+            userId: string;
+            content: string;
+            status: string;
+            assignedAdminId: string | null;
+            category: string;
+            priority: string;
+            userTimezone: string;
+            createdAt: string;
+            updatedAt: string;
+            user: {
+                id: string;
+                firstname: string;
+                lastname: string;
+                email: string;
+                phoneNumber: string;
+                role: string;
+            } | null;
+            isArchived: boolean;
+            lastActivityAt: string;
+            unreadCount: number;
+        } | null;
+        messages: Array<{
+            id: string;
+            customerServiceTicketId: string;
+            message: string;
+            sender: string;
+            senderUserId: string | null;
+            senderName: string | null;
+            createdAt: string;
+            updatedAt: string;
+        } | null>;
+    };
 };
+
+export type GetCustomerServiceTicketResponse = GetCustomerServiceTicketResponses[keyof GetCustomerServiceTicketResponses];
 
 export type AddCustomerServiceTicketMessageData = {
     body?: {
         message: string;
+        userTimezone?: string;
     };
     path: {
         id: string;
@@ -4334,15 +4542,33 @@ export type AddCustomerServiceTicketMessageData = {
 
 export type AddCustomerServiceTicketMessageErrors = {
     /**
+     * Invalid message
+     */
+    400: {
+        message: string;
+    };
+    /**
      * Unauthorized
      */
     401: {
         message: string;
     };
     /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+    /**
      * Ticket not found
      */
     404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
         message: string;
     };
 };
@@ -4374,9 +4600,27 @@ export type UpdateCustomerServiceTicketData = {
 
 export type UpdateCustomerServiceTicketErrors = {
     /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
      * Unauthorized
      */
     401: {
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Not found
+     */
+    404: {
         message: string;
     };
     /**
@@ -4405,6 +4649,264 @@ export type UpdateCustomerServiceTicketResponses = {
 };
 
 export type UpdateCustomerServiceTicketResponse = UpdateCustomerServiceTicketResponses[keyof UpdateCustomerServiceTicketResponses];
+
+export type GetCustomerServiceTicketsAdminData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: string;
+        limit?: string;
+        status?: 'pending' | 'seen' | 'answered' | 'resolved' | 'closed';
+        category?: 'technical' | 'billing' | 'general' | 'bug_report';
+        priority?: 'low' | 'normal' | 'high' | 'urgent';
+        userType?: 'consumer' | 'contractor';
+        assignedTo?: string;
+    };
+    url: '/admin/customer-service/tickets';
+};
+
+export type GetCustomerServiceTicketsAdminErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden - Admin access required
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetCustomerServiceTicketsAdminError = GetCustomerServiceTicketsAdminErrors[keyof GetCustomerServiceTicketsAdminErrors];
+
+export type GetCustomerServiceTicketsAdminResponses = {
+    /**
+     * Admin tickets list with filtering
+     */
+    200: {
+        tickets: Array<{
+            id: string;
+            userId: string;
+            content: string;
+            status: string;
+            assignedAdminId: string | null;
+            category: string;
+            priority: string;
+            userTimezone: string;
+            createdAt: string;
+            updatedAt: string;
+            messageCount: number;
+            isArchived: boolean;
+            lastActivityAt: string;
+            user: {
+                id: string;
+                firstname: string | null;
+                lastname: string | null;
+                email: string;
+                phoneNumber: string | null;
+                role: string;
+            };
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            hasMore: boolean;
+        };
+    };
+};
+
+export type GetCustomerServiceTicketsAdminResponse = GetCustomerServiceTicketsAdminResponses[keyof GetCustomerServiceTicketsAdminResponses];
+
+export type AssignCustomerServiceTicketData = {
+    body?: {
+        adminId: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/customer-service/tickets/{id}/assign';
+};
+
+export type AssignCustomerServiceTicketErrors = {
+    /**
+     * Invalid admin ID
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden - Admin access required
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AssignCustomerServiceTicketError = AssignCustomerServiceTicketErrors[keyof AssignCustomerServiceTicketErrors];
+
+export type AssignCustomerServiceTicketResponses = {
+    /**
+     * Ticket assigned successfully
+     */
+    200: {
+        message: string;
+        ticket: {
+            id: string;
+            assignedAdminId: string | null;
+            updatedAt: string;
+        };
+    };
+};
+
+export type AssignCustomerServiceTicketResponse = AssignCustomerServiceTicketResponses[keyof AssignCustomerServiceTicketResponses];
+
+export type UpdateCustomerServiceTicketStatusData = {
+    body?: {
+        status: 'pending' | 'seen' | 'answered' | 'resolved' | 'closed';
+        assignToMe?: boolean;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/customer-service/tickets/{id}/status';
+};
+
+export type UpdateCustomerServiceTicketStatusErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden - Admin access required
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCustomerServiceTicketStatusError = UpdateCustomerServiceTicketStatusErrors[keyof UpdateCustomerServiceTicketStatusErrors];
+
+export type UpdateCustomerServiceTicketStatusResponses = {
+    /**
+     * Ticket status updated successfully
+     */
+    200: {
+        message: string;
+        ticket: {
+            id: string;
+            status: string;
+            assignedAdminId: string | null;
+            updatedAt: string;
+        };
+    };
+};
+
+export type UpdateCustomerServiceTicketStatusResponse = UpdateCustomerServiceTicketStatusResponses[keyof UpdateCustomerServiceTicketStatusResponses];
+
+export type AdminRespondToTicketData = {
+    body?: {
+        message: string;
+        updateStatus?: boolean;
+        assignToMe?: boolean;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/customer-service/tickets/{id}/respond';
+};
+
+export type AdminRespondToTicketErrors = {
+    /**
+     * Invalid message
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden - Admin access required
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AdminRespondToTicketError = AdminRespondToTicketErrors[keyof AdminRespondToTicketErrors];
+
+export type AdminRespondToTicketResponses = {
+    /**
+     * Admin response added successfully
+     */
+    200: {
+        message: string;
+        messageId: string;
+        ticketStatus: string;
+    };
+};
+
+export type AdminRespondToTicketResponse = AdminRespondToTicketResponses[keyof AdminRespondToTicketResponses];
 
 export type GetNotificationsData = {
     body?: never;

@@ -159,8 +159,7 @@ export default function CategoryAdminTable({
       // Get signed URL for upload
       const { signedUrl, imageUrl } = await getUploadUrlAndImageUrl(
         accessToken,
-        file.type,
-        file.name
+        file.type
       );
 
       // Upload file to S3

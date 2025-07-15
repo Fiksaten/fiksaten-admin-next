@@ -47,17 +47,21 @@ export default function SupportTicketAdminTable({
   accessToken,
 }: Props) {
   const [selectedTicket, setSelectedTicket] = useState<
-    GetCustomerServiceTicketsResponse[number] | null
+    GetCustomerServiceTicketsResponse["tickets"][number] | null
   >(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [replyMessage, setReplyMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
-  const [ticketList, setTicketList] = useState(tickets);
+  const [ticketList, setTicketList] = useState(tickets.tickets);
   const [statusFilter, setStatusFilter] = useState("all");
-  const [assignedFilter, setAssignedFilter] = useState<"all" | "assigned" | "unassigned">("all");
+  const [assignedFilter, setAssignedFilter] = useState<
+    "all" | "assigned" | "unassigned"
+  >("all");
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<"newest" | "oldest" | "status" | "admin">("newest");
+  const [sort, setSort] = useState<"newest" | "oldest" | "status" | "admin">(
+    "newest"
+  );
 
   const parseContent = (content: string) => {
     try {
@@ -107,9 +111,7 @@ export default function SupportTicketAdminTable({
   };
 
   const filteredTickets = ticketList
-    .filter((t) =>
-      statusFilter === "all" ? true : t.status === statusFilter
-    )
+    .filter((t) => (statusFilter === "all" ? true : t.status === statusFilter))
     .filter((t) =>
       assignedFilter === "all"
         ? true
@@ -128,20 +130,26 @@ export default function SupportTicketAdminTable({
     .sort((a, b) => {
       switch (sort) {
         case "newest":
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
         case "oldest":
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
         case "status":
           return a.status.localeCompare(b.status);
         case "admin":
-          return (a.assignedAdminId || "").localeCompare(b.assignedAdminId || "");
+          return (a.assignedAdminId || "").localeCompare(
+            b.assignedAdminId || ""
+          );
         default:
           return 0;
       }
     });
 
   const handleViewTicket = (
-    ticket: GetCustomerServiceTicketsResponse[number]
+    ticket: GetCustomerServiceTicketsResponse["tickets"][number]
   ) => {
     setSelectedTicket(ticket);
     setIsDialogOpen(true);
@@ -178,8 +186,15 @@ export default function SupportTicketAdminTable({
                   id: Math.random().toString(),
                   customerServiceTicketId: prev.id,
                   message: replyMessage,
+                  sender: user?.role ?? "admin",
+                  senderUserId: user?.id ?? null,
+                  senderName: user
+                    ? `${user.firstname ?? ""} ${user.lastname ?? ""}`.trim()
+                    : null,
                   createdAt: new Date().toISOString(),
                   updatedAt: new Date().toISOString(),
+                  localCreatedAt: new Date().toISOString(),
+                  localUpdatedAt: new Date().toISOString(),
                 },
               ],
             }
@@ -196,8 +211,15 @@ export default function SupportTicketAdminTable({
                     id: Math.random().toString(),
                     customerServiceTicketId: t.id,
                     message: replyMessage,
+                    sender: user?.role ?? "admin",
+                    senderUserId: user?.id ?? null,
+                    senderName: user
+                      ? `${user.firstname ?? ""} ${user.lastname ?? ""}`.trim()
+                      : null,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
+                    localCreatedAt: new Date().toISOString(),
+                    localUpdatedAt: new Date().toISOString(),
                   },
                 ],
                 updatedAt: new Date().toISOString(),
@@ -231,9 +253,7 @@ export default function SupportTicketAdminTable({
         description: `Ticket status changed to ${newStatus}.`,
       });
       setTicketList((prev) =>
-        prev.map((t) =>
-          t.id === ticketId ? { ...t, status: newStatus } : t
-        )
+        prev.map((t) => (t.id === ticketId ? { ...t, status: newStatus } : t))
       );
     } catch {
       toast({
@@ -253,7 +273,9 @@ export default function SupportTicketAdminTable({
         accessToken,
         ticketId,
         (ticketList.find((t) => t.id === ticketId)?.status || "pending") as
-          "pending" | "seen" | "answered",
+          | "pending"
+          | "seen"
+          | "answered",
         adminId
       );
       toast({
@@ -298,7 +320,9 @@ export default function SupportTicketAdminTable({
           </Select>
           <Select
             value={assignedFilter}
-            onValueChange={(v) => setAssignedFilter(v as "all" | "assigned" | "unassigned")}
+            onValueChange={(v) =>
+              setAssignedFilter(v as "all" | "assigned" | "unassigned")
+            }
           >
             <SelectTrigger className="w-40">
               <SelectValue placeholder="Assignment" />
@@ -311,7 +335,9 @@ export default function SupportTicketAdminTable({
           </Select>
           <Select
             value={sort}
-            onValueChange={(v: "newest" | "oldest" | "status" | "admin") => setSort(v)}
+            onValueChange={(v: "newest" | "oldest" | "status" | "admin") =>
+              setSort(v)
+            }
           >
             <SelectTrigger className="w-40">
               <SelectValue placeholder="Sort" />
@@ -361,7 +387,9 @@ export default function SupportTicketAdminTable({
                 </TableCell>
                 <TableCell>{getStatusBadge(ticket.status)}</TableCell>
                 <TableCell>
-                  {ticket.assignedAdminId ? ticket.assignedAdminId : "Unassigned"}
+                  {ticket.assignedAdminId
+                    ? ticket.assignedAdminId
+                    : "Unassigned"}
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1">
@@ -402,8 +430,8 @@ export default function SupportTicketAdminTable({
                         Close
                       </Button>
                     )}
-                    {user && (
-                      ticket.assignedAdminId === user.id ? (
+                    {user &&
+                      (ticket.assignedAdminId === user.id ? (
                         <Button
                           size="sm"
                           variant="secondary"
@@ -418,8 +446,7 @@ export default function SupportTicketAdminTable({
                         >
                           Assign to me
                         </Button>
-                      )
-                    )}
+                      ))}
                   </div>
                 </TableCell>
               </TableRow>
