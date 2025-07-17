@@ -467,6 +467,12 @@ export type GetExpressCategoriesResponses = {
         description: string | null;
         express: boolean;
         expressPrice: string | null;
+        maxPrice: string | null;
+        platformFee: number | null;
+        hasNeededToolsAffectsPrice: boolean;
+        hasNeededToolsPriceFactor: string | null;
+        requiresCertification: boolean;
+        certificationId: string | null;
         createdAt: string;
         updatedAt: string;
         expressCategoryQuestions?: Array<{
@@ -475,6 +481,11 @@ export type GetExpressCategoriesResponses = {
             questionText: string;
             pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
             options: Array<string | null> | null;
+            affectsPrice: boolean;
+            priceFactors?: Array<{
+                optionId: string;
+                priceFactor: number;
+            }>;
         }>;
     }>;
 };
@@ -1497,9 +1508,7 @@ export type GetUserByIdResponse = GetUserByIdResponses[keyof GetUserByIdResponse
 export type GetSignedUrlData = {
     body?: never;
     path?: never;
-    query: {
-        fileType: string;
-    };
+    query?: never;
     url: '/images/signed-url';
 };
 
@@ -1525,59 +1534,26 @@ export type GetSignedUrlResponses = {
      * Pre-signed URL generated
      */
     200: {
-        url: string;
-        fileName: string;
+        signedUrl: string;
+        path: string;
+        token: string;
     };
 };
 
 export type GetSignedUrlResponse = GetSignedUrlResponses[keyof GetSignedUrlResponses];
 
-export type GetImagesData = {
-    body?: never;
-    path?: never;
-    query?: {
-        type?: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-    };
-    url: '/images';
-};
-
-export type GetImagesErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-};
-
-export type GetImagesError = GetImagesErrors[keyof GetImagesErrors];
-
-export type GetImagesResponses = {
-    /**
-     * List of images
-     */
-    200: Array<{
-        id: string;
-        imageUrl: string;
-        imageType: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-        createdAt: string;
-    }>;
-};
-
-export type GetImagesResponse = GetImagesResponses[keyof GetImagesResponses];
-
-export type AddUploadedImageData = {
+export type AddCategoryImageData = {
     body?: {
-        imageUrl: string;
-        imageType?: string;
-        updatedAt?: string;
+        imageKey: string;
     };
-    path?: never;
+    path: {
+        categoryId: string;
+    };
     query?: never;
-    url: '/images';
+    url: '/categories/{categoryId}/image';
 };
 
-export type AddUploadedImageErrors = {
+export type AddCategoryImageErrors = {
     /**
      * Invalid request
      */
@@ -1598,103 +1574,80 @@ export type AddUploadedImageErrors = {
     };
 };
 
-export type AddUploadedImageError = AddUploadedImageErrors[keyof AddUploadedImageErrors];
+export type AddCategoryImageError = AddCategoryImageErrors[keyof AddCategoryImageErrors];
 
-export type AddUploadedImageResponses = {
+export type AddCategoryImageResponses = {
     /**
-     * Image added to the database
+     * Image added to the category
      */
     200: {
-        imageId: string;
-    };
-};
-
-export type AddUploadedImageResponse = AddUploadedImageResponses[keyof AddUploadedImageResponses];
-
-export type DeleteImageData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/images/{id}';
-};
-
-export type DeleteImageErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-};
-
-export type DeleteImageError = DeleteImageErrors[keyof DeleteImageErrors];
-
-export type DeleteImageResponses = {
-    /**
-     * Image deleted
-     */
-    200: {
-        message: string;
-    };
-};
-
-export type DeleteImageResponse = DeleteImageResponses[keyof DeleteImageResponses];
-
-export type GetImageData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/images/{id}';
-};
-
-export type GetImageErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Image not found
-     */
-    404: {
-        message: string;
-    };
-};
-
-export type GetImageError = GetImageErrors[keyof GetImageErrors];
-
-export type GetImageResponses = {
-    /**
-     * Image data
-     */
-    200: {
-        id: string;
         imageUrl: string;
-        imageType: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-        createdAt: string;
     };
 };
 
-export type GetImageResponse = GetImageResponses[keyof GetImageResponses];
+export type AddCategoryImageResponse = AddCategoryImageResponses[keyof AddCategoryImageResponses];
 
-export type UpdateImageData = {
+export type GetImagePublicUrlData = {
+    body?: never;
+    path: {
+        imageKey: string;
+    };
+    query?: never;
+    url: '/images/{imageKey}';
+};
+
+export type GetImagePublicUrlErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetImagePublicUrlError = GetImagePublicUrlErrors[keyof GetImagePublicUrlErrors];
+
+export type GetImagePublicUrlResponses = {
+    /**
+     * Image public url
+     */
+    200: {
+        imageUrl: string;
+    };
+};
+
+export type GetImagePublicUrlResponse = GetImagePublicUrlResponses[keyof GetImagePublicUrlResponses];
+
+export type AddOrderImageData = {
     body?: {
-        imageType?: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-        imageUrl?: string;
+        imageKey: string;
     };
     path: {
-        id: string;
+        orderId: string;
     };
     query?: never;
-    url: '/images/{id}';
+    url: '/orders/{orderId}/image';
 };
 
-export type UpdateImageErrors = {
+export type AddOrderImageErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
     /**
      * Unauthorized
      */
@@ -1702,28 +1655,161 @@ export type UpdateImageErrors = {
         message: string;
     };
     /**
-     * Image not found
+     * Internal server error
      */
-    404: {
+    500: {
         message: string;
     };
 };
 
-export type UpdateImageError = UpdateImageErrors[keyof UpdateImageErrors];
+export type AddOrderImageError = AddOrderImageErrors[keyof AddOrderImageErrors];
 
-export type UpdateImageResponses = {
+export type AddOrderImageResponses = {
     /**
-     * Updated image
+     * Image added to the order
      */
     200: {
-        id: string;
         imageUrl: string;
-        imageType: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-        createdAt: string;
     };
 };
 
-export type UpdateImageResponse = UpdateImageResponses[keyof UpdateImageResponses];
+export type AddOrderImageResponse = AddOrderImageResponses[keyof AddOrderImageResponses];
+
+export type AddCompanyImageData = {
+    body?: {
+        imageKey: string;
+    };
+    path: {
+        contractorId: string;
+    };
+    query?: never;
+    url: '/contractors/{contractorId}/image';
+};
+
+export type AddCompanyImageErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AddCompanyImageError = AddCompanyImageErrors[keyof AddCompanyImageErrors];
+
+export type AddCompanyImageResponses = {
+    /**
+     * Image added to the company
+     */
+    200: {
+        imageUrl: string;
+    };
+};
+
+export type AddCompanyImageResponse = AddCompanyImageResponses[keyof AddCompanyImageResponses];
+
+export type AddOrderDoneImageData = {
+    body?: {
+        imageKey: string;
+    };
+    path: {
+        orderId: string;
+    };
+    query?: never;
+    url: '/orders/{orderId}/done/image';
+};
+
+export type AddOrderDoneImageErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AddOrderDoneImageError = AddOrderDoneImageErrors[keyof AddOrderDoneImageErrors];
+
+export type AddOrderDoneImageResponses = {
+    /**
+     * Image added to the order done
+     */
+    200: {
+        imageUrl: string;
+    };
+};
+
+export type AddOrderDoneImageResponse = AddOrderDoneImageResponses[keyof AddOrderDoneImageResponses];
+
+export type AddPermitImageData = {
+    body?: {
+        imageKey: string;
+    };
+    path: {
+        contractorId: string;
+        permitId: string;
+    };
+    query?: never;
+    url: '/companies/{contractorId}/permit/{permitId}/attachment';
+};
+
+export type AddPermitImageErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AddPermitImageError = AddPermitImageErrors[keyof AddPermitImageErrors];
+
+export type AddPermitImageResponses = {
+    /**
+     * Image added to the permit
+     */
+    200: {
+        imageUrl: string;
+    };
+};
+
+export type AddPermitImageResponse = AddPermitImageResponses[keyof AddPermitImageResponses];
 
 export type GetContractorData = {
     body?: never;
@@ -1781,7 +1867,6 @@ export type GetContractorResponses = {
         imageUrl: string | null;
         reviewAverage: string | null;
         reviewCount: number | null;
-        verified: boolean | null;
         businessId: string | null;
         businessType: string | null;
         headerImageUrl: string | null;
@@ -1797,50 +1882,6 @@ export type GetContractorResponses = {
 };
 
 export type GetContractorResponse = GetContractorResponses[keyof GetContractorResponses];
-
-export type UpdateContractorImagesData = {
-    body?: {
-        imageType: 'contractor' | 'contractorHeader';
-        imageId?: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/contractors/me/update-images';
-};
-
-export type UpdateContractorImagesErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Member or organization not found
-     */
-    404: {
-        message: string;
-    };
-    /**
-     * Internal server error
-     */
-    500: {
-        message: string;
-    };
-};
-
-export type UpdateContractorImagesError = UpdateContractorImagesErrors[keyof UpdateContractorImagesErrors];
-
-export type UpdateContractorImagesResponses = {
-    /**
-     * Contractor images updated successfully
-     */
-    200: {
-        message: string;
-    };
-};
-
-export type UpdateContractorImagesResponse = UpdateContractorImagesResponses[keyof UpdateContractorImagesResponses];
 
 export type GetAvailableContractorsData = {
     body?: never;
@@ -1884,7 +1925,6 @@ export type GetAvailableContractorsResponses = {
         imageUrl: string | null;
         reviewAverage: string | null;
         reviewCount: number | null;
-        verified: boolean | null;
         businessId: string | null;
         businessType: string | null;
         headerImageUrl: string | null;
@@ -1984,12 +2024,23 @@ export type GetCurrentUserChosenCategoriesResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: number | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
             expressCategoryQuestions?: Array<{
                 id: string;
                 categoryId: string;
                 questionText: string;
                 pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
                 options: Array<string | null> | null;
+                affectsPrice: boolean;
+                priceFactors?: Array<{
+                    optionId: string;
+                    priceFactor: number;
+                }>;
             }>;
             categoryId: string;
         }>;
@@ -2211,7 +2262,6 @@ export type GetCurrentContractorDataResponses = {
             imageUrl: string | null;
             reviewAverage: string | null;
             reviewCount: number | null;
-            verified: boolean | null;
             businessId: string | null;
             businessType: string | null;
             headerImageUrl: string | null;
@@ -2243,7 +2293,6 @@ export type UpdateCurrentContractorDataData = {
         imageUrl?: string | null;
         reviewAverage?: string | null;
         reviewCount?: number | null;
-        verified?: boolean | null;
         businessId?: string | null;
         businessType?: string | null;
         headerImageUrl?: string | null;
@@ -2473,6 +2522,12 @@ export type GetOpenRequestsForContractorResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         } | null;
         city: {
             id: string;
@@ -2557,6 +2612,12 @@ export type GetContractorSentRequestsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         } | null;
         city: {
             id: string;
@@ -2641,6 +2702,12 @@ export type GetContractorHistoryRequestsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         } | null;
         city: {
             id: string;
@@ -2725,6 +2792,12 @@ export type GetContractorInProgressRequestsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         } | null;
         city: {
             id: string;
@@ -2890,7 +2963,6 @@ export type GetContractorByOrderIdResponses = {
         imageUrl: string | null;
         reviewAverage: string | null;
         reviewCount: number | null;
-        verified: boolean | null;
         headerImageUrl: string | null;
     };
 };
@@ -2959,6 +3031,12 @@ export type GetOwnOrdersResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -3160,6 +3238,12 @@ export type GetOrderDetailsResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -3300,50 +3384,6 @@ export type UpdateOrderResponses = {
 
 export type UpdateOrderResponse = UpdateOrderResponses[keyof UpdateOrderResponses];
 
-export type AddOrderImageData = {
-    body?: never;
-    path: {
-        orderId: string;
-        imageId: string;
-    };
-    query?: never;
-    url: '/orders/{orderId}/images/{imageId}';
-};
-
-export type AddOrderImageErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Order not found
-     */
-    404: {
-        message: string;
-    };
-    /**
-     * Internal server error
-     */
-    500: {
-        message: string;
-    };
-};
-
-export type AddOrderImageError = AddOrderImageErrors[keyof AddOrderImageErrors];
-
-export type AddOrderImageResponses = {
-    /**
-     * Order images updated successfully
-     */
-    200: {
-        message: string;
-    };
-};
-
-export type AddOrderImageResponse = AddOrderImageResponses[keyof AddOrderImageResponses];
-
 export type RemoveDraftData = {
     body?: never;
     path: {
@@ -3449,6 +3489,12 @@ export type GetOwnDraftOrdersResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -3783,6 +3829,12 @@ export type GetExpressOrderOptionsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
             createdAt: string;
             updatedAt: string;
             expressCategoryQuestions: Array<{
@@ -3791,6 +3843,10 @@ export type GetExpressOrderOptionsResponses = {
                 questionText: string;
                 pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
                 options: Array<string | null> | null;
+                affectsPrice: boolean;
+                priceFactors: string | number | boolean | null | {
+                    [key: string]: unknown;
+                } | Array<unknown>;
             }>;
         }>;
     };
@@ -3861,6 +3917,12 @@ export type GetOwnExpressOrdersResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -3932,6 +3994,12 @@ export type SearchExpressOrdersResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -3948,6 +4016,10 @@ export type SearchExpressOrdersResponses = {
                     questionText: string;
                     pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
                     options: Array<string | null> | null;
+                    affectsPrice: boolean;
+                    priceFactors: string | number | boolean | null | {
+                        [key: string]: unknown;
+                    } | Array<unknown>;
                 };
             }>;
         }>;
@@ -4172,6 +4244,12 @@ export type GetExpressOrderDetailsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         };
         city: {
             id: string;
@@ -4195,6 +4273,10 @@ export type GetExpressOrderDetailsResponses = {
                 questionText: string;
                 pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
                 options: Array<string | null> | null;
+                affectsPrice: boolean;
+                priceFactors: string | number | boolean | null | {
+                    [key: string]: unknown;
+                } | Array<unknown>;
             };
         }>;
     };
@@ -4266,6 +4348,12 @@ export type GetExpressOrdersByUserIdResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         };
         city: {
             id: string;
@@ -4936,7 +5024,7 @@ export type GetNotificationsResponses = {
         title: string;
         message: string;
         read: boolean;
-        type: 'info' | 'newExpressOrder' | 'newOrder' | 'newOrderMoreInfoRequest' | 'newOrderMoreInfoRequestResponse' | 'newOrderMoreInfoRequestResponseImage' | 'expressOrderCompleted' | 'expressOrderCancelled' | 'expressOrderAccepted' | 'expressOrderWaitingForPayment' | 'supportTicketResponse' | 'supportTicketNew' | 'newContractorRating' | 'contractorApproved' | 'contractorRejected' | 'contractorMoreInfoNeeded' | 'newContractor' | 'offerExpired' | 'newOffer' | 'offerAccepted' | 'orderCancelled' | 'orderReminder' | 'orderRescheduled' | 'offerWithdrawn' | 'orderDeadlineApproaching' | 'welcomeMessage' | 'inactiveUserReminder' | 'newFeaturesAvailable' | 'maintenanceNotification' | 'promotionalOffer' | 'reviewRequest' | 'reviewResponse' | 'disputeOpened' | 'disputeResolved' | 'qualityAssurance' | 'areaNowAvailable' | 'contractorAvailable' | 'serviceAreaExpanded' | 'ticketEscalated' | 'ticketResolved' | 'stripeAccountUpdated' | 'stripeConnectionNeeded';
+        type: 'info' | 'newExpressOrder' | 'newOrder' | 'newOrderMoreInfoRequest' | 'newOrderMoreInfoRequestResponse' | 'newOrderMoreInfoRequestResponseImage' | 'expressOrderCompleted' | 'expressOrderCancelled' | 'expressOrderAccepted' | 'expressOrderWaitingForPayment' | 'supportTicketResponse' | 'supportTicketNew' | 'newContractorRating' | 'reviewDeclined' | 'contractorApproved' | 'contractorRejected' | 'contractorMoreInfoNeeded' | 'newContractor' | 'offerExpired' | 'newOffer' | 'offerAccepted' | 'orderCancelled' | 'orderReminder' | 'orderRescheduled' | 'offerWithdrawn' | 'orderDeadlineApproaching' | 'welcomeMessage' | 'inactiveUserReminder' | 'newFeaturesAvailable' | 'maintenanceNotification' | 'promotionalOffer' | 'reviewRequest' | 'reviewResponse' | 'disputeOpened' | 'disputeResolved' | 'qualityAssurance' | 'areaNowAvailable' | 'contractorAvailable' | 'serviceAreaExpanded' | 'ticketEscalated' | 'ticketResolved' | 'stripeAccountUpdated' | 'stripeConnectionNeeded';
         content: string | number | boolean | null | {
             [key: string]: unknown;
         } | Array<unknown>;
@@ -5134,16 +5222,27 @@ export type AddCategoryData = {
     body?: {
         id?: string;
         name: string;
-        imageUrl: string;
         description?: string | null;
         express?: boolean;
         expressPrice?: string | null;
+        maxPrice?: string | null;
+        platformFee?: string | null;
+        hasNeededToolsAffectsPrice?: boolean;
+        hasNeededToolsPriceFactor?: string | null;
+        requiresCertification?: boolean;
+        certificationId?: string | null;
         createdAt?: string;
         updatedAt?: string;
+        imageKey: string;
         extraQuestions?: Array<{
             questionText: string;
             pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
             options: Array<string | null> | null;
+            affectsPrice: boolean;
+            priceFactors?: Array<{
+                optionId: string;
+                priceFactor: number;
+            }>;
         }>;
     };
     path?: never;
@@ -5540,7 +5639,6 @@ export type GetAllContractorJoinRequestsResponses = {
         imageUrl: string | null;
         reviewAverage: string | null;
         reviewCount: number | null;
-        verified: boolean | null;
         businessId: string | null;
         businessType: string | null;
         headerImageUrl: string | null;
@@ -5706,10 +5804,6 @@ export type GetLandingPageAnalyticsResponses = {
             totalRevenue: number;
             outstandingPayments: number;
             avgOrderValue: number;
-            refundStats: Array<{
-                type: string;
-                count: number;
-            }>;
             revenueByCategory: Array<{
                 name: string;
                 revenue: string;
@@ -5723,7 +5817,6 @@ export type GetLandingPageAnalyticsResponses = {
             avgResolutionTime: number | null;
             escalations: number;
             reviewCount: number;
-            surveyInvites: number;
         };
     };
 };
@@ -5897,16 +5990,27 @@ export type UpdateCategoryData = {
     body?: {
         id?: string;
         name: string;
-        imageUrl: string;
         description?: string | null;
         express?: boolean;
         expressPrice?: string | null;
+        maxPrice?: string | null;
+        platformFee?: string | null;
+        hasNeededToolsAffectsPrice?: boolean;
+        hasNeededToolsPriceFactor?: string | null;
+        requiresCertification?: boolean;
+        certificationId?: string | null;
         createdAt?: string;
         updatedAt?: string;
+        imageKey: string;
         extraQuestions?: Array<{
             questionText: string;
             pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
             options: Array<string | null> | null;
+            affectsPrice: boolean;
+            priceFactors?: Array<{
+                optionId: string;
+                priceFactor: number;
+            }>;
         }>;
     };
     path: {
@@ -6003,6 +6107,12 @@ export type GetCategoriesResponses = {
         description: string | null;
         express: boolean;
         expressPrice: string | null;
+        maxPrice: string | null;
+        platformFee: number | null;
+        hasNeededToolsAffectsPrice: boolean;
+        hasNeededToolsPriceFactor: string | null;
+        requiresCertification: boolean;
+        certificationId: string | null;
         createdAt: string;
         updatedAt: string;
         expressCategoryQuestions?: Array<{
@@ -6011,6 +6121,11 @@ export type GetCategoriesResponses = {
             questionText: string;
             pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
             options: Array<string | null> | null;
+            affectsPrice: boolean;
+            priceFactors?: Array<{
+                optionId: string;
+                priceFactor: number;
+            }>;
         }>;
     }>;
 };
@@ -6274,21 +6389,53 @@ export type CreateExpressPaymentIntentResponses = {
         ephemeralKey: string;
         customer: string;
         publishableKey: string;
+        price: number;
         order: {
             id: string;
             userId: string;
+            contractorId: string | null;
+            categoryId: string;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            paymentIntentId: string | null;
+            completionCode: string | null;
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
             startTime: string;
             endTime: string;
-            weekdays: Array<string> | null;
+            weekdays: Array<string | null> | null;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            doneAt: string | null;
             userHasNeededTools: boolean;
+            receiptUrl: string | null;
+            createdAt: string;
+            updatedAt: string;
             category: {
                 id: string;
                 name: string;
-                description: string | null;
                 imageUrl: string;
+                description: string | null;
                 express: boolean;
                 expressPrice: string | null;
-            };
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
+            } | null;
+            city: {
+                id: string;
+                cityName: string;
+            } | null;
+            user: {
+                id: string;
+                firstname: string | null;
+                lastname: string | null;
+                email: string;
+                phoneNumber: string | null;
+            } | null;
         };
     };
 };
