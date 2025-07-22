@@ -13,6 +13,7 @@ import {
   CreditCard,
   LogOut,
   User,
+  Tag,
 } from "lucide-react";
 
 import {
@@ -75,6 +76,11 @@ const data = {
       title: "Categories",
       url: "/admin/categories",
       icon: FileText,
+    },
+    {
+      title: "Campaigns",
+      url: "/admin/campaigns",
+      icon: Tag,
     },
     {
       title: "Reviews",
@@ -226,7 +232,9 @@ export function AdminSidebar({
                       {user?.firstname} {user?.lastname}
                     </span>
                     <span className="truncate text-xs">
-                      {isSuperAdmin(user?.role) ? "Super Admin" : "Administrator"}
+                      {isSuperAdmin(user?.role)
+                        ? "Super Admin"
+                        : "Administrator"}
                     </span>
                   </div>
                 </SidebarMenuButton>

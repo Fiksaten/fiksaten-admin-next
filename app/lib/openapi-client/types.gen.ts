@@ -2384,7 +2384,7 @@ export type GetCurrentContractorOrdersResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -2502,7 +2502,7 @@ export type GetOpenRequestsForContractorResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -2592,7 +2592,7 @@ export type GetContractorSentRequestsResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -2682,7 +2682,7 @@ export type GetContractorHistoryRequestsResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -2772,7 +2772,7 @@ export type GetContractorInProgressRequestsResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -3011,7 +3011,7 @@ export type GetOwnOrdersResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -3060,7 +3060,7 @@ export type CreateOrderData = {
         categoryId?: string | null;
         description?: string | null;
         budget?: number | null;
-        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet?: string | null;
         orderCity?: string | null;
         orderZip?: string | null;
@@ -3112,7 +3112,7 @@ export type CreateOrderResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -3141,6 +3141,12 @@ export type RemoveOrderData = {
 };
 
 export type RemoveOrderErrors = {
+    /**
+     * Order is already accepted, cannot be removed
+     */
+    400: {
+        message: string;
+    };
     /**
      * Unauthorized
      */
@@ -3218,7 +3224,7 @@ export type GetOrderDetailsResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -3303,7 +3309,7 @@ export type UpdateOrderData = {
         categoryId?: string | null;
         description?: string | null;
         budget?: number | null;
-        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet?: string | null;
         orderCity?: string | null;
         orderZip?: string | null;
@@ -3365,7 +3371,7 @@ export type UpdateOrderResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -3469,7 +3475,7 @@ export type GetOwnDraftOrdersResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -3765,7 +3771,7 @@ export type CreateExpressOrderResponses = {
             userId: string;
             contractorId: string | null;
             categoryId: string;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             paymentIntentId: string | null;
             completionCode: string | null;
             orderStreet: string | null;
@@ -3894,7 +3900,7 @@ export type GetOwnExpressOrdersResponses = {
             userId: string;
             contractorId: string | null;
             categoryId: string;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             paymentIntentId: string | null;
             completionCode: string | null;
             orderStreet: string | null;
@@ -3971,7 +3977,7 @@ export type SearchExpressOrdersResponses = {
             userId: string;
             contractorId: string | null;
             categoryId: string;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             paymentIntentId: string | null;
             completionCode: string | null;
             orderStreet: string | null;
@@ -4221,7 +4227,7 @@ export type GetExpressOrderDetailsResponses = {
         userId: string;
         contractorId: string | null;
         categoryId: string;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         paymentIntentId: string | null;
         completionCode: string | null;
         orderStreet: string | null;
@@ -4325,7 +4331,7 @@ export type GetExpressOrdersByUserIdResponses = {
         userId: string;
         contractorId: string | null;
         categoryId: string;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         paymentIntentId: string | null;
         completionCode: string | null;
         orderStreet: string | null;
@@ -4407,7 +4413,7 @@ export type GetOrdersByUserIdResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -4424,6 +4430,55 @@ export type GetOrdersByUserIdResponses = {
 };
 
 export type GetOrdersByUserIdResponse = GetOrdersByUserIdResponses[keyof GetOrdersByUserIdResponses];
+
+export type RemoveExpressOrderData = {
+    body?: never;
+    path: {
+        orderId: string;
+    };
+    query?: never;
+    url: '/orders/express/{orderId}';
+};
+
+export type RemoveExpressOrderErrors = {
+    /**
+     * Order is already accepted, cannot be removed
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type RemoveExpressOrderError = RemoveExpressOrderErrors[keyof RemoveExpressOrderErrors];
+
+export type RemoveExpressOrderResponses = {
+    /**
+     * Order removed successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type RemoveExpressOrderResponse = RemoveExpressOrderResponses[keyof RemoveExpressOrderResponses];
 
 export type GetCustomerServiceTicketsData = {
     body?: never;
@@ -6060,6 +6115,200 @@ export type UpdateCategoryResponses = {
 
 export type UpdateCategoryResponse = UpdateCategoryResponses[keyof UpdateCategoryResponses];
 
+export type GetAllCampaignsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/campaigns';
+};
+
+export type GetAllCampaignsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaigns not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAllCampaignsError = GetAllCampaignsErrors[keyof GetAllCampaignsErrors];
+
+export type GetAllCampaignsResponses = {
+    /**
+     * Campaigns fetched successfully
+     */
+    200: Array<{
+        id: string;
+        name: string;
+        description: string | null;
+        code: string;
+        public: boolean;
+    }>;
+};
+
+export type GetAllCampaignsResponse = GetAllCampaignsResponses[keyof GetAllCampaignsResponses];
+
+export type CreateCampaignData = {
+    body?: {
+        name: string;
+        description?: string | null;
+        code: string;
+        public?: boolean;
+    };
+    path?: never;
+    query?: never;
+    url: '/admin/campaigns';
+};
+
+export type CreateCampaignErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type CreateCampaignError = CreateCampaignErrors[keyof CreateCampaignErrors];
+
+export type CreateCampaignResponses = {
+    /**
+     * Campaign created successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type CreateCampaignResponse = CreateCampaignResponses[keyof CreateCampaignResponses];
+
+export type DeleteCampaignData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/campaigns/{id}';
+};
+
+export type DeleteCampaignErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type DeleteCampaignError = DeleteCampaignErrors[keyof DeleteCampaignErrors];
+
+export type DeleteCampaignResponses = {
+    /**
+     * Campaign deleted successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCampaignResponse = DeleteCampaignResponses[keyof DeleteCampaignResponses];
+
+export type UpdateCampaignData = {
+    body?: {
+        name?: string;
+        description?: string | null;
+        code?: string;
+        public?: boolean;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/campaigns/{id}';
+};
+
+export type UpdateCampaignErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCampaignError = UpdateCampaignErrors[keyof UpdateCampaignErrors];
+
+export type UpdateCampaignResponses = {
+    /**
+     * Campaign updated successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type UpdateCampaignResponse = UpdateCampaignResponses[keyof UpdateCampaignResponses];
+
 export type GetCategoriesData = {
     body?: never;
     path?: never;
@@ -6395,7 +6644,7 @@ export type CreateExpressPaymentIntentResponses = {
             userId: string;
             contractorId: string | null;
             categoryId: string;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             paymentIntentId: string | null;
             completionCode: string | null;
             orderStreet: string | null;
@@ -6641,5 +6890,5 @@ export type CreateOfferResponses = {
 export type CreateOfferResponse = CreateOfferResponses[keyof CreateOfferResponses];
 
 export type ClientOptions = {
-    baseUrl: 'https://fiksaten-api-v2.onrender.com' | (string & {});
+    baseUrl: 'http://localhost:3000' | (string & {});
 };
