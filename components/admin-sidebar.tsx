@@ -63,6 +63,11 @@ const data = {
       icon: Package,
     },
     {
+      title: "Campaign Orders",
+      url: "/admin/campaign-orders",
+      icon: Package,
+    },
+    {
       title: "Users",
       url: "/admin/users",
       icon: Users,

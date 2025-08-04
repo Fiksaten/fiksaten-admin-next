@@ -2442,7 +2442,8 @@ export type GetCurrentContractorReviewsResponses = {
             id: string;
             userId: string;
             contractorId: string;
-            orderId: string;
+            orderId: string | null;
+            expressOrderId: string | null;
             accepted: boolean;
             starRating: number;
             reviewTitle: string;
@@ -4480,6 +4481,278 @@ export type RemoveExpressOrderResponses = {
 
 export type RemoveExpressOrderResponse = RemoveExpressOrderResponses[keyof RemoveExpressOrderResponses];
 
+export type CreateCampaignOrderData = {
+    body?: {
+        contractorId?: string | null;
+        campaignCodeCategoryId: string;
+        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+        orderStreet?: string | null;
+        orderCity?: string | null;
+        orderZip?: string | null;
+        startTime: string;
+        endTime: string;
+        weekdays?: Array<string | null> | null;
+        chosenDay?: string | null;
+        chosenStartTime?: string | null;
+        doneAt?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/orders/campaign';
+};
+
+export type CreateCampaignOrderErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * User has already ordered in this campaign
+     */
+    409: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type CreateCampaignOrderError = CreateCampaignOrderErrors[keyof CreateCampaignOrderErrors];
+
+export type CreateCampaignOrderResponses = {
+    /**
+     * Campaign order created successfully
+     */
+    200: {
+        message: string;
+        orderId: string;
+    };
+};
+
+export type CreateCampaignOrderResponse = CreateCampaignOrderResponses[keyof CreateCampaignOrderResponses];
+
+export type GetCampaignOrderDetailsData = {
+    body?: never;
+    path: {
+        campaignOrderId: string;
+    };
+    query?: never;
+    url: '/orders/campaign/{campaignOrderId}';
+};
+
+export type GetCampaignOrderDetailsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetCampaignOrderDetailsError = GetCampaignOrderDetailsErrors[keyof GetCampaignOrderDetailsErrors];
+
+export type GetCampaignOrderDetailsResponses = {
+    /**
+     * Campaign order details
+     */
+    200: {
+        id: string;
+        userId: string;
+        contractorId: string | null;
+        campaignCodeCategoryId: string;
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+        orderStreet: string | null;
+        orderCity: string | null;
+        orderZip: string | null;
+        startTime: string;
+        endTime: string;
+        weekdays: Array<string | null> | null;
+        chosenDay: string | null;
+        chosenStartTime: string | null;
+        doneAt: string | null;
+        createdAt: string;
+        updatedAt: string;
+        categoryName: string;
+        orderCityName: string;
+    };
+};
+
+export type GetCampaignOrderDetailsResponse = GetCampaignOrderDetailsResponses[keyof GetCampaignOrderDetailsResponses];
+
+export type GetOwnCampaignOrdersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/orders/me/campaign';
+};
+
+export type GetOwnCampaignOrdersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign orders not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetOwnCampaignOrdersError = GetOwnCampaignOrdersErrors[keyof GetOwnCampaignOrdersErrors];
+
+export type GetOwnCampaignOrdersResponses = {
+    /**
+     * Campaign orders fetched successfully
+     */
+    200: {
+        orders: Array<{
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            campaignCodeCategoryId: string;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            startTime: string;
+            endTime: string;
+            weekdays: Array<string | null> | null;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            doneAt: string | null;
+            createdAt: string;
+            updatedAt: string;
+            categoryName: string;
+            orderCityName: string;
+        }>;
+    };
+};
+
+export type GetOwnCampaignOrdersResponse = GetOwnCampaignOrdersResponses[keyof GetOwnCampaignOrdersResponses];
+
+export type GetExpressOrdersWhereContractorData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/contractors/me/orders/express';
+};
+
+export type GetExpressOrdersWhereContractorErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetExpressOrdersWhereContractorError = GetExpressOrdersWhereContractorErrors[keyof GetExpressOrdersWhereContractorErrors];
+
+export type GetExpressOrdersWhereContractorResponses = {
+    /**
+     * Express orders found
+     */
+    200: {
+        orders: Array<{
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            categoryId: string;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+            paymentIntentId: string | null;
+            completionCode: string | null;
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            startTime: string;
+            endTime: string;
+            weekdays: Array<string | null> | null;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            doneAt: string | null;
+            userHasNeededTools: boolean;
+            receiptUrl: string | null;
+            createdAt: string;
+            updatedAt: string;
+            category: {
+                id: string;
+                name: string;
+                imageUrl: string;
+                description: string | null;
+                express: boolean;
+                expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
+            };
+            city: {
+                id: string;
+                cityName: string;
+            };
+            qna: Array<{
+                id: string;
+                expressOrderId: string;
+                questionId: string;
+                answer: string;
+                question: {
+                    id: string;
+                    categoryId: string;
+                    questionText: string;
+                    pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+                    options: Array<string | null> | null;
+                    affectsPrice: boolean;
+                    priceFactors: string | number | boolean | null | {
+                        [key: string]: unknown;
+                    } | Array<unknown>;
+                };
+            }>;
+        }>;
+    };
+};
+
+export type GetExpressOrdersWhereContractorResponse = GetExpressOrdersWhereContractorResponses[keyof GetExpressOrdersWhereContractorResponses];
+
 export type GetCustomerServiceTicketsData = {
     body?: never;
     path?: never;
@@ -5179,6 +5452,7 @@ export type GetAllOrderMoreInfoRequestsResponses = {
         inquiry: string;
         orderStatus: string | null;
         response: string | null;
+        orderDescription: string | null;
     }>;
 };
 
@@ -5221,6 +5495,7 @@ export type GetOrderMoreInfoRequestResponses = {
         inquiry: string;
         orderStatus: string | null;
         response: string | null;
+        orderDescription: string | null;
     };
 };
 
@@ -5634,7 +5909,8 @@ export type GetAllReviewsResponses = {
         id: string;
         userId: string;
         contractorId: string;
-        orderId: string;
+        orderId: string | null;
+        expressOrderId: string | null;
         accepted: boolean;
         starRating: number;
         reviewTitle: string;
@@ -6309,6 +6585,111 @@ export type UpdateCampaignResponses = {
 
 export type UpdateCampaignResponse = UpdateCampaignResponses[keyof UpdateCampaignResponses];
 
+export type GetAllCampaignOrdersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/campaign-orders';
+};
+
+export type GetAllCampaignOrdersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAllCampaignOrdersError = GetAllCampaignOrdersErrors[keyof GetAllCampaignOrdersErrors];
+
+export type GetAllCampaignOrdersResponses = {
+    /**
+     * Campaign orders fetched successfully
+     */
+    200: Array<{
+        id: string;
+        doneAt: string | null;
+        status: string;
+        categoryName: string;
+        startTime: string;
+        endTime: string;
+        weekdays: Array<string> | null;
+        chosenDay: string | null;
+        chosenStartTime: string | null;
+        orderStreet: string | null;
+        orderZip: string | null;
+        orderCityName: string;
+        updatedAt: string;
+        createdAt: string;
+        userId: string;
+        contractorId: string | null;
+    }>;
+};
+
+export type GetAllCampaignOrdersResponse = GetAllCampaignOrdersResponses[keyof GetAllCampaignOrdersResponses];
+
+export type UpdateCampaignOrderData = {
+    body?: {
+        status: 'pending' | 'accepted' | 'declined' | 'done';
+        chosenDay?: string;
+        chosenStartTime?: string;
+        contractorId?: string;
+    };
+    path: {
+        orderId: string;
+    };
+    query?: never;
+    url: '/admin/campaign-orders/{orderId}';
+};
+
+export type UpdateCampaignOrderErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCampaignOrderError = UpdateCampaignOrderErrors[keyof UpdateCampaignOrderErrors];
+
+export type UpdateCampaignOrderResponses = {
+    /**
+     * Campaign order updated successfully
+     */
+    200: {
+        message: string;
+        order: {
+            id: string;
+            status: string;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            contractorId: string | null;
+        };
+    };
+};
+
+export type UpdateCampaignOrderResponse = UpdateCampaignOrderResponses[keyof UpdateCampaignOrderResponses];
+
 export type GetCategoriesData = {
     body?: never;
     path?: never;
@@ -6425,6 +6806,64 @@ export type GetAvailableCategoriesResponses = {
 
 export type GetAvailableCategoriesResponse = GetAvailableCategoriesResponses[keyof GetAvailableCategoriesResponses];
 
+export type GetExpressCategoryQuestionsData = {
+    body?: never;
+    path: {
+        categoryId: string;
+    };
+    query?: never;
+    url: '/{categoryId}/express-category-questions/categories/{categoryId}/express-category-questions';
+};
+
+export type GetExpressCategoryQuestionsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Categories not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetExpressCategoryQuestionsError = GetExpressCategoryQuestionsErrors[keyof GetExpressCategoryQuestionsErrors];
+
+export type GetExpressCategoryQuestionsResponses = {
+    /**
+     * Categories fetched successfully
+     */
+    200: Array<{
+        id: string;
+        categoryId: string;
+        questionText: string;
+        pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+        options: Array<string | null> | null;
+        affectsPrice: boolean;
+        priceFactors?: Array<{
+            optionId: string;
+            priceFactor: number;
+        }>;
+    }>;
+};
+
+export type GetExpressCategoryQuestionsResponse = GetExpressCategoryQuestionsResponses[keyof GetExpressCategoryQuestionsResponses];
+
 export type GetReviewsForContractorData = {
     body?: never;
     path: {
@@ -6471,7 +6910,8 @@ export type GetReviewsForContractorResponses = {
         id: string;
         userId: string;
         contractorId: string;
-        orderId: string;
+        orderId: string | null;
+        expressOrderId: string | null;
         accepted: boolean;
         starRating: number;
         reviewTitle: string;
@@ -6513,7 +6953,7 @@ export type AddNewReviewForContractorErrors = {
         message: string;
     };
     /**
-     * Review not found
+     * Order not found
      */
     404: {
         message: string;
@@ -6888,6 +7328,57 @@ export type CreateOfferResponses = {
 };
 
 export type CreateOfferResponse = CreateOfferResponses[keyof CreateOfferResponses];
+
+export type GetPublicCampaignsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/campaigns';
+};
+
+export type GetPublicCampaignsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Public campaigns not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetPublicCampaignsError = GetPublicCampaignsErrors[keyof GetPublicCampaignsErrors];
+
+export type GetPublicCampaignsResponses = {
+    /**
+     * Public campaigns fetched successfully
+     */
+    200: Array<{
+        id: string;
+        name: string;
+        description: string | null;
+        code: string;
+        public: boolean;
+    }>;
+};
+
+export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
     baseUrl: 'http://localhost:3000' | (string & {});

@@ -17,7 +17,6 @@ const getCategories = async (accessToken?: string) => {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(res);
   if (res.error) {
     throw new Error(res.error.message);
   }
