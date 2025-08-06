@@ -1,6 +1,7 @@
 import {
   getOwnOrders as getOwnOrdersApi,
   removeOrder as removeOrderApi,
+  updateOrder as updateOrderApi,
   getOrdersByUserId as getUserOrdersApi,
   getExpressOrdersByUserId as getUserExpressOrdersApi,
 } from "../openapi-client";
@@ -34,6 +35,30 @@ const removeOrder = async (accessToken: string | undefined, orderId: string) => 
     path: {
       orderId,
     },
+  });
+  if (res.error) {
+    throw new Error(res.error.message);
+  }
+  return res.data;
+};
+
+const updateOrder = async (
+  accessToken: string | undefined,
+  orderId: string,
+  body: { status: string; contractorId?: string }
+) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
+  const res = await updateOrderApi({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    path: {
+      orderId,
+    },
+    body,
   });
   if (res.error) {
     throw new Error(res.error.message);
@@ -85,4 +110,10 @@ const getUserExpressOrders = async (
   return res.data;
 };
 
-export { getOwnOrders, removeOrder, getUserOrders, getUserExpressOrders };
+export {
+  getOwnOrders,
+  removeOrder,
+  updateOrder,
+  getUserOrders,
+  getUserExpressOrders,
+};
