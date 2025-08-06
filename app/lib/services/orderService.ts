@@ -4,6 +4,7 @@ import {
   updateOrder as updateOrderApi,
   getOrdersByUserId as getUserOrdersApi,
   getExpressOrdersByUserId as getUserExpressOrdersApi,
+  getAllOrders as getAllOrdersApi,
 } from "../openapi-client";
 import { resolveToken } from "./util";
 
@@ -23,7 +24,10 @@ const getOwnOrders = async (accessToken?: string) => {
   return res.data.orders;
 };
 
-const removeOrder = async (accessToken: string | undefined, orderId: string) => {
+const removeOrder = async (
+  accessToken: string | undefined,
+  orderId: string
+) => {
   const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
@@ -58,6 +62,7 @@ const updateOrder = async (
     path: {
       orderId,
     },
+    // @ts-ignore
     body,
   });
   if (res.error) {
@@ -68,7 +73,7 @@ const updateOrder = async (
 
 const getUserOrders = async (
   accessToken: string | undefined,
-  userId: string,
+  userId: string
 ) => {
   const token = resolveToken(accessToken);
   if (!token) {
@@ -90,7 +95,7 @@ const getUserOrders = async (
 
 const getUserExpressOrders = async (
   accessToken: string | undefined,
-  userId: string,
+  userId: string
 ) => {
   const token = resolveToken(accessToken);
   if (!token) {
@@ -110,10 +115,35 @@ const getUserExpressOrders = async (
   return res.data;
 };
 
+const getAllOrders = async (
+  accessToken: string | undefined,
+  page: number,
+  limit: number
+) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
+  const res = await getAllOrdersApi({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    query: {
+      page: page.toString(),
+      limit: limit.toString(),
+    },
+  });
+  if (res.error) {
+    throw new Error(res.error.message);
+  }
+  return res.data;
+};
+
 export {
   getOwnOrders,
   removeOrder,
   updateOrder,
   getUserOrders,
   getUserExpressOrders,
+  getAllOrders,
 };

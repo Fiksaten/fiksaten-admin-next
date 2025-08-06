@@ -1,11 +1,27 @@
 import { getaccessToken } from "@/app/lib/actions";
-import { getOwnOrders } from "@/app/lib/services/orderService";
-import OrderAdminTable from "./OrderAdminTable";
+import { getAllOrders } from "@/app/lib/services/orderService";
+import AdminOrdersTable from "./AdminOrdersTable";
 
-export default async function OrdersPage() {
+interface PageProps {
+  searchParams: Promise<{
+    page?: string;
+    limit?: string;
+  }>;
+}
+
+export default async function OrdersPage({ searchParams }: PageProps) {
   const accessToken = await getaccessToken();
-  const orders = await getOwnOrders(accessToken);
+  const { page, limit } = await searchParams;
+  const pageNumber = parseInt(page || "1");
+  const limitNumber = parseInt(limit || "20");
+
+  const orders = await getAllOrders(accessToken, pageNumber, limitNumber);
+
   return (
-    <OrderAdminTable initialOrders={orders} accessToken={accessToken} />
+    <AdminOrdersTable
+      initialOrders={orders}
+      accessToken={accessToken}
+      currentLimit={limitNumber}
+    />
   );
 }
