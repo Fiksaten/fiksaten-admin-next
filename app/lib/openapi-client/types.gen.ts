@@ -440,6 +440,69 @@ export type GetCityByIdResponses = {
 
 export type GetCityByIdResponse = GetCityByIdResponses[keyof GetCityByIdResponses];
 
+export type GetCategoriesWithContractorsInCityData = {
+    body?: never;
+    path: {
+        cityId: string;
+    };
+    query?: never;
+    url: '/cities/{cityId}/categories';
+};
+
+export type GetCategoriesWithContractorsInCityErrors = {
+    /**
+     * Bad request - Invalid city ID
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * City not found or no categories with contractors
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetCategoriesWithContractorsInCityError = GetCategoriesWithContractorsInCityErrors[keyof GetCategoriesWithContractorsInCityErrors];
+
+export type GetCategoriesWithContractorsInCityResponses = {
+    /**
+     * Categories with contractors fetched successfully
+     */
+    200: Array<{
+        id: string;
+        name: string;
+        imageUrl: string;
+        description: string | null;
+        express: boolean;
+        expressPrice: string | null;
+        maxPrice: number | null;
+        platformFee: number | null;
+        hasNeededToolsAffectsPrice: boolean;
+        hasNeededToolsPriceFactor: number | null;
+        requiresCertification: boolean;
+        certificationId: string | null;
+        createdAt: string;
+        updatedAt: string;
+        contractorCount: number;
+    }>;
+};
+
+export type GetCategoriesWithContractorsInCityResponse = GetCategoriesWithContractorsInCityResponses[keyof GetCategoriesWithContractorsInCityResponses];
+
 export type GetExpressCategoriesData = {
     body?: never;
     path?: never;
@@ -4740,6 +4803,12 @@ export type GetCampaignOrderDetailsErrors = {
         message: string;
     };
     /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+    /**
      * Campaign order not found
      */
     404: {
@@ -5022,6 +5091,12 @@ export type CreateCustomerServiceTicketData = {
 
 export type CreateCustomerServiceTicketErrors = {
     /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
      * Unauthorized
      */
     401: {
@@ -5119,7 +5194,7 @@ export type GetCustomerServiceTicketResponses = {
             senderName: string | null;
             createdAt: string;
             updatedAt: string;
-        } | null>;
+        }> | null;
     };
 };
 
@@ -6992,7 +7067,10 @@ export type CreateInterestedContractorData = {
         name: string;
         email: string;
         phoneNumber?: string | null;
+        businessId?: string | null;
         notes?: string | null;
+        website?: string | null;
+        status?: 'waitingForResponse' | 'interested' | 'notInterested' | 'registered';
     };
     path?: never;
     query?: never;
@@ -7090,7 +7168,10 @@ export type UpdateInterestedContractorData = {
         name?: string;
         email?: string;
         phoneNumber?: string | null;
+        businessId?: string | null;
         notes?: string | null;
+        website?: string | null;
+        status?: 'waitingForResponse' | 'interested' | 'notInterested' | 'registered';
     };
     path: {
         id: string;
@@ -7157,6 +7238,18 @@ export type PostSendWelcomeEmailsData = {
 
 export type PostSendWelcomeEmailsErrors = {
     /**
+     * Unauthorized - Authentication required
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden - Admin access required
+     */
+    403: {
+        message: string;
+    };
+    /**
      * Internal server error
      */
     500: {
@@ -7219,6 +7312,58 @@ export type PostRetryFailedEmailsResponses = {
 };
 
 export type PostRetryFailedEmailsResponse = PostRetryFailedEmailsResponses[keyof PostRetryFailedEmailsResponses];
+
+export type PostByIdRetryWelcomeEmailData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/{id}/retry-welcome-email';
+};
+
+export type PostByIdRetryWelcomeEmailErrors = {
+    /**
+     * Bad request - email already sent or no previous failure
+     */
+    400: {
+        error: string;
+        message: string;
+    };
+    /**
+     * Contractor not found
+     */
+    404: {
+        error: string;
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        error: string;
+        message: string;
+    };
+};
+
+export type PostByIdRetryWelcomeEmailError = PostByIdRetryWelcomeEmailErrors[keyof PostByIdRetryWelcomeEmailErrors];
+
+export type PostByIdRetryWelcomeEmailResponses = {
+    /**
+     * Email retry result
+     */
+    200: {
+        sent: number;
+        failed: number;
+        errors: Array<{
+            contractorId: string;
+            email: string;
+            error: string;
+        }>;
+    };
+};
+
+export type PostByIdRetryWelcomeEmailResponse = PostByIdRetryWelcomeEmailResponses[keyof PostByIdRetryWelcomeEmailResponses];
 
 export type GetAllOrdersData = {
     body?: never;
@@ -7553,6 +7698,59 @@ export type GetExpressCategoryQuestionsResponses = {
 };
 
 export type GetExpressCategoryQuestionsResponse = GetExpressCategoryQuestionsResponses[keyof GetExpressCategoryQuestionsResponses];
+
+export type GetCitiesWithContractorsForCategoryData = {
+    body?: never;
+    path: {
+        categoryId: string;
+    };
+    query?: never;
+    url: '/categories/{categoryId}/cities';
+};
+
+export type GetCitiesWithContractorsForCategoryErrors = {
+    /**
+     * Bad request - Invalid category ID
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Category not found or no cities with contractors
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetCitiesWithContractorsForCategoryError = GetCitiesWithContractorsForCategoryErrors[keyof GetCitiesWithContractorsForCategoryErrors];
+
+export type GetCitiesWithContractorsForCategoryResponses = {
+    /**
+     * Cities with contractors fetched successfully
+     */
+    200: Array<{
+        id: string;
+        cityName: string;
+        createdAt: string;
+        updatedAt: string;
+        contractorCount: number;
+    }>;
+};
+
+export type GetCitiesWithContractorsForCategoryResponse = GetCitiesWithContractorsForCategoryResponses[keyof GetCitiesWithContractorsForCategoryResponses];
 
 export type GetReviewsForContractorData = {
     body?: never;
@@ -8073,5 +8271,5 @@ export type GetPublicCampaignsResponses = {
 export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
-    baseUrl: 'http://localhost:3000' | (string & {});
+    baseUrl: 'https://fiksaten-api-v2-1.onrender.com' | (string & {});
 };
