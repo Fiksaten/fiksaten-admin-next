@@ -78,6 +78,11 @@ const data = {
       icon: Building2,
     },
     {
+      title: "Contractor Interest",
+      url: "/admin/contractor-interest",
+      icon: Users,
+    },
+    {
       title: "Categories",
       url: "/admin/categories",
       icon: FileText,

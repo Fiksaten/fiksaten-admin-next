@@ -21,7 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Calendar, Clock, MapPin, User } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import { updateCampaignOrder } from "@/app/lib/services/campaignOrderService";
 import DayTimeSelection from "@/components/DayTimeSelection";
 
