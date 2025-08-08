@@ -43,8 +43,7 @@ import {
   updateCategory,
   deleteCategory,
 } from "@/app/lib/services/categoryService";
-import { getUploadUrlAndImageUrl } from "@/app/lib/services/imageService";
-import { addUploadedImage } from "@/app/lib/openapi-client";
+import { uploadImage } from "@/app/lib/services/imageService";
 import {
   Categories,
   Category,
@@ -59,14 +58,19 @@ interface ExtraQuestion {
   questionText: string;
   pickerType: PickerType;
   options: string[] | null;
+  affectsPrice?: boolean;
+  priceFactors?: { optionId: string; priceFactor: string }[];
 }
 
 interface CategoryFormData {
   name: string;
   description: string;
-  imageUrl: string;
+  imageKey: string;
   express: boolean;
   expressPrice: string;
+  platformFee: string;
+  hasNeededToolsAffectsPrice: boolean;
+  hasNeededToolsPriceFactor: string;
   extraQuestions: ExtraQuestion[];
 }
 
@@ -85,13 +89,16 @@ export default function CategoryAdminTable({
   const [loading, setLoading] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const [imageUrl, setImageUrl] = useState("");
   const [form, setForm] = useState<CategoryFormData>({
     name: "",
     description: "",
-    imageUrl: "",
+    imageKey: "",
     express: false,
     expressPrice: "",
+    platformFee: "",
+    hasNeededToolsAffectsPrice: false,
+    hasNeededToolsPriceFactor: "",
     extraQuestions: [],
   });
 
@@ -100,9 +107,12 @@ export default function CategoryAdminTable({
     setForm({
       name: "",
       description: "",
-      imageUrl: "",
+      imageKey: "",
       express: false,
       expressPrice: "",
+      platformFee: "",
+      hasNeededToolsAffectsPrice: false,
+      hasNeededToolsPriceFactor: "",
       extraQuestions: [],
     });
     setOpen(true);
@@ -113,9 +123,14 @@ export default function CategoryAdminTable({
     setForm({
       name: cat.name,
       description: cat.description || "",
-      imageUrl: cat.imageUrl,
+      imageKey: "",
       express: cat.express,
       expressPrice: cat.expressPrice || "",
+      platformFee: cat.platformFee ? String(cat.platformFee) : "",
+      hasNeededToolsAffectsPrice: cat.hasNeededToolsAffectsPrice ?? false,
+      hasNeededToolsPriceFactor: cat.hasNeededToolsPriceFactor
+        ? String(cat.hasNeededToolsPriceFactor)
+        : "",
       extraQuestions:
         cat.expressCategoryQuestions?.map((q) => ({
           id: q.id,
@@ -123,6 +138,13 @@ export default function CategoryAdminTable({
           pickerType: q.pickerType,
           options:
             q.options?.filter((opt): opt is string => opt !== null) || null,
+          affectsPrice: q.affectsPrice ?? false,
+          priceFactors: q.priceFactors
+            ? q.priceFactors.map((pf) => ({
+                optionId: pf.optionId,
+                priceFactor: pf.priceFactor ? String(pf.priceFactor) : "",
+              }))
+            : [],
         })) || [],
     });
     setOpen(true);
@@ -134,9 +156,12 @@ export default function CategoryAdminTable({
     setForm({
       name: "",
       description: "",
-      imageUrl: "",
+      imageKey: "",
       express: false,
       expressPrice: "",
+      platformFee: "",
+      hasNeededToolsAffectsPrice: false,
+      hasNeededToolsPriceFactor: "",
       extraQuestions: [],
     });
   };
@@ -156,43 +181,12 @@ export default function CategoryAdminTable({
 
     setImageUploading(true);
     try {
-      // Get signed URL for upload
-      const { signedUrl, imageUrl } = await getUploadUrlAndImageUrl(
-        accessToken,
-        file.type,
-        file.name
-      );
-
-      // Upload file to S3
-      const uploadResponse = await fetch(signedUrl, {
-        method: "PUT",
-        body: file,
-        headers: {
-          "Content-Type": file.type,
-        },
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error("Failed to upload image");
-      }
-
-      // Register the uploaded image in the database
-      const imageRegistrationResponse = await addUploadedImage({
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: {
-          imageUrl: imageUrl,
-          imageType: "category",
-        },
-      });
-
-      if (imageRegistrationResponse.error) {
-        throw new Error(imageRegistrationResponse.error.message);
-      }
-
-      // Update form with the new image URL
-      handleInputChange("imageUrl", imageUrl);
+      const { imageKey, imageUrl } = await uploadImage(accessToken, file);
+      setImageUrl(imageUrl);
+      setForm((prev) => ({
+        ...prev,
+        imageKey,
+      }));
       toast({ title: "Image uploaded successfully" });
     } catch (error) {
       console.error("Image upload error:", error);
@@ -226,30 +220,56 @@ export default function CategoryAdminTable({
     }));
   };
 
-  const updateExtraQuestion = (
-    index: number,
+  const updateExtraQuestionField = (
+    questionIndex: number,
     field: keyof ExtraQuestion,
-    value: string[] | null | string
+    value: ExtraQuestion[keyof ExtraQuestion]
   ) => {
     setForm((prev) => ({
       ...prev,
       extraQuestions: prev.extraQuestions.map((q, i) =>
-        i === index ? { ...q, [field]: value } : q
+        i === questionIndex ? { ...q, [field]: value } : q
       ),
     }));
+  };
+
+  const updatePriceFactor = (
+    questionIndex: number,
+    optionIndex: number,
+    value: string
+  ) => {
+    setForm((prev) => {
+      const question = prev.extraQuestions[questionIndex];
+      if (!question.options) return prev;
+      const optionId = question.options[optionIndex] || String(optionIndex);
+      let priceFactors = question.priceFactors || [];
+      // Find or add the priceFactor for this option
+      const pfIndex = priceFactors.findIndex((pf) => pf.optionId === optionId);
+      if (pfIndex >= 0) {
+        priceFactors[pfIndex] = { optionId, priceFactor: value };
+      } else {
+        priceFactors = [...priceFactors, { optionId, priceFactor: value }];
+      }
+      return {
+        ...prev,
+        extraQuestions: prev.extraQuestions.map((q, i) =>
+          i === questionIndex ? { ...q, priceFactors } : q
+        ),
+      };
+    });
   };
 
   const addOption = (questionIndex: number) => {
     const question = form.extraQuestions[questionIndex];
     const options = question.options || [];
-    updateExtraQuestion(questionIndex, "options", [...options, ""]);
+    updateExtraQuestionField(questionIndex, "options", [...options, ""]);
   };
 
   const removeOption = (questionIndex: number, optionIndex: number) => {
     const question = form.extraQuestions[questionIndex];
     if (question.options) {
       const newOptions = question.options.filter((_, i) => i !== optionIndex);
-      updateExtraQuestion(
+      updateExtraQuestionField(
         questionIndex,
         "options",
         newOptions.length > 0 ? newOptions : null
@@ -266,17 +286,35 @@ export default function CategoryAdminTable({
     if (question.options) {
       const newOptions = [...question.options];
       newOptions[optionIndex] = value;
-      updateExtraQuestion(questionIndex, "options", newOptions);
+      updateExtraQuestionField(questionIndex, "options", newOptions);
     }
   };
 
   const validateForm = (): string | null => {
     if (!form.name.trim()) return "Category name is required";
-    if (!form.imageUrl) return "Category image is required";
+    if (!form.imageKey && !editCategory) return "Category image is required";
 
     if (form.express) {
       if (!form.expressPrice || parseFloat(form.expressPrice) <= 0) {
         return "Express price is required and must be greater than 0";
+      }
+      if (
+        !form.platformFee ||
+        isNaN(Number(form.platformFee)) ||
+        Number(form.platformFee) < 0 ||
+        Number(form.platformFee) > 100
+      ) {
+        return "Fiksaten's cut is required and must be between 0.00 and 100.00 percent";
+      }
+      if (form.hasNeededToolsAffectsPrice) {
+        if (
+          !form.hasNeededToolsPriceFactor ||
+          isNaN(Number(form.hasNeededToolsPriceFactor)) ||
+          Number(form.hasNeededToolsPriceFactor) < 0 ||
+          Number(form.hasNeededToolsPriceFactor) > 10
+        ) {
+          return "Has Needed Tools price factor must be between 0.00 and 10.00";
+        }
       }
       if (form.extraQuestions.length === 0) {
         return "Express categories must have at least one extra question";
@@ -296,6 +334,27 @@ export default function CategoryAdminTable({
         return `Question ${
           i + 1
         } requires at least one option for dropdown type`;
+      }
+      if (question.affectsPrice) {
+        if (!question.options) {
+          return `Question ${i + 1} must have options to set price factors`;
+        }
+        for (let j = 0; j < question.options.length; j++) {
+          const pf = question.priceFactors?.find(
+            (pf) => pf.optionId === question.options![j]
+          );
+          if (
+            !pf ||
+            pf.priceFactor === "" ||
+            isNaN(Number(pf.priceFactor)) ||
+            Number(pf.priceFactor) < 0 ||
+            Number(pf.priceFactor) > 10
+          ) {
+            return `Price factor for option ${j + 1} in question ${
+              i + 1
+            } must be between 0.00 and 10.00`;
+          }
+        }
       }
     }
 
@@ -320,9 +379,16 @@ export default function CategoryAdminTable({
       const categoryData: CreateCategoryBody = {
         name: form.name.trim(),
         description: form.description.trim() || null,
-        imageUrl: form.imageUrl,
+        imageKey: form.imageKey,
         express: form.express,
         expressPrice: form.express ? form.expressPrice : null,
+        platformFee: form.express ? form.platformFee : null,
+        hasNeededToolsAffectsPrice: form.express
+          ? form.hasNeededToolsAffectsPrice
+          : false,
+        hasNeededToolsPriceFactor: form.express
+          ? form.hasNeededToolsPriceFactor
+          : null,
         extraQuestions:
           form.extraQuestions.length > 0
             ? form.extraQuestions.map((q) => ({
@@ -334,6 +400,18 @@ export default function CategoryAdminTable({
                         .filter((opt) => opt.trim())
                         .map((opt) => opt.trim())
                     : null,
+                affectsPrice: q.affectsPrice ?? false,
+                priceFactors: q.affectsPrice
+                  ? (q.options || []).map((opt) => {
+                      const pf = q.priceFactors?.find(
+                        (pf) => pf.optionId === opt
+                      );
+                      return {
+                        optionId: opt,
+                        priceFactor: pf ? Number(pf.priceFactor) : 0,
+                      };
+                    })
+                  : [],
               }))
             : undefined,
       };
@@ -549,10 +627,10 @@ export default function CategoryAdminTable({
                         <Upload className="h-4 w-4" />
                         {imageUploading ? "Uploading..." : "Upload Image"}
                       </Button>
-                      {form.imageUrl && (
+                      {form.imageKey && (
                         <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100">
                           <Image
-                            src={form.imageUrl}
+                            src={imageUrl}
                             alt="Category preview"
                             width={80}
                             height={80}
@@ -561,7 +639,7 @@ export default function CategoryAdminTable({
                         </div>
                       )}
                     </div>
-                    {!form.imageUrl && (
+                    {!form.imageKey && (
                       <p className="text-sm text-muted-foreground">
                         Image is required for all categories
                       </p>
@@ -571,7 +649,6 @@ export default function CategoryAdminTable({
               </CardContent>
             </Card>
 
-            {/* Express Settings */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">
@@ -607,6 +684,64 @@ export default function CategoryAdminTable({
                         required={form.express}
                       />
                     </div>
+                    <div>
+                      <Label htmlFor="platformFee">
+                        Fiksaten&apos;s cut (%) *
+                      </Label>
+                      <Input
+                        id="platformFee"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        max="100"
+                        value={form.platformFee}
+                        onChange={(e) =>
+                          handleInputChange("platformFee", e.target.value)
+                        }
+                        placeholder="Enter platform fee percentage"
+                        required={form.express}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Switch
+                        id="hasNeededToolsAffectsPrice"
+                        checked={form.hasNeededToolsAffectsPrice}
+                        onCheckedChange={(checked) =>
+                          handleInputChange(
+                            "hasNeededToolsAffectsPrice",
+                            checked
+                          )
+                        }
+                      />
+                      <Label htmlFor="hasNeededToolsAffectsPrice">
+                        &quot;Has Needed Tools&quot; affects price?
+                      </Label>
+                    </div>
+                    {form.hasNeededToolsAffectsPrice && (
+                      <div className="mt-2">
+                        <Label htmlFor="hasNeededToolsPriceFactor">
+                          &quot;Has Needed Tools&quot; price factor (0.00 -
+                          10.00)
+                        </Label>
+                        <Input
+                          id="hasNeededToolsPriceFactor"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          max="10"
+                          value={form.hasNeededToolsPriceFactor}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "hasNeededToolsPriceFactor",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Enter price factor"
+                          required={form.hasNeededToolsAffectsPrice}
+                          className="w-32"
+                        />
+                      </div>
+                    )}
                     <p className="text-sm text-muted-foreground">
                       Express categories require at least one extra question
                     </p>
@@ -665,7 +800,7 @@ export default function CategoryAdminTable({
                         <Input
                           value={question.questionText}
                           onChange={(e) =>
-                            updateExtraQuestion(
+                            updateExtraQuestionField(
                               questionIndex,
                               "questionText",
                               e.target.value
@@ -680,14 +815,14 @@ export default function CategoryAdminTable({
                         <Select
                           value={question.pickerType}
                           onValueChange={(value: PickerType) => {
-                            updateExtraQuestion(
+                            updateExtraQuestionField(
                               questionIndex,
                               "pickerType",
                               value
                             );
                             // Reset options if changing away from dropdown
                             if (value !== "DROPDOWN") {
-                              updateExtraQuestion(
+                              updateExtraQuestionField(
                                 questionIndex,
                                 "options",
                                 null
@@ -711,6 +846,58 @@ export default function CategoryAdminTable({
                         </Select>
                       </div>
                     </div>
+
+                    <div className="flex items-center gap-2 mt-2">
+                      <Switch
+                        id={`affectsPrice-${questionIndex}`}
+                        checked={!!question.affectsPrice}
+                        onCheckedChange={(checked) =>
+                          updateExtraQuestionField(
+                            questionIndex,
+                            "affectsPrice",
+                            checked
+                          )
+                        }
+                      />
+                      <Label htmlFor={`affectsPrice-${questionIndex}`}>
+                        Affects Price?
+                      </Label>
+                    </div>
+                    {question.affectsPrice && question.options && (
+                      <div className="mt-2 space-y-2">
+                        <Label>Price Factors (0.00 - 10.00)</Label>
+                        {question.options.map((option, optionIndex) => (
+                          <div
+                            key={optionIndex}
+                            className="flex items-center gap-2"
+                          >
+                            <span className="text-sm w-32 truncate">
+                              {option}
+                            </span>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              max="10"
+                              value={
+                                question.priceFactors?.find(
+                                  (pf) => pf.optionId === option
+                                )?.priceFactor || ""
+                              }
+                              onChange={(e) =>
+                                updatePriceFactor(
+                                  questionIndex,
+                                  optionIndex,
+                                  e.target.value
+                                )
+                              }
+                              placeholder="Factor"
+                              className="w-24"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
                     {question.pickerType === "DROPDOWN" && (
                       <div>

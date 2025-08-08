@@ -1,20 +1,16 @@
-import { getSignedUrl as getSignedUrlApi } from "../openapi-client";
+import {
+  addCategoryImage,
+  getImagePublicUrl,
+  getSignedUrl as getSignedUrlApi,
+} from "../openapi-client";
 import { resolveToken } from "./util";
 
-const getSignedUrl = async (
-  accessToken: string | undefined,
-  fileType: string,
-  fileName: string
-) => {
+const getSignedUrl = async (accessToken: string | undefined) => {
   const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
   const res = await getSignedUrlApi({
-    query: {
-      fileType: fileType,
-      fileName: fileName,
-    },
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -25,23 +21,57 @@ const getSignedUrl = async (
   return res.data;
 };
 
-// Enhanced wrapper for upload flow
-const getUploadUrlAndImageUrl = async (
-  accessToken: string | undefined,
-  fileType: string,
-  fileName: string
-) => {
-  const signedUrlData = await getSignedUrl(accessToken, fileType, fileName);
+const uploadImage = async (accessToken: string | undefined, file: File) => {
+  const signedUrlData = await getSignedUrl(accessToken);
 
-  // Extract the base URL from the signed URL to construct the final image URL
-  // The signed URL contains query parameters for uploading, but the final image URL is just the base URL
-  const signedUrl = signedUrlData.url;
-  const baseUrl = signedUrl.split("?")[0]; // Remove query parameters
+  const signedUrl = signedUrlData.signedUrl;
 
-  return {
-    signedUrl,
-    imageUrl: baseUrl,
-  };
+  const uploadResponse = await fetch(signedUrl, {
+    method: "PUT",
+    body: file,
+    headers: {
+      "Content-Type": file.type,
+    },
+  });
+  if (!uploadResponse.ok) {
+    throw new Error("Failed to upload image");
+  }
+  const json = await uploadResponse.json();
+  const imageUrlRes = await getImagePublicUrl({
+    path: { imageKey: json.Key },
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  if (imageUrlRes.error) {
+    throw new Error(imageUrlRes.error.message);
+  }
+
+  return { imageKey: json.Key, imageUrl: imageUrlRes.data.imageUrl };
 };
 
-export { getSignedUrl, getUploadUrlAndImageUrl };
+const updateCategoryImage = async (
+  accessToken: string | undefined,
+  imageKey: string,
+  categoryId: string
+) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
+  const res = await addCategoryImage({
+    path: { categoryId },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: {
+      imageKey: imageKey,
+    },
+  });
+  if (res.error) {
+    throw new Error(res.error.message);
+  }
+  return res.data;
+};
+
+export { getSignedUrl, uploadImage, updateCategoryImage };

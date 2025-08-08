@@ -19,7 +19,6 @@ import { useTranslations } from "next-intl";
 import { ContractorRegisterData, Register } from "@/app/lib/types/authTypes";
 import { User, Building2, ArrowLeft, ArrowRight, Check } from "lucide-react";
 
-// Step indicators component
 const StepIndicator = ({
   currentStep,
   totalSteps,
@@ -278,7 +277,6 @@ export default function RegisterForm({
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* User Type Selection */}
           {currentStep === 1 && (
             <>
               <div className="space-y-4">
@@ -329,7 +327,6 @@ export default function RegisterForm({
             </>
           )}
 
-          {/* Personal Information Form */}
           {currentStep === 1 && (
             <form
               onSubmit={personalForm.handleSubmit(handlePersonalSubmit)}
@@ -405,7 +402,6 @@ export default function RegisterForm({
             </form>
           )}
 
-          {/* Company Information Form (Step 2 for contractors) */}
           {currentStep === 2 && userType === "contractor" && (
             <form
               onSubmit={companyForm.handleSubmit(handleCompanySubmit)}

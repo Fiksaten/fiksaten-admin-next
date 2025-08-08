@@ -3,7 +3,8 @@ import {
   AddCustomerServiceTicketMessageData,
 } from "../openapi-client";
 
-type SupportTicketListItem = GetCustomerServiceTicketsResponses["200"][number];
+type SupportTicketListItem =
+  GetCustomerServiceTicketsResponses["200"]["tickets"][number];
 type SupportTicketList = GetCustomerServiceTicketsResponses["200"];
 type SupportTicketMessageBody = NonNullable<
   AddCustomerServiceTicketMessageData["body"]

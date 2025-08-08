@@ -274,5 +274,105 @@
       "tiktok": "Tiktok - Aukeaa uudessa välilehdessä"
     }
   },
-  "promotionHeader": "Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti."
+  "promotionHeader": "Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti.",
+  "support": {
+    "tickets": {
+      "title": "Support Tickets",
+      "createNew": "Create New Ticket",
+      "myTickets": "My Tickets",
+      "allTickets": "All Tickets",
+      "ticketId": "Ticket ID",
+      "subject": "Subject",
+      "category": "Category",
+      "priority": "Priority",
+      "status": "Status",
+      "createdAt": "Created",
+      "updatedAt": "Last Updated",
+      "assignedTo": "Assigned To",
+      "noTickets": "No tickets found",
+      "loadingTickets": "Loading tickets...",
+      "categories": {
+        "technical": "Technical",
+        "billing": "Billing",
+        "general": "General Inquiry",
+        "bug_report": "Bug Report"
+      },
+      "priorities": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "statuses": {
+        "pending": "Pending",
+        "open": "Open",
+        "seen": "Seen",
+        "answered": "Answered",
+        "resolved": "Resolved",
+        "closed": "Closed"
+      },
+      "create": {
+        "title": "Create Support Ticket",
+        "description": "Describe your issue or question",
+        "selectCategory": "Select Category",
+        "messageLabel": "Message",
+        "messagePlaceholder": "Please describe your issue in detail...",
+        "submit": "Submit Ticket",
+        "submitting": "Creating ticket...",
+        "success": "Ticket created successfully",
+        "error": "Failed to create ticket"
+      },
+      "detail": {
+        "conversation": "Conversation",
+        "reply": "Reply",
+        "replyPlaceholder": "Type your reply...",
+        "send": "Send",
+        "sending": "Sending...",
+        "adminReply": "Admin Reply",
+        "yourMessage": "Your Message",
+        "archived": "Archived",
+        "closeTicket": "Close Ticket",
+        "reopenTicket": "Reopen Ticket",
+        "assignTicket": "Assign Ticket",
+        "changeStatus": "Change Status",
+        "ticketHistory": "Ticket History"
+      },
+      "filters": {
+        "all": "All",
+        "filterByStatus": "Filter by Status",
+        "filterByCategory": "Filter by Category",
+        "filterByPriority": "Filter by Priority",
+        "search": "Search tickets...",
+        "clearFilters": "Clear Filters"
+      },
+      "admin": {
+        "dashboard": "Support Dashboard",
+        "assignToMe": "Assign to Me",
+        "unassign": "Unassign",
+        "markAsResolved": "Mark as Resolved",
+        "escalate": "Escalate",
+        "internalNote": "Internal Note",
+        "customerInfo": "Customer Information",
+        "ticketDetails": "Ticket Details"
+      }
+    },
+    "errors": {
+      "ticketNotFound": "Ticket not found",
+      "unauthorized": "You don't have permission to view this ticket",
+      "rateLimitExceeded": "Too many requests. Please wait before creating another ticket",
+      "invalidCategory": "Invalid category selected",
+      "messageTooLong": "Message is too long (maximum 5000 characters)",
+      "messageRequired": "Message is required",
+      "networkError": "Network error. Please check your connection and try again",
+      "serverError": "Server error. Please try again later",
+      "validationError": "Please check your input and try again"
+    },
+    "notifications": {
+      "newTicketCreated": "New support ticket created",
+      "ticketUpdated": "Ticket updated",
+      "adminReplied": "Admin replied to your ticket",
+      "ticketResolved": "Your ticket has been resolved",
+      "ticketClosed": "Your ticket has been closed"
+    }
+  }
 }

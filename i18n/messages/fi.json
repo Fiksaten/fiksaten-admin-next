@@ -277,5 +277,105 @@
       "tiktok": "Tiktok - Aukeaa uudessa välilehdessä"
     }
   },
-  "promotionHeader": "Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti."
+  "promotionHeader": "Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti.",
+  "support": {
+    "tickets": {
+      "title": "Tukipyynnöt",
+      "createNew": "Luo uusi tukipyyntö",
+      "myTickets": "Omat tukipyynnöt",
+      "allTickets": "Kaikki tukipyynnöt",
+      "ticketId": "Tukipyyntö ID",
+      "subject": "Aihe",
+      "category": "Kategoria",
+      "priority": "Prioriteetti",
+      "status": "Tila",
+      "createdAt": "Luotu",
+      "updatedAt": "Viimeksi päivitetty",
+      "assignedTo": "Vastuuhenkilö",
+      "noTickets": "Tukipyyntöjä ei löytynyt",
+      "loadingTickets": "Ladataan tukipyyntöjä...",
+      "categories": {
+        "technical": "Tekninen",
+        "billing": "Laskutus",
+        "general": "Yleinen kysymys",
+        "bug_report": "Virheraportti"
+      },
+      "priorities": {
+        "low": "Matala",
+        "normal": "Normaali",
+        "high": "Korkea",
+        "urgent": "Kiireellinen"
+      },
+      "statuses": {
+        "pending": "Odottaa",
+        "open": "Avoinna",
+        "seen": "Nähty",
+        "answered": "Vastattu",
+        "resolved": "Ratkaistu",
+        "closed": "Suljettu"
+      },
+      "create": {
+        "title": "Luo tukipyyntö",
+        "description": "Kuvaile ongelmasi tai kysymyksesi",
+        "selectCategory": "Valitse kategoria",
+        "messageLabel": "Viesti",
+        "messagePlaceholder": "Kuvaile ongelmasi yksityiskohtaisesti...",
+        "submit": "Lähetä tukipyyntö",
+        "submitting": "Luodaan tukipyyntöä...",
+        "success": "Tukipyyntö luotu onnistuneesti",
+        "error": "Tukipyynnön luominen epäonnistui"
+      },
+      "detail": {
+        "conversation": "Keskustelu",
+        "reply": "Vastaa",
+        "replyPlaceholder": "Kirjoita vastauksesi...",
+        "send": "Lähetä",
+        "sending": "Lähetetään...",
+        "adminReply": "Ylläpidon vastaus",
+        "yourMessage": "Sinun viestisi",
+        "archived": "Arkistoitu",
+        "closeTicket": "Sulje tukipyyntö",
+        "reopenTicket": "Avaa tukipyyntö uudelleen",
+        "assignTicket": "Määritä vastuuhenkilö",
+        "changeStatus": "Muuta tilaa",
+        "ticketHistory": "Tukipyynnön historia"
+      },
+      "filters": {
+        "all": "Kaikki",
+        "filterByStatus": "Suodata tilan mukaan",
+        "filterByCategory": "Suodata kategorian mukaan",
+        "filterByPriority": "Suodata prioriteetin mukaan",
+        "search": "Hae tukipyyntöjä...",
+        "clearFilters": "Tyhjennä suodattimet"
+      },
+      "admin": {
+        "dashboard": "Tuki-dashboard",
+        "assignToMe": "Määritä minulle",
+        "unassign": "Poista määritys",
+        "markAsResolved": "Merkitse ratkaistuksi",
+        "escalate": "Eskalointi",
+        "internalNote": "Sisäinen muistiinpano",
+        "customerInfo": "Asiakastiedot",
+        "ticketDetails": "Tukipyynnön tiedot"
+      }
+    },
+    "errors": {
+      "ticketNotFound": "Tukipyyntöä ei löytynyt",
+      "unauthorized": "Sinulla ei ole oikeutta katsoa tätä tukipyyntöä",
+      "rateLimitExceeded": "Liian monta pyyntöä. Odota ennen uuden tukipyynnön luomista",
+      "invalidCategory": "Virheellinen kategoria valittu",
+      "messageTooLong": "Viesti on liian pitkä (maksimi 5000 merkkiä)",
+      "messageRequired": "Viesti on pakollinen",
+      "networkError": "Verkkovirhe. Tarkista yhteytesi ja yritä uudelleen",
+      "serverError": "Palvelinvirhe. Yritä myöhemmin uudelleen",
+      "validationError": "Tarkista syöttämäsi tiedot ja yritä uudelleen"
+    },
+    "notifications": {
+      "newTicketCreated": "Uusi tukipyyntö luotu",
+      "ticketUpdated": "Tukipyyntö päivitetty",
+      "adminReplied": "Ylläpito vastasi tukipyyntöösi",
+      "ticketResolved": "Tukipyyntösi on ratkaistu",
+      "ticketClosed": "Tukipyyntösi on suljettu"
+    }
+  }
 }

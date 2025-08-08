@@ -11,14 +11,11 @@ const intlMiddleware = createMiddleware(routing);
 
 async function fetchUser(token: string) {
   // Use your own API endpoint to get the user info
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/users/me`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (!res.ok) {
     return null;
   }
@@ -61,10 +58,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   if (pathname.includes("/admin")) {
-
     if (!user || !isAdminRole(user.role)) {
-
-
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }

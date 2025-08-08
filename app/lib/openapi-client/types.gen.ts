@@ -53,7 +53,9 @@ export type RegisterResponses = {
             stripeCustomerId: string | null;
             badgeCountOffers: number;
             badgeCountMessages: number;
-            role: 'consumer' | 'admin' | 'contractor';
+            role: 'consumer' | 'admin' | 'contractor' | 'deleted';
+            deletedAt: string | null;
+            anonymizedAt: string | null;
             pushNotificationPermission: boolean | null;
             smsPermission: boolean | null;
             emailPermission: boolean | null;
@@ -467,6 +469,12 @@ export type GetExpressCategoriesResponses = {
         description: string | null;
         express: boolean;
         expressPrice: string | null;
+        maxPrice: string | null;
+        platformFee: number | null;
+        hasNeededToolsAffectsPrice: boolean;
+        hasNeededToolsPriceFactor: string | null;
+        requiresCertification: boolean;
+        certificationId: string | null;
         createdAt: string;
         updatedAt: string;
         expressCategoryQuestions?: Array<{
@@ -475,6 +483,11 @@ export type GetExpressCategoriesResponses = {
             questionText: string;
             pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
             options: Array<string | null> | null;
+            affectsPrice: boolean;
+            priceFactors?: Array<{
+                optionId: string;
+                priceFactor: number;
+            }>;
         }>;
     }>;
 };
@@ -548,6 +561,47 @@ export type CreateAvailableAreaRequestResponses = {
 
 export type CreateAvailableAreaRequestResponse = CreateAvailableAreaRequestResponses[keyof CreateAvailableAreaRequestResponses];
 
+export type DeleteCurrentUserData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/users/me';
+};
+
+export type DeleteCurrentUserErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * User not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type DeleteCurrentUserError = DeleteCurrentUserErrors[keyof DeleteCurrentUserErrors];
+
+export type DeleteCurrentUserResponses = {
+    /**
+     * User deleted
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCurrentUserResponse = DeleteCurrentUserResponses[keyof DeleteCurrentUserResponses];
+
 export type GetCurrentUserData = {
     body?: never;
     path?: never;
@@ -592,7 +646,9 @@ export type GetCurrentUserResponses = {
         stripeCustomerId: string | null;
         badgeCountOffers: number;
         badgeCountMessages: number;
-        role: 'consumer' | 'admin' | 'contractor';
+        role: 'consumer' | 'admin' | 'contractor' | 'deleted';
+        deletedAt: string | null;
+        anonymizedAt: string | null;
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
@@ -614,7 +670,9 @@ export type UpdateCurrentUserData = {
         stripeCustomerId?: string | null;
         badgeCountOffers?: number;
         badgeCountMessages?: number;
-        role?: 'consumer' | 'admin' | 'contractor';
+        role?: 'consumer' | 'admin' | 'contractor' | 'deleted';
+        deletedAt?: string | null;
+        anonymizedAt?: string | null;
         pushNotificationPermission?: boolean | null;
         smsPermission?: boolean | null;
         emailPermission?: boolean | null;
@@ -661,7 +719,9 @@ export type UpdateCurrentUserResponses = {
         stripeCustomerId: string | null;
         badgeCountOffers: number;
         badgeCountMessages: number;
-        role: 'consumer' | 'admin' | 'contractor';
+        role: 'consumer' | 'admin' | 'contractor' | 'deleted';
+        deletedAt: string | null;
+        anonymizedAt: string | null;
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
@@ -820,6 +880,136 @@ export type UpdateCurrentUserPermissionsResponses = {
 };
 
 export type UpdateCurrentUserPermissionsResponse = UpdateCurrentUserPermissionsResponses[keyof UpdateCurrentUserPermissionsResponses];
+
+export type GetUserNotificationPreferencesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/user/me/notification-preferences';
+};
+
+export type GetUserNotificationPreferencesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetUserNotificationPreferencesError = GetUserNotificationPreferencesErrors[keyof GetUserNotificationPreferencesErrors];
+
+export type GetUserNotificationPreferencesResponses = {
+    /**
+     * User notification preferences retrieved successfully
+     */
+    200: {
+        preferences: {
+            [key: string]: {
+                pushEnabled: boolean;
+                emailEnabled: boolean;
+                smsEnabled: boolean;
+            };
+        };
+        generalPermissions: {
+            pushNotificationPermission: boolean;
+            emailPermission: boolean;
+            smsPermission: boolean;
+        };
+    };
+};
+
+export type GetUserNotificationPreferencesResponse = GetUserNotificationPreferencesResponses[keyof GetUserNotificationPreferencesResponses];
+
+export type UpdateUserNotificationPreferencesData = {
+    body?: {
+        preferences: Array<{
+            notificationType: string;
+            pushEnabled: boolean;
+            emailEnabled: boolean;
+            smsEnabled: boolean;
+        }>;
+    };
+    path?: never;
+    query?: never;
+    url: '/user/me/notification-preferences';
+};
+
+export type UpdateUserNotificationPreferencesErrors = {
+    /**
+     * Invalid request data
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateUserNotificationPreferencesError = UpdateUserNotificationPreferencesErrors[keyof UpdateUserNotificationPreferencesErrors];
+
+export type UpdateUserNotificationPreferencesResponses = {
+    /**
+     * Notification preferences updated successfully
+     */
+    200: {
+        message: string;
+        updatedCount: number;
+    };
+};
+
+export type UpdateUserNotificationPreferencesResponse = UpdateUserNotificationPreferencesResponses[keyof UpdateUserNotificationPreferencesResponses];
+
+export type DisableAllNotificationsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/user/me/disable-all-notifications';
+};
+
+export type DisableAllNotificationsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type DisableAllNotificationsError = DisableAllNotificationsErrors[keyof DisableAllNotificationsErrors];
+
+export type DisableAllNotificationsResponses = {
+    /**
+     * All notifications disabled successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DisableAllNotificationsResponse = DisableAllNotificationsResponses[keyof DisableAllNotificationsResponses];
 
 export type GetCurrentUserBadgesData = {
     body?: never;
@@ -1353,7 +1543,9 @@ export type GetUserByIdResponses = {
         stripeCustomerId: string | null;
         badgeCountOffers: number;
         badgeCountMessages: number;
-        role: 'consumer' | 'admin' | 'contractor';
+        role: 'consumer' | 'admin' | 'contractor' | 'deleted';
+        deletedAt: string | null;
+        anonymizedAt: string | null;
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
@@ -1367,10 +1559,7 @@ export type GetUserByIdResponse = GetUserByIdResponses[keyof GetUserByIdResponse
 export type GetSignedUrlData = {
     body?: never;
     path?: never;
-    query: {
-        fileType: string;
-        fileName: string;
-    };
+    query?: never;
     url: '/images/signed-url';
 };
 
@@ -1396,58 +1585,26 @@ export type GetSignedUrlResponses = {
      * Pre-signed URL generated
      */
     200: {
-        url: string;
+        signedUrl: string;
+        path: string;
+        token: string;
     };
 };
 
 export type GetSignedUrlResponse = GetSignedUrlResponses[keyof GetSignedUrlResponses];
 
-export type GetImagesData = {
-    body?: never;
-    path?: never;
-    query?: {
-        type?: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-    };
-    url: '/images';
-};
-
-export type GetImagesErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-};
-
-export type GetImagesError = GetImagesErrors[keyof GetImagesErrors];
-
-export type GetImagesResponses = {
-    /**
-     * List of images
-     */
-    200: Array<{
-        id: string;
-        imageUrl: string;
-        imageType: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-        createdAt: string;
-    }>;
-};
-
-export type GetImagesResponse = GetImagesResponses[keyof GetImagesResponses];
-
-export type AddUploadedImageData = {
+export type AddCategoryImageData = {
     body?: {
-        imageUrl: string;
-        imageType?: string;
-        updatedAt?: string;
+        imageKey: string;
     };
-    path?: never;
+    path: {
+        categoryId: string;
+    };
     query?: never;
-    url: '/images';
+    url: '/categories/{categoryId}/image';
 };
 
-export type AddUploadedImageErrors = {
+export type AddCategoryImageErrors = {
     /**
      * Invalid request
      */
@@ -1468,103 +1625,80 @@ export type AddUploadedImageErrors = {
     };
 };
 
-export type AddUploadedImageError = AddUploadedImageErrors[keyof AddUploadedImageErrors];
+export type AddCategoryImageError = AddCategoryImageErrors[keyof AddCategoryImageErrors];
 
-export type AddUploadedImageResponses = {
+export type AddCategoryImageResponses = {
     /**
-     * Image added to the database
+     * Image added to the category
      */
     200: {
-        imageId: string;
-    };
-};
-
-export type AddUploadedImageResponse = AddUploadedImageResponses[keyof AddUploadedImageResponses];
-
-export type DeleteImageData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/images/{id}';
-};
-
-export type DeleteImageErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-};
-
-export type DeleteImageError = DeleteImageErrors[keyof DeleteImageErrors];
-
-export type DeleteImageResponses = {
-    /**
-     * Image deleted
-     */
-    200: {
-        message: string;
-    };
-};
-
-export type DeleteImageResponse = DeleteImageResponses[keyof DeleteImageResponses];
-
-export type GetImageData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/images/{id}';
-};
-
-export type GetImageErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Image not found
-     */
-    404: {
-        message: string;
-    };
-};
-
-export type GetImageError = GetImageErrors[keyof GetImageErrors];
-
-export type GetImageResponses = {
-    /**
-     * Image data
-     */
-    200: {
-        id: string;
         imageUrl: string;
-        imageType: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-        createdAt: string;
     };
 };
 
-export type GetImageResponse = GetImageResponses[keyof GetImageResponses];
+export type AddCategoryImageResponse = AddCategoryImageResponses[keyof AddCategoryImageResponses];
 
-export type UpdateImageData = {
+export type GetImagePublicUrlData = {
+    body?: never;
+    path: {
+        imageKey: string;
+    };
+    query?: never;
+    url: '/images/{imageKey}';
+};
+
+export type GetImagePublicUrlErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetImagePublicUrlError = GetImagePublicUrlErrors[keyof GetImagePublicUrlErrors];
+
+export type GetImagePublicUrlResponses = {
+    /**
+     * Image public url
+     */
+    200: {
+        imageUrl: string;
+    };
+};
+
+export type GetImagePublicUrlResponse = GetImagePublicUrlResponses[keyof GetImagePublicUrlResponses];
+
+export type AddOrderImageData = {
     body?: {
-        imageType?: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-        imageUrl?: string;
+        imageKey: string;
     };
     path: {
-        id: string;
+        orderId: string;
     };
     query?: never;
-    url: '/images/{id}';
+    url: '/orders/{orderId}/image';
 };
 
-export type UpdateImageErrors = {
+export type AddOrderImageErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
     /**
      * Unauthorized
      */
@@ -1572,28 +1706,161 @@ export type UpdateImageErrors = {
         message: string;
     };
     /**
-     * Image not found
+     * Internal server error
      */
-    404: {
+    500: {
         message: string;
     };
 };
 
-export type UpdateImageError = UpdateImageErrors[keyof UpdateImageErrors];
+export type AddOrderImageError = AddOrderImageErrors[keyof AddOrderImageErrors];
 
-export type UpdateImageResponses = {
+export type AddOrderImageResponses = {
     /**
-     * Updated image
+     * Image added to the order
      */
     200: {
-        id: string;
         imageUrl: string;
-        imageType: 'profile' | 'contractor' | 'order' | 'category' | 'contractorHeader';
-        createdAt: string;
     };
 };
 
-export type UpdateImageResponse = UpdateImageResponses[keyof UpdateImageResponses];
+export type AddOrderImageResponse = AddOrderImageResponses[keyof AddOrderImageResponses];
+
+export type AddCompanyImageData = {
+    body?: {
+        imageKey: string;
+    };
+    path: {
+        contractorId: string;
+    };
+    query?: never;
+    url: '/contractors/{contractorId}/image';
+};
+
+export type AddCompanyImageErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AddCompanyImageError = AddCompanyImageErrors[keyof AddCompanyImageErrors];
+
+export type AddCompanyImageResponses = {
+    /**
+     * Image added to the company
+     */
+    200: {
+        imageUrl: string;
+    };
+};
+
+export type AddCompanyImageResponse = AddCompanyImageResponses[keyof AddCompanyImageResponses];
+
+export type AddOrderDoneImageData = {
+    body?: {
+        imageKey: string;
+    };
+    path: {
+        orderId: string;
+    };
+    query?: never;
+    url: '/orders/{orderId}/done/image';
+};
+
+export type AddOrderDoneImageErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AddOrderDoneImageError = AddOrderDoneImageErrors[keyof AddOrderDoneImageErrors];
+
+export type AddOrderDoneImageResponses = {
+    /**
+     * Image added to the order done
+     */
+    200: {
+        imageUrl: string;
+    };
+};
+
+export type AddOrderDoneImageResponse = AddOrderDoneImageResponses[keyof AddOrderDoneImageResponses];
+
+export type AddPermitImageData = {
+    body?: {
+        imageKey: string;
+    };
+    path: {
+        contractorId: string;
+        permitId: string;
+    };
+    query?: never;
+    url: '/companies/{contractorId}/permit/{permitId}/attachment';
+};
+
+export type AddPermitImageErrors = {
+    /**
+     * Invalid request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AddPermitImageError = AddPermitImageErrors[keyof AddPermitImageErrors];
+
+export type AddPermitImageResponses = {
+    /**
+     * Image added to the permit
+     */
+    200: {
+        imageUrl: string;
+    };
+};
+
+export type AddPermitImageResponse = AddPermitImageResponses[keyof AddPermitImageResponses];
 
 export type GetContractorData = {
     body?: never;
@@ -1651,7 +1918,6 @@ export type GetContractorResponses = {
         imageUrl: string | null;
         reviewAverage: string | null;
         reviewCount: number | null;
-        verified: boolean | null;
         businessId: string | null;
         businessType: string | null;
         headerImageUrl: string | null;
@@ -1667,50 +1933,6 @@ export type GetContractorResponses = {
 };
 
 export type GetContractorResponse = GetContractorResponses[keyof GetContractorResponses];
-
-export type UpdateContractorImagesData = {
-    body?: {
-        imageType: 'contractor' | 'contractorHeader';
-        imageId?: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/contractors/me/update-images';
-};
-
-export type UpdateContractorImagesErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Member or organization not found
-     */
-    404: {
-        message: string;
-    };
-    /**
-     * Internal server error
-     */
-    500: {
-        message: string;
-    };
-};
-
-export type UpdateContractorImagesError = UpdateContractorImagesErrors[keyof UpdateContractorImagesErrors];
-
-export type UpdateContractorImagesResponses = {
-    /**
-     * Contractor images updated successfully
-     */
-    200: {
-        message: string;
-    };
-};
-
-export type UpdateContractorImagesResponse = UpdateContractorImagesResponses[keyof UpdateContractorImagesResponses];
 
 export type GetAvailableContractorsData = {
     body?: never;
@@ -1754,7 +1976,6 @@ export type GetAvailableContractorsResponses = {
         imageUrl: string | null;
         reviewAverage: string | null;
         reviewCount: number | null;
-        verified: boolean | null;
         businessId: string | null;
         businessType: string | null;
         headerImageUrl: string | null;
@@ -1854,12 +2075,23 @@ export type GetCurrentUserChosenCategoriesResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: number | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
             expressCategoryQuestions?: Array<{
                 id: string;
                 categoryId: string;
                 questionText: string;
                 pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
                 options: Array<string | null> | null;
+                affectsPrice: boolean;
+                priceFactors?: Array<{
+                    optionId: string;
+                    priceFactor: number;
+                }>;
             }>;
             categoryId: string;
         }>;
@@ -2063,7 +2295,9 @@ export type GetCurrentContractorDataResponses = {
         stripeCustomerId: string | null;
         badgeCountOffers: number;
         badgeCountMessages: number;
-        role: 'consumer' | 'admin' | 'contractor';
+        role: 'consumer' | 'admin' | 'contractor' | 'deleted';
+        deletedAt: string | null;
+        anonymizedAt: string | null;
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
@@ -2081,7 +2315,6 @@ export type GetCurrentContractorDataResponses = {
             imageUrl: string | null;
             reviewAverage: string | null;
             reviewCount: number | null;
-            verified: boolean | null;
             businessId: string | null;
             businessType: string | null;
             headerImageUrl: string | null;
@@ -2113,7 +2346,6 @@ export type UpdateCurrentContractorDataData = {
         imageUrl?: string | null;
         reviewAverage?: string | null;
         reviewCount?: number | null;
-        verified?: boolean | null;
         businessId?: string | null;
         businessType?: string | null;
         headerImageUrl?: string | null;
@@ -2205,7 +2437,7 @@ export type GetCurrentContractorOrdersResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -2263,7 +2495,8 @@ export type GetCurrentContractorReviewsResponses = {
             id: string;
             userId: string;
             contractorId: string;
-            orderId: string;
+            orderId: string | null;
+            expressOrderId: string | null;
             accepted: boolean;
             starRating: number;
             reviewTitle: string;
@@ -2323,7 +2556,7 @@ export type GetOpenRequestsForContractorResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -2343,6 +2576,12 @@ export type GetOpenRequestsForContractorResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         } | null;
         city: {
             id: string;
@@ -2354,6 +2593,8 @@ export type GetOpenRequestsForContractorResponses = {
             lastname: string | null;
             email: string;
             phoneNumber: string | null;
+            deletedAt: string | null;
+            anonymizedAt: string | null;
         } | null;
     }>;
 };
@@ -2407,7 +2648,7 @@ export type GetContractorSentRequestsResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -2427,6 +2668,12 @@ export type GetContractorSentRequestsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         } | null;
         city: {
             id: string;
@@ -2438,6 +2685,8 @@ export type GetContractorSentRequestsResponses = {
             lastname: string | null;
             email: string;
             phoneNumber: string | null;
+            deletedAt: string | null;
+            anonymizedAt: string | null;
         } | null;
     }>;
 };
@@ -2491,7 +2740,7 @@ export type GetContractorHistoryRequestsResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -2511,6 +2760,12 @@ export type GetContractorHistoryRequestsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         } | null;
         city: {
             id: string;
@@ -2522,6 +2777,8 @@ export type GetContractorHistoryRequestsResponses = {
             lastname: string | null;
             email: string;
             phoneNumber: string | null;
+            deletedAt: string | null;
+            anonymizedAt: string | null;
         } | null;
     }>;
 };
@@ -2575,7 +2832,7 @@ export type GetContractorInProgressRequestsResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -2595,6 +2852,12 @@ export type GetContractorInProgressRequestsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         } | null;
         city: {
             id: string;
@@ -2606,6 +2869,8 @@ export type GetContractorInProgressRequestsResponses = {
             lastname: string | null;
             email: string;
             phoneNumber: string | null;
+            deletedAt: string | null;
+            anonymizedAt: string | null;
         } | null;
     }>;
 };
@@ -2760,14 +3025,123 @@ export type GetContractorByOrderIdResponses = {
         imageUrl: string | null;
         reviewAverage: string | null;
         reviewCount: number | null;
-        verified: boolean | null;
         headerImageUrl: string | null;
-        stripeConnectAccountId: string | null;
-        stripeConnected: boolean;
     };
 };
 
 export type GetContractorByOrderIdResponse = GetContractorByOrderIdResponses[keyof GetContractorByOrderIdResponses];
+
+export type GetContractorChartDataData = {
+    body?: never;
+    path?: never;
+    query?: {
+        startDate?: string;
+        endDate?: string;
+    };
+    url: '/me/contractors/me/chart-data';
+};
+
+export type GetContractorChartDataErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Contractor not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetContractorChartDataError = GetContractorChartDataErrors[keyof GetContractorChartDataErrors];
+
+export type GetContractorChartDataResponses = {
+    /**
+     * Contractor chart data
+     */
+    200: {
+        dailyRevenue: Array<{
+            date: string;
+            revenue: number;
+        }>;
+        dailyProjects: Array<{
+            date: string;
+            projectCount: number;
+        }>;
+        weeklyRevenue: Array<{
+            week: string;
+            revenue: number;
+        }>;
+        weeklyProjects: Array<{
+            week: string;
+            projectCount: number;
+        }>;
+    };
+};
+
+export type GetContractorChartDataResponse = GetContractorChartDataResponses[keyof GetContractorChartDataResponses];
+
+export type GetContractorPerformanceTrendsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        startDate?: string;
+        endDate?: string;
+    };
+    url: '/me/contractors/me/performance-trends';
+};
+
+export type GetContractorPerformanceTrendsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Contractor not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetContractorPerformanceTrendsError = GetContractorPerformanceTrendsErrors[keyof GetContractorPerformanceTrendsErrors];
+
+export type GetContractorPerformanceTrendsResponses = {
+    /**
+     * Contractor performance trends
+     */
+    200: {
+        acceptanceTrends: Array<{
+            week: string;
+            acceptedOffers: number;
+            totalOffers: number;
+        }>;
+        ratingTrends: Array<{
+            week: string;
+            avgRating: number | null;
+            reviewCount: number;
+        }>;
+    };
+};
+
+export type GetContractorPerformanceTrendsResponse = GetContractorPerformanceTrendsResponses[keyof GetContractorPerformanceTrendsResponses];
 
 export type GetOwnOrdersData = {
     body?: never;
@@ -2811,7 +3185,7 @@ export type GetOwnOrdersResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -2831,6 +3205,12 @@ export type GetOwnOrdersResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -2842,6 +3222,8 @@ export type GetOwnOrdersResponses = {
                 lastname: string | null;
                 email: string;
                 phoneNumber: string | null;
+                deletedAt: string | null;
+                anonymizedAt: string | null;
             };
         }>;
     };
@@ -2854,7 +3236,7 @@ export type CreateOrderData = {
         categoryId?: string | null;
         description?: string | null;
         budget?: number | null;
-        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet?: string | null;
         orderCity?: string | null;
         orderZip?: string | null;
@@ -2906,7 +3288,7 @@ export type CreateOrderResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -2935,6 +3317,12 @@ export type RemoveOrderData = {
 };
 
 export type RemoveOrderErrors = {
+    /**
+     * Order is already accepted, cannot be removed
+     */
+    400: {
+        message: string;
+    };
     /**
      * Unauthorized
      */
@@ -3012,7 +3400,7 @@ export type GetOrderDetailsResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -3032,6 +3420,12 @@ export type GetOrderDetailsResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -3043,6 +3437,8 @@ export type GetOrderDetailsResponses = {
                 lastname: string | null;
                 email: string;
                 phoneNumber: string | null;
+                deletedAt: string | null;
+                anonymizedAt: string | null;
             };
             orderImages: Array<{
                 id: string;
@@ -3091,7 +3487,7 @@ export type UpdateOrderData = {
         categoryId?: string | null;
         description?: string | null;
         budget?: number | null;
-        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet?: string | null;
         orderCity?: string | null;
         orderZip?: string | null;
@@ -3153,7 +3549,7 @@ export type UpdateOrderResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -3171,50 +3567,6 @@ export type UpdateOrderResponses = {
 };
 
 export type UpdateOrderResponse = UpdateOrderResponses[keyof UpdateOrderResponses];
-
-export type AddOrderImageData = {
-    body?: never;
-    path: {
-        orderId: string;
-        imageId: string;
-    };
-    query?: never;
-    url: '/orders/{orderId}/images/{imageId}';
-};
-
-export type AddOrderImageErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Order not found
-     */
-    404: {
-        message: string;
-    };
-    /**
-     * Internal server error
-     */
-    500: {
-        message: string;
-    };
-};
-
-export type AddOrderImageError = AddOrderImageErrors[keyof AddOrderImageErrors];
-
-export type AddOrderImageResponses = {
-    /**
-     * Order images updated successfully
-     */
-    200: {
-        message: string;
-    };
-};
-
-export type AddOrderImageResponse = AddOrderImageResponses[keyof AddOrderImageResponses];
 
 export type RemoveDraftData = {
     body?: never;
@@ -3301,7 +3653,7 @@ export type GetOwnDraftOrdersResponses = {
             categoryId: string | null;
             description: string | null;
             budget: number | null;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             orderStreet: string | null;
             orderCity: string | null;
             orderZip: string | null;
@@ -3321,6 +3673,12 @@ export type GetOwnDraftOrdersResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -3332,6 +3690,8 @@ export type GetOwnDraftOrdersResponses = {
                 lastname: string | null;
                 email: string;
                 phoneNumber: string | null;
+                deletedAt: string | null;
+                anonymizedAt: string | null;
             };
         }>;
     };
@@ -3591,7 +3951,7 @@ export type CreateExpressOrderResponses = {
             userId: string;
             contractorId: string | null;
             categoryId: string;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             paymentIntentId: string | null;
             completionCode: string | null;
             orderStreet: string | null;
@@ -3655,6 +4015,12 @@ export type GetExpressOrderOptionsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
             createdAt: string;
             updatedAt: string;
             expressCategoryQuestions: Array<{
@@ -3663,6 +4029,10 @@ export type GetExpressOrderOptionsResponses = {
                 questionText: string;
                 pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
                 options: Array<string | null> | null;
+                affectsPrice: boolean;
+                priceFactors: string | number | boolean | null | {
+                    [key: string]: unknown;
+                } | Array<unknown>;
             }>;
         }>;
     };
@@ -3710,7 +4080,7 @@ export type GetOwnExpressOrdersResponses = {
             userId: string;
             contractorId: string | null;
             categoryId: string;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             paymentIntentId: string | null;
             completionCode: string | null;
             orderStreet: string | null;
@@ -3733,6 +4103,12 @@ export type GetOwnExpressOrdersResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -3781,7 +4157,7 @@ export type SearchExpressOrdersResponses = {
             userId: string;
             contractorId: string | null;
             categoryId: string;
-            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
             paymentIntentId: string | null;
             completionCode: string | null;
             orderStreet: string | null;
@@ -3804,6 +4180,12 @@ export type SearchExpressOrdersResponses = {
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
             };
             city: {
                 id: string;
@@ -3820,6 +4202,10 @@ export type SearchExpressOrdersResponses = {
                     questionText: string;
                     pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
                     options: Array<string | null> | null;
+                    affectsPrice: boolean;
+                    priceFactors: string | number | boolean | null | {
+                        [key: string]: unknown;
+                    } | Array<unknown>;
                 };
             }>;
         }>;
@@ -4021,7 +4407,7 @@ export type GetExpressOrderDetailsResponses = {
         userId: string;
         contractorId: string | null;
         categoryId: string;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         paymentIntentId: string | null;
         completionCode: string | null;
         orderStreet: string | null;
@@ -4044,6 +4430,12 @@ export type GetExpressOrderDetailsResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         };
         city: {
             id: string;
@@ -4055,6 +4447,8 @@ export type GetExpressOrderDetailsResponses = {
             lastname: string | null;
             email: string;
             phoneNumber: string | null;
+            deletedAt: string | null;
+            anonymizedAt: string | null;
         };
         qna: Array<{
             id: string;
@@ -4067,6 +4461,10 @@ export type GetExpressOrderDetailsResponses = {
                 questionText: string;
                 pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
                 options: Array<string | null> | null;
+                affectsPrice: boolean;
+                priceFactors: string | number | boolean | null | {
+                    [key: string]: unknown;
+                } | Array<unknown>;
             };
         }>;
     };
@@ -4115,7 +4513,7 @@ export type GetExpressOrdersByUserIdResponses = {
         userId: string;
         contractorId: string | null;
         categoryId: string;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         paymentIntentId: string | null;
         completionCode: string | null;
         orderStreet: string | null;
@@ -4138,6 +4536,12 @@ export type GetExpressOrdersByUserIdResponses = {
             description: string | null;
             express: boolean;
             expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
         };
         city: {
             id: string;
@@ -4191,7 +4595,7 @@ export type GetOrdersByUserIdResponses = {
         categoryId: string | null;
         description: string | null;
         budget: number | null;
-        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done';
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
         orderStreet: string | null;
         orderCity: string | null;
         orderZip: string | null;
@@ -4209,10 +4613,335 @@ export type GetOrdersByUserIdResponses = {
 
 export type GetOrdersByUserIdResponse = GetOrdersByUserIdResponses[keyof GetOrdersByUserIdResponses];
 
-export type GetCustomerServiceTicketsData = {
+export type RemoveExpressOrderData = {
+    body?: never;
+    path: {
+        orderId: string;
+    };
+    query?: never;
+    url: '/orders/express/{orderId}';
+};
+
+export type RemoveExpressOrderErrors = {
+    /**
+     * Order is already accepted, cannot be removed
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type RemoveExpressOrderError = RemoveExpressOrderErrors[keyof RemoveExpressOrderErrors];
+
+export type RemoveExpressOrderResponses = {
+    /**
+     * Order removed successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type RemoveExpressOrderResponse = RemoveExpressOrderResponses[keyof RemoveExpressOrderResponses];
+
+export type CreateCampaignOrderData = {
+    body?: {
+        contractorId?: string | null;
+        campaignCodeCategoryId: string;
+        status?: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+        orderStreet?: string | null;
+        orderCity?: string | null;
+        orderZip?: string | null;
+        startTime: string;
+        endTime: string;
+        weekdays?: Array<string | null> | null;
+        chosenDay?: string | null;
+        chosenStartTime?: string | null;
+        doneAt?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/orders/campaign';
+};
+
+export type CreateCampaignOrderErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * User has already ordered in this campaign
+     */
+    409: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type CreateCampaignOrderError = CreateCampaignOrderErrors[keyof CreateCampaignOrderErrors];
+
+export type CreateCampaignOrderResponses = {
+    /**
+     * Campaign order created successfully
+     */
+    200: {
+        message: string;
+        orderId: string;
+    };
+};
+
+export type CreateCampaignOrderResponse = CreateCampaignOrderResponses[keyof CreateCampaignOrderResponses];
+
+export type GetCampaignOrderDetailsData = {
+    body?: never;
+    path: {
+        campaignOrderId: string;
+    };
+    query?: never;
+    url: '/orders/campaign/{campaignOrderId}';
+};
+
+export type GetCampaignOrderDetailsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetCampaignOrderDetailsError = GetCampaignOrderDetailsErrors[keyof GetCampaignOrderDetailsErrors];
+
+export type GetCampaignOrderDetailsResponses = {
+    /**
+     * Campaign order details
+     */
+    200: {
+        id: string;
+        userId: string;
+        contractorId: string | null;
+        campaignCodeCategoryId: string;
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+        orderStreet: string | null;
+        orderCity: string | null;
+        orderZip: string | null;
+        startTime: string;
+        endTime: string;
+        weekdays: Array<string | null> | null;
+        chosenDay: string | null;
+        chosenStartTime: string | null;
+        doneAt: string | null;
+        createdAt: string;
+        updatedAt: string;
+        categoryName: string;
+        orderCityName: string;
+    };
+};
+
+export type GetCampaignOrderDetailsResponse = GetCampaignOrderDetailsResponses[keyof GetCampaignOrderDetailsResponses];
+
+export type GetOwnCampaignOrdersData = {
     body?: never;
     path?: never;
     query?: never;
+    url: '/orders/me/campaign';
+};
+
+export type GetOwnCampaignOrdersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign orders not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetOwnCampaignOrdersError = GetOwnCampaignOrdersErrors[keyof GetOwnCampaignOrdersErrors];
+
+export type GetOwnCampaignOrdersResponses = {
+    /**
+     * Campaign orders fetched successfully
+     */
+    200: {
+        orders: Array<{
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            campaignCodeCategoryId: string;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            startTime: string;
+            endTime: string;
+            weekdays: Array<string | null> | null;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            doneAt: string | null;
+            createdAt: string;
+            updatedAt: string;
+            categoryName: string;
+            orderCityName: string;
+        }>;
+    };
+};
+
+export type GetOwnCampaignOrdersResponse = GetOwnCampaignOrdersResponses[keyof GetOwnCampaignOrdersResponses];
+
+export type GetExpressOrdersWhereContractorData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/contractors/me/orders/express';
+};
+
+export type GetExpressOrdersWhereContractorErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetExpressOrdersWhereContractorError = GetExpressOrdersWhereContractorErrors[keyof GetExpressOrdersWhereContractorErrors];
+
+export type GetExpressOrdersWhereContractorResponses = {
+    /**
+     * Express orders found
+     */
+    200: {
+        orders: Array<{
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            categoryId: string;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+            paymentIntentId: string | null;
+            completionCode: string | null;
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            startTime: string;
+            endTime: string;
+            weekdays: Array<string | null> | null;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            doneAt: string | null;
+            userHasNeededTools: boolean;
+            receiptUrl: string | null;
+            createdAt: string;
+            updatedAt: string;
+            category: {
+                id: string;
+                name: string;
+                imageUrl: string;
+                description: string | null;
+                express: boolean;
+                expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
+            };
+            city: {
+                id: string;
+                cityName: string;
+            };
+            qna: Array<{
+                id: string;
+                expressOrderId: string;
+                questionId: string;
+                answer: string;
+                question: {
+                    id: string;
+                    categoryId: string;
+                    questionText: string;
+                    pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+                    options: Array<string | null> | null;
+                    affectsPrice: boolean;
+                    priceFactors: string | number | boolean | null | {
+                        [key: string]: unknown;
+                    } | Array<unknown>;
+                };
+            }>;
+        }>;
+    };
+};
+
+export type GetExpressOrdersWhereContractorResponse = GetExpressOrdersWhereContractorResponses[keyof GetExpressOrdersWhereContractorResponses];
+
+export type GetCustomerServiceTicketsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: string;
+        limit?: string;
+        userTimezone?: string;
+    };
     url: '/customer-service/tickets';
 };
 
@@ -4229,38 +4958,63 @@ export type GetCustomerServiceTicketsError = GetCustomerServiceTicketsErrors[key
 
 export type GetCustomerServiceTicketsResponses = {
     /**
-     * List
+     * Paginated tickets with timezone conversion
      */
-    200: Array<{
-        id: string;
-        userId: string;
-        content: string;
-        status: string;
-        assignedAdminId: string | null;
-        createdAt: string;
-        updatedAt: string;
-        user: {
+    200: {
+        tickets: Array<{
             id: string;
-            firstname: string | null;
-            lastname: string | null;
-            email: string;
-            phoneNumber: string | null;
-            role: string;
-        };
-        messages: Array<{
-            id: string;
-            customerServiceTicketId: string;
-            message: string;
+            userId: string;
+            content: string;
+            status: string;
+            assignedAdminId: string | null;
+            category: string;
+            priority: string;
+            userTimezone: string;
             createdAt: string;
             updatedAt: string;
+            localCreatedAt: string;
+            localUpdatedAt: string;
+            isArchived: boolean;
+            lastActivityAt: string;
+            unreadCount: number;
+            user: {
+                id: string;
+                firstname: string | null;
+                lastname: string | null;
+                email: string;
+                phoneNumber: string | null;
+                role: string;
+            };
+            messages: Array<{
+                id: string;
+                customerServiceTicketId: string;
+                message: string;
+                sender: string;
+                senderUserId: string | null;
+                senderName: string | null;
+                createdAt: string;
+                updatedAt: string;
+                localCreatedAt: string;
+                localUpdatedAt: string;
+            }>;
         }>;
-    }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            hasMore: boolean;
+        };
+    };
 };
 
 export type GetCustomerServiceTicketsResponse = GetCustomerServiceTicketsResponses[keyof GetCustomerServiceTicketsResponses];
 
 export type CreateCustomerServiceTicketData = {
-    body?: string;
+    body?: {
+        message: string;
+        category?: 'technical' | 'billing' | 'general' | 'bug_report';
+        userTimezone?: string;
+    };
     path?: never;
     query?: never;
     url: '/customer-service/tickets';
@@ -4299,7 +5053,9 @@ export type GetCustomerServiceTicketData = {
     path: {
         id: string;
     };
-    query?: never;
+    query?: {
+        userTimezone?: string;
+    };
     url: '/customer-service/tickets/{id}';
 };
 
@@ -4310,6 +5066,18 @@ export type GetCustomerServiceTicketErrors = {
     401: {
         message: string;
     };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
 };
 
 export type GetCustomerServiceTicketError = GetCustomerServiceTicketErrors[keyof GetCustomerServiceTicketErrors];
@@ -4318,12 +5086,49 @@ export type GetCustomerServiceTicketResponses = {
     /**
      * Ticket
      */
-    200: unknown;
+    200: {
+        ticket: {
+            id: string;
+            userId: string;
+            content: string;
+            status: string;
+            assignedAdminId: string | null;
+            category: string;
+            priority: string;
+            userTimezone: string;
+            createdAt: string;
+            updatedAt: string;
+            user: {
+                id: string;
+                firstname: string;
+                lastname: string;
+                email: string;
+                phoneNumber: string;
+                role: string;
+            } | null;
+            isArchived: boolean;
+            lastActivityAt: string;
+            unreadCount: number;
+        } | null;
+        messages: Array<{
+            id: string;
+            customerServiceTicketId: string;
+            message: string;
+            sender: string;
+            senderUserId: string | null;
+            senderName: string | null;
+            createdAt: string;
+            updatedAt: string;
+        } | null>;
+    };
 };
+
+export type GetCustomerServiceTicketResponse = GetCustomerServiceTicketResponses[keyof GetCustomerServiceTicketResponses];
 
 export type AddCustomerServiceTicketMessageData = {
     body?: {
         message: string;
+        userTimezone?: string;
     };
     path: {
         id: string;
@@ -4334,15 +5139,33 @@ export type AddCustomerServiceTicketMessageData = {
 
 export type AddCustomerServiceTicketMessageErrors = {
     /**
+     * Invalid message
+     */
+    400: {
+        message: string;
+    };
+    /**
      * Unauthorized
      */
     401: {
         message: string;
     };
     /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+    /**
      * Ticket not found
      */
     404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
         message: string;
     };
 };
@@ -4374,9 +5197,27 @@ export type UpdateCustomerServiceTicketData = {
 
 export type UpdateCustomerServiceTicketErrors = {
     /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
      * Unauthorized
      */
     401: {
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Not found
+     */
+    404: {
         message: string;
     };
     /**
@@ -4406,6 +5247,264 @@ export type UpdateCustomerServiceTicketResponses = {
 
 export type UpdateCustomerServiceTicketResponse = UpdateCustomerServiceTicketResponses[keyof UpdateCustomerServiceTicketResponses];
 
+export type GetCustomerServiceTicketsAdminData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: string;
+        limit?: string;
+        status?: 'pending' | 'seen' | 'answered' | 'resolved' | 'closed';
+        category?: 'technical' | 'billing' | 'general' | 'bug_report';
+        priority?: 'low' | 'normal' | 'high' | 'urgent';
+        userType?: 'consumer' | 'contractor';
+        assignedTo?: string;
+    };
+    url: '/admin/customer-service/tickets';
+};
+
+export type GetCustomerServiceTicketsAdminErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden - Admin access required
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetCustomerServiceTicketsAdminError = GetCustomerServiceTicketsAdminErrors[keyof GetCustomerServiceTicketsAdminErrors];
+
+export type GetCustomerServiceTicketsAdminResponses = {
+    /**
+     * Admin tickets list with filtering
+     */
+    200: {
+        tickets: Array<{
+            id: string;
+            userId: string;
+            content: string;
+            status: string;
+            assignedAdminId: string | null;
+            category: string;
+            priority: string;
+            userTimezone: string;
+            createdAt: string;
+            updatedAt: string;
+            messageCount: number;
+            isArchived: boolean;
+            lastActivityAt: string;
+            user: {
+                id: string;
+                firstname: string | null;
+                lastname: string | null;
+                email: string;
+                phoneNumber: string | null;
+                role: string;
+            };
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            hasMore: boolean;
+        };
+    };
+};
+
+export type GetCustomerServiceTicketsAdminResponse = GetCustomerServiceTicketsAdminResponses[keyof GetCustomerServiceTicketsAdminResponses];
+
+export type AssignCustomerServiceTicketData = {
+    body?: {
+        adminId: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/customer-service/tickets/{id}/assign';
+};
+
+export type AssignCustomerServiceTicketErrors = {
+    /**
+     * Invalid admin ID
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden - Admin access required
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AssignCustomerServiceTicketError = AssignCustomerServiceTicketErrors[keyof AssignCustomerServiceTicketErrors];
+
+export type AssignCustomerServiceTicketResponses = {
+    /**
+     * Ticket assigned successfully
+     */
+    200: {
+        message: string;
+        ticket: {
+            id: string;
+            assignedAdminId: string | null;
+            updatedAt: string;
+        };
+    };
+};
+
+export type AssignCustomerServiceTicketResponse = AssignCustomerServiceTicketResponses[keyof AssignCustomerServiceTicketResponses];
+
+export type UpdateCustomerServiceTicketStatusData = {
+    body?: {
+        status: 'pending' | 'seen' | 'answered' | 'resolved' | 'closed';
+        assignToMe?: boolean;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/customer-service/tickets/{id}/status';
+};
+
+export type UpdateCustomerServiceTicketStatusErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden - Admin access required
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCustomerServiceTicketStatusError = UpdateCustomerServiceTicketStatusErrors[keyof UpdateCustomerServiceTicketStatusErrors];
+
+export type UpdateCustomerServiceTicketStatusResponses = {
+    /**
+     * Ticket status updated successfully
+     */
+    200: {
+        message: string;
+        ticket: {
+            id: string;
+            status: string;
+            assignedAdminId: string | null;
+            updatedAt: string;
+        };
+    };
+};
+
+export type UpdateCustomerServiceTicketStatusResponse = UpdateCustomerServiceTicketStatusResponses[keyof UpdateCustomerServiceTicketStatusResponses];
+
+export type AdminRespondToTicketData = {
+    body?: {
+        message: string;
+        updateStatus?: boolean;
+        assignToMe?: boolean;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/customer-service/tickets/{id}/respond';
+};
+
+export type AdminRespondToTicketErrors = {
+    /**
+     * Invalid message
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden - Admin access required
+     */
+    403: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type AdminRespondToTicketError = AdminRespondToTicketErrors[keyof AdminRespondToTicketErrors];
+
+export type AdminRespondToTicketResponses = {
+    /**
+     * Admin response added successfully
+     */
+    200: {
+        message: string;
+        messageId: string;
+        ticketStatus: string;
+    };
+};
+
+export type AdminRespondToTicketResponse = AdminRespondToTicketResponses[keyof AdminRespondToTicketResponses];
+
 export type GetNotificationsData = {
     body?: never;
     path?: never;
@@ -4434,7 +5533,7 @@ export type GetNotificationsResponses = {
         title: string;
         message: string;
         read: boolean;
-        type: 'info' | 'newExpressOrder' | 'newOrder' | 'newOrderMoreInfoRequest' | 'newOrderMoreInfoRequestResponse' | 'newOrderMoreInfoRequestResponseImage' | 'expressOrderCompleted' | 'expressOrderCancelled' | 'expressOrderAccepted' | 'expressOrderWaitingForPayment' | 'supportTicketResponse' | 'supportTicketNew' | 'newContractorRating' | 'contractorApproved' | 'contractorRejected' | 'contractorMoreInfoNeeded' | 'newContractor' | 'offerExpired' | 'newOffer' | 'offerAccepted' | 'orderCancelled' | 'orderReminder' | 'orderRescheduled' | 'offerWithdrawn' | 'orderDeadlineApproaching' | 'welcomeMessage' | 'inactiveUserReminder' | 'newFeaturesAvailable' | 'maintenanceNotification' | 'promotionalOffer' | 'reviewRequest' | 'reviewResponse' | 'disputeOpened' | 'disputeResolved' | 'qualityAssurance' | 'areaNowAvailable' | 'contractorAvailable' | 'serviceAreaExpanded' | 'ticketEscalated' | 'ticketResolved' | 'stripeAccountUpdated' | 'stripeConnectionNeeded';
+        type: 'info' | 'newExpressOrder' | 'newOrder' | 'newOrderMoreInfoRequest' | 'newOrderMoreInfoRequestResponse' | 'newOrderMoreInfoRequestResponseImage' | 'expressOrderCompleted' | 'expressOrderCancelled' | 'expressOrderAccepted' | 'expressOrderWaitingForPayment' | 'supportTicketResponse' | 'supportTicketNew' | 'newContractorRating' | 'reviewDeclined' | 'contractorApproved' | 'contractorRejected' | 'contractorMoreInfoNeeded' | 'newContractor' | 'offerExpired' | 'newOffer' | 'offerAccepted' | 'orderCancelled' | 'orderReminder' | 'orderRescheduled' | 'offerWithdrawn' | 'orderDeadlineApproaching' | 'welcomeMessage' | 'inactiveUserReminder' | 'newFeaturesAvailable' | 'maintenanceNotification' | 'promotionalOffer' | 'reviewRequest' | 'reviewResponse' | 'disputeOpened' | 'disputeResolved' | 'qualityAssurance' | 'areaNowAvailable' | 'contractorAvailable' | 'serviceAreaExpanded' | 'ticketEscalated' | 'ticketResolved' | 'stripeAccountUpdated' | 'stripeConnectionNeeded' | 'campaignOrderUpdated';
         content: string | number | boolean | null | {
             [key: string]: unknown;
         } | Array<unknown>;
@@ -4534,6 +5633,7 @@ export type GetAllOrderMoreInfoRequestsResponses = {
         inquiry: string;
         orderStatus: string | null;
         response: string | null;
+        orderDescription: string | null;
     }>;
 };
 
@@ -4576,6 +5676,7 @@ export type GetOrderMoreInfoRequestResponses = {
         inquiry: string;
         orderStatus: string | null;
         response: string | null;
+        orderDescription: string | null;
     };
 };
 
@@ -4632,16 +5733,27 @@ export type AddCategoryData = {
     body?: {
         id?: string;
         name: string;
-        imageUrl: string;
         description?: string | null;
         express?: boolean;
         expressPrice?: string | null;
+        maxPrice?: string | null;
+        platformFee?: string | null;
+        hasNeededToolsAffectsPrice?: boolean;
+        hasNeededToolsPriceFactor?: string | null;
+        requiresCertification?: boolean;
+        certificationId?: string | null;
         createdAt?: string;
         updatedAt?: string;
+        imageKey: string;
         extraQuestions?: Array<{
             questionText: string;
             pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
             options: Array<string | null> | null;
+            affectsPrice: boolean;
+            priceFactors?: Array<{
+                optionId: string;
+                priceFactor: number;
+            }>;
         }>;
     };
     path?: never;
@@ -4978,7 +6090,8 @@ export type GetAllReviewsResponses = {
         id: string;
         userId: string;
         contractorId: string;
-        orderId: string;
+        orderId: string | null;
+        expressOrderId: string | null;
         accepted: boolean;
         starRating: number;
         reviewTitle: string;
@@ -5038,7 +6151,6 @@ export type GetAllContractorJoinRequestsResponses = {
         imageUrl: string | null;
         reviewAverage: string | null;
         reviewCount: number | null;
-        verified: boolean | null;
         businessId: string | null;
         businessType: string | null;
         headerImageUrl: string | null;
@@ -5104,7 +6216,9 @@ export type GetAllUsersResponses = {
             stripeCustomerId: string | null;
             badgeCountOffers: number;
             badgeCountMessages: number;
-            role: 'consumer' | 'admin' | 'contractor';
+            role: 'consumer' | 'admin' | 'contractor' | 'deleted';
+            deletedAt: string | null;
+            anonymizedAt: string | null;
             pushNotificationPermission: boolean | null;
             smsPermission: boolean | null;
             emailPermission: boolean | null;
@@ -5119,6 +6233,57 @@ export type GetAllUsersResponses = {
 };
 
 export type GetAllUsersResponse = GetAllUsersResponses[keyof GetAllUsersResponses];
+
+export type GetDeletedUsersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/deleted-users';
+};
+
+export type GetDeletedUsersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetDeletedUsersError = GetDeletedUsersErrors[keyof GetDeletedUsersErrors];
+
+export type GetDeletedUsersResponses = {
+    /**
+     * Users fetched successfully
+     */
+    200: Array<{
+        id: string;
+        externalId: string | null;
+        firstname: string | null;
+        lastname: string | null;
+        email: string;
+        phoneNumber: string | null;
+        stripeCustomerId: string | null;
+        badgeCountOffers: number;
+        badgeCountMessages: number;
+        role: 'consumer' | 'admin' | 'contractor' | 'deleted';
+        deletedAt: string | null;
+        anonymizedAt: string | null;
+        pushNotificationPermission: boolean | null;
+        smsPermission: boolean | null;
+        emailPermission: boolean | null;
+        createdAt: string;
+        updatedAt: string;
+    }>;
+};
+
+export type GetDeletedUsersResponse = GetDeletedUsersResponses[keyof GetDeletedUsersResponses];
 
 export type GetLandingPageAnalyticsData = {
     body?: never;
@@ -5204,10 +6369,6 @@ export type GetLandingPageAnalyticsResponses = {
             totalRevenue: number;
             outstandingPayments: number;
             avgOrderValue: number;
-            refundStats: Array<{
-                type: string;
-                count: number;
-            }>;
             revenueByCategory: Array<{
                 name: string;
                 revenue: string;
@@ -5221,7 +6382,6 @@ export type GetLandingPageAnalyticsResponses = {
             avgResolutionTime: number | null;
             escalations: number;
             reviewCount: number;
-            surveyInvites: number;
         };
     };
 };
@@ -5395,16 +6555,27 @@ export type UpdateCategoryData = {
     body?: {
         id?: string;
         name: string;
-        imageUrl: string;
         description?: string | null;
         express?: boolean;
         expressPrice?: string | null;
+        maxPrice?: string | null;
+        platformFee?: string | null;
+        hasNeededToolsAffectsPrice?: boolean;
+        hasNeededToolsPriceFactor?: string | null;
+        requiresCertification?: boolean;
+        certificationId?: string | null;
         createdAt?: string;
         updatedAt?: string;
+        imageKey: string;
         extraQuestions?: Array<{
             questionText: string;
             pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
             options: Array<string | null> | null;
+            affectsPrice: boolean;
+            priceFactors?: Array<{
+                optionId: string;
+                priceFactor: number;
+            }>;
         }>;
     };
     path: {
@@ -5454,6 +6625,761 @@ export type UpdateCategoryResponses = {
 
 export type UpdateCategoryResponse = UpdateCategoryResponses[keyof UpdateCategoryResponses];
 
+export type GetAllCampaignsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/campaigns';
+};
+
+export type GetAllCampaignsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaigns not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAllCampaignsError = GetAllCampaignsErrors[keyof GetAllCampaignsErrors];
+
+export type GetAllCampaignsResponses = {
+    /**
+     * Campaigns fetched successfully
+     */
+    200: Array<{
+        id: string;
+        name: string;
+        description: string | null;
+        code: string;
+        public: boolean;
+    }>;
+};
+
+export type GetAllCampaignsResponse = GetAllCampaignsResponses[keyof GetAllCampaignsResponses];
+
+export type CreateCampaignData = {
+    body?: {
+        name: string;
+        description?: string | null;
+        code: string;
+        public?: boolean;
+    };
+    path?: never;
+    query?: never;
+    url: '/admin/campaigns';
+};
+
+export type CreateCampaignErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type CreateCampaignError = CreateCampaignErrors[keyof CreateCampaignErrors];
+
+export type CreateCampaignResponses = {
+    /**
+     * Campaign created successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type CreateCampaignResponse = CreateCampaignResponses[keyof CreateCampaignResponses];
+
+export type DeleteCampaignData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/campaigns/{id}';
+};
+
+export type DeleteCampaignErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type DeleteCampaignError = DeleteCampaignErrors[keyof DeleteCampaignErrors];
+
+export type DeleteCampaignResponses = {
+    /**
+     * Campaign deleted successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCampaignResponse = DeleteCampaignResponses[keyof DeleteCampaignResponses];
+
+export type UpdateCampaignData = {
+    body?: {
+        name?: string;
+        description?: string | null;
+        code?: string;
+        public?: boolean;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/campaigns/{id}';
+};
+
+export type UpdateCampaignErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCampaignError = UpdateCampaignErrors[keyof UpdateCampaignErrors];
+
+export type UpdateCampaignResponses = {
+    /**
+     * Campaign updated successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type UpdateCampaignResponse = UpdateCampaignResponses[keyof UpdateCampaignResponses];
+
+export type GetAllCampaignOrdersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/campaign-orders';
+};
+
+export type GetAllCampaignOrdersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAllCampaignOrdersError = GetAllCampaignOrdersErrors[keyof GetAllCampaignOrdersErrors];
+
+export type GetAllCampaignOrdersResponses = {
+    /**
+     * Campaign orders fetched successfully
+     */
+    200: Array<{
+        id: string;
+        doneAt: string | null;
+        status: string;
+        categoryName: string;
+        startTime: string;
+        endTime: string;
+        weekdays: Array<string> | null;
+        chosenDay: string | null;
+        chosenStartTime: string | null;
+        orderStreet: string | null;
+        orderZip: string | null;
+        orderCityName: string;
+        updatedAt: string;
+        createdAt: string;
+        userId: string;
+        contractorId: string | null;
+    }>;
+};
+
+export type GetAllCampaignOrdersResponse = GetAllCampaignOrdersResponses[keyof GetAllCampaignOrdersResponses];
+
+export type UpdateCampaignOrderData = {
+    body?: {
+        status: 'pending' | 'accepted' | 'declined' | 'done';
+        chosenDay?: string;
+        chosenStartTime?: string;
+        contractorId?: string;
+    };
+    path: {
+        orderId: string;
+    };
+    query?: never;
+    url: '/admin/campaign-orders/{orderId}';
+};
+
+export type UpdateCampaignOrderErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCampaignOrderError = UpdateCampaignOrderErrors[keyof UpdateCampaignOrderErrors];
+
+export type UpdateCampaignOrderResponses = {
+    /**
+     * Campaign order updated successfully
+     */
+    200: {
+        message: string;
+        order: {
+            id: string;
+            status: string;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            contractorId: string | null;
+        };
+    };
+};
+
+export type UpdateCampaignOrderResponse = UpdateCampaignOrderResponses[keyof UpdateCampaignOrderResponses];
+
+export type GetInterestedContractorsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        emailStatus?: 'sent' | 'not_sent' | 'failed';
+    };
+    url: '/admin/interested-contractors';
+};
+
+export type GetInterestedContractorsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetInterestedContractorsError = GetInterestedContractorsErrors[keyof GetInterestedContractorsErrors];
+
+export type GetInterestedContractorsResponses = {
+    /**
+     * Interested contractors fetched successfully
+     */
+    200: {
+        contractors: Array<{
+            id: string;
+            name: string;
+            email: string;
+            phoneNumber: string | null;
+            welcomeEmailSent: boolean;
+            welcomeEmailSentAt: string | null;
+            welcomeEmailError: string | null;
+            notes: string | null;
+            createdAt: string;
+            updatedAt: string;
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            totalPages: number;
+        };
+    };
+};
+
+export type GetInterestedContractorsResponse = GetInterestedContractorsResponses[keyof GetInterestedContractorsResponses];
+
+export type CreateInterestedContractorData = {
+    body?: {
+        name: string;
+        email: string;
+        phoneNumber?: string | null;
+        notes?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/admin/interested-contractors';
+};
+
+export type CreateInterestedContractorErrors = {
+    /**
+     * Bad request - validation error or duplicate email
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type CreateInterestedContractorError = CreateInterestedContractorErrors[keyof CreateInterestedContractorErrors];
+
+export type CreateInterestedContractorResponses = {
+    /**
+     * Interested contractor created successfully
+     */
+    201: {
+        id: string;
+        name: string;
+        email: string;
+        phoneNumber: string | null;
+        welcomeEmailSent: boolean;
+        welcomeEmailSentAt: string | null;
+        welcomeEmailError: string | null;
+        notes: string | null;
+        createdAt: string;
+        updatedAt: string;
+    };
+};
+
+export type CreateInterestedContractorResponse = CreateInterestedContractorResponses[keyof CreateInterestedContractorResponses];
+
+export type DeleteInterestedContractorData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/interested-contractors/{id}';
+};
+
+export type DeleteInterestedContractorErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Contractor not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type DeleteInterestedContractorError = DeleteInterestedContractorErrors[keyof DeleteInterestedContractorErrors];
+
+export type DeleteInterestedContractorResponses = {
+    /**
+     * Interested contractor deleted successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteInterestedContractorResponse = DeleteInterestedContractorResponses[keyof DeleteInterestedContractorResponses];
+
+export type UpdateInterestedContractorData = {
+    body?: {
+        name?: string;
+        email?: string;
+        phoneNumber?: string | null;
+        notes?: string | null;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/admin/interested-contractors/{id}';
+};
+
+export type UpdateInterestedContractorErrors = {
+    /**
+     * Bad request - validation error or duplicate email
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Contractor not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateInterestedContractorError = UpdateInterestedContractorErrors[keyof UpdateInterestedContractorErrors];
+
+export type UpdateInterestedContractorResponses = {
+    /**
+     * Interested contractor updated successfully
+     */
+    200: {
+        id: string;
+        name: string;
+        email: string;
+        phoneNumber: string | null;
+        welcomeEmailSent: boolean;
+        welcomeEmailSentAt: string | null;
+        welcomeEmailError: string | null;
+        notes: string | null;
+        createdAt: string;
+        updatedAt: string;
+    };
+};
+
+export type UpdateInterestedContractorResponse = UpdateInterestedContractorResponses[keyof UpdateInterestedContractorResponses];
+
+export type PostSendWelcomeEmailsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/send-welcome-emails';
+};
+
+export type PostSendWelcomeEmailsErrors = {
+    /**
+     * Internal server error
+     */
+    500: {
+        error: string;
+        message: string;
+    };
+};
+
+export type PostSendWelcomeEmailsError = PostSendWelcomeEmailsErrors[keyof PostSendWelcomeEmailsErrors];
+
+export type PostSendWelcomeEmailsResponses = {
+    /**
+     * Email sending results
+     */
+    200: {
+        sent: number;
+        failed: number;
+        errors: Array<{
+            contractorId: string;
+            email: string;
+            error: string;
+        }>;
+    };
+};
+
+export type PostSendWelcomeEmailsResponse = PostSendWelcomeEmailsResponses[keyof PostSendWelcomeEmailsResponses];
+
+export type PostRetryFailedEmailsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/retry-failed-emails';
+};
+
+export type PostRetryFailedEmailsErrors = {
+    /**
+     * Internal server error
+     */
+    500: {
+        error: string;
+        message: string;
+    };
+};
+
+export type PostRetryFailedEmailsError = PostRetryFailedEmailsErrors[keyof PostRetryFailedEmailsErrors];
+
+export type PostRetryFailedEmailsResponses = {
+    /**
+     * Email retry results
+     */
+    200: {
+        sent: number;
+        failed: number;
+        errors: Array<{
+            contractorId: string;
+            email: string;
+            error: string;
+        }>;
+    };
+};
+
+export type PostRetryFailedEmailsResponse = PostRetryFailedEmailsResponses[keyof PostRetryFailedEmailsResponses];
+
+export type GetAllOrdersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: string;
+        limit?: string;
+    };
+    url: '/orders/admin/all';
+};
+
+export type GetAllOrdersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Orders not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAllOrdersError = GetAllOrdersErrors[keyof GetAllOrdersErrors];
+
+export type GetAllOrdersResponses = {
+    /**
+     * Orders fetched successfully
+     */
+    200: {
+        express: Array<{
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            categoryId: string;
+            status: 'pending' | 'accepted' | 'declined' | 'done' | 'waitingForPayment' | 'expired';
+            paymentIntentId: string | null;
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            startTime: string;
+            endTime: string;
+            weekdays: Array<string> | null;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            doneAt: string | null;
+            userHasNeededTools: boolean;
+            createdAt: string;
+            updatedAt: string;
+            completionCode: string | null;
+            receiptUrl: string | null;
+            category: {
+                id: string;
+                name: string;
+                imageUrl: string;
+                description: string | null;
+                express: boolean;
+                expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
+            };
+            city: {
+                id: string;
+                cityName: string;
+            };
+        }>;
+        campaign: Array<{
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            doneAt: string | null;
+            status: 'pending' | 'accepted' | 'declined' | 'done' | 'waitingForPayment' | 'expired';
+            categoryName: string;
+            startTime: string;
+            endTime: string;
+            weekdays: Array<string> | null;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            orderStreet: string | null;
+            orderZip: string | null;
+            orderCityName: string;
+            updatedAt: string;
+            createdAt: string;
+        }>;
+        normal: Array<{
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            categoryId: string;
+            description: string | null;
+            budget: number | null;
+            status: 'pending' | 'accepted' | 'declined' | 'done' | 'waitingForPayment' | 'expired';
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            locationMoreInfo: string | null;
+            offersCount: number;
+            doneAt: string | null;
+            isDraft: boolean;
+            draftStage: number;
+            createdAt: string;
+            updatedAt: string;
+            receiptUrl: string | null;
+            paymentIntentId: string | null;
+            category: {
+                id: string;
+                name: string;
+                imageUrl: string;
+                description: string | null;
+                express: boolean;
+                expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
+            };
+            city: {
+                id: string;
+                cityName: string;
+            };
+        }>;
+        pagination: {
+            express: {
+                total: number;
+                page: number;
+                limit: number;
+                totalPages: number;
+            };
+            campaign: {
+                total: number;
+                page: number;
+                limit: number;
+                totalPages: number;
+            };
+            normal: {
+                total: number;
+                page: number;
+                limit: number;
+                totalPages: number;
+            };
+        };
+    };
+};
+
+export type GetAllOrdersResponse = GetAllOrdersResponses[keyof GetAllOrdersResponses];
+
 export type GetCategoriesData = {
     body?: never;
     path?: never;
@@ -5501,6 +7427,12 @@ export type GetCategoriesResponses = {
         description: string | null;
         express: boolean;
         expressPrice: string | null;
+        maxPrice: string | null;
+        platformFee: number | null;
+        hasNeededToolsAffectsPrice: boolean;
+        hasNeededToolsPriceFactor: string | null;
+        requiresCertification: boolean;
+        certificationId: string | null;
         createdAt: string;
         updatedAt: string;
         expressCategoryQuestions?: Array<{
@@ -5509,6 +7441,11 @@ export type GetCategoriesResponses = {
             questionText: string;
             pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
             options: Array<string | null> | null;
+            affectsPrice: boolean;
+            priceFactors?: Array<{
+                optionId: string;
+                priceFactor: number;
+            }>;
         }>;
     }>;
 };
@@ -5559,6 +7496,64 @@ export type GetAvailableCategoriesResponses = {
 
 export type GetAvailableCategoriesResponse = GetAvailableCategoriesResponses[keyof GetAvailableCategoriesResponses];
 
+export type GetExpressCategoryQuestionsData = {
+    body?: never;
+    path: {
+        categoryId: string;
+    };
+    query?: never;
+    url: '/{categoryId}/express-category-questions/categories/{categoryId}/express-category-questions';
+};
+
+export type GetExpressCategoryQuestionsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Categories not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetExpressCategoryQuestionsError = GetExpressCategoryQuestionsErrors[keyof GetExpressCategoryQuestionsErrors];
+
+export type GetExpressCategoryQuestionsResponses = {
+    /**
+     * Categories fetched successfully
+     */
+    200: Array<{
+        id: string;
+        categoryId: string;
+        questionText: string;
+        pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+        options: Array<string | null> | null;
+        affectsPrice: boolean;
+        priceFactors?: Array<{
+            optionId: string;
+            priceFactor: number;
+        }>;
+    }>;
+};
+
+export type GetExpressCategoryQuestionsResponse = GetExpressCategoryQuestionsResponses[keyof GetExpressCategoryQuestionsResponses];
+
 export type GetReviewsForContractorData = {
     body?: never;
     path: {
@@ -5605,7 +7600,8 @@ export type GetReviewsForContractorResponses = {
         id: string;
         userId: string;
         contractorId: string;
-        orderId: string;
+        orderId: string | null;
+        expressOrderId: string | null;
         accepted: boolean;
         starRating: number;
         reviewTitle: string;
@@ -5647,7 +7643,7 @@ export type AddNewReviewForContractorErrors = {
         message: string;
     };
     /**
-     * Review not found
+     * Order not found
      */
     404: {
         message: string;
@@ -5772,21 +7768,55 @@ export type CreateExpressPaymentIntentResponses = {
         ephemeralKey: string;
         customer: string;
         publishableKey: string;
+        price: number;
         order: {
             id: string;
             userId: string;
+            contractorId: string | null;
+            categoryId: string;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+            paymentIntentId: string | null;
+            completionCode: string | null;
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
             startTime: string;
             endTime: string;
-            weekdays: Array<string> | null;
+            weekdays: Array<string | null> | null;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            doneAt: string | null;
             userHasNeededTools: boolean;
+            receiptUrl: string | null;
+            createdAt: string;
+            updatedAt: string;
             category: {
                 id: string;
                 name: string;
-                description: string | null;
                 imageUrl: string;
+                description: string | null;
                 express: boolean;
                 expressPrice: string | null;
-            };
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
+            } | null;
+            city: {
+                id: string;
+                cityName: string;
+            } | null;
+            user: {
+                id: string;
+                firstname: string | null;
+                lastname: string | null;
+                email: string;
+                phoneNumber: string | null;
+                deletedAt: string | null;
+                anonymizedAt: string | null;
+            } | null;
         };
     };
 };
@@ -5990,6 +8020,57 @@ export type CreateOfferResponses = {
 };
 
 export type CreateOfferResponse = CreateOfferResponses[keyof CreateOfferResponses];
+
+export type GetPublicCampaignsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/campaigns';
+};
+
+export type GetPublicCampaignsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Public campaigns not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetPublicCampaignsError = GetPublicCampaignsErrors[keyof GetPublicCampaignsErrors];
+
+export type GetPublicCampaignsResponses = {
+    /**
+     * Public campaigns fetched successfully
+     */
+    200: Array<{
+        id: string;
+        name: string;
+        description: string | null;
+        code: string;
+        public: boolean;
+    }>;
+};
+
+export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
     baseUrl: 'http://localhost:3000' | (string & {});

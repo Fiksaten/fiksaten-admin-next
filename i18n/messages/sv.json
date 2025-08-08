@@ -274,5 +274,105 @@
       "tiktok": "Tiktok - Aukeaa uudessa välilehdessä"
     }
   },
-  "promotionHeader": "Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti."
+  "promotionHeader": "Fiksatenin mobiilisovellus on julkaistu! Lataa nyt sovellus ja lähetä avuntarve helposti.",
+  "support": {
+    "tickets": {
+      "title": "Supportärenden",
+      "createNew": "Skapa nytt ärende",
+      "myTickets": "Mina ärenden",
+      "allTickets": "Alla ärenden",
+      "ticketId": "Ärende ID",
+      "subject": "Ämne",
+      "category": "Kategori",
+      "priority": "Prioritet",
+      "status": "Status",
+      "createdAt": "Skapad",
+      "updatedAt": "Senast uppdaterad",
+      "assignedTo": "Tilldelad till",
+      "noTickets": "Inga ärenden hittades",
+      "loadingTickets": "Laddar ärenden...",
+      "categories": {
+        "technical": "Teknisk",
+        "billing": "Fakturering",
+        "general": "Allmän förfrågan",
+        "bug_report": "Buggrapport"
+      },
+      "priorities": {
+        "low": "Låg",
+        "normal": "Normal",
+        "high": "Hög",
+        "urgent": "Brådskande"
+      },
+      "statuses": {
+        "pending": "Väntande",
+        "open": "Öppen",
+        "seen": "Sedd",
+        "answered": "Besvarad",
+        "resolved": "Löst",
+        "closed": "Stängd"
+      },
+      "create": {
+        "title": "Skapa supportärende",
+        "description": "Beskriv ditt problem eller din fråga",
+        "selectCategory": "Välj kategori",
+        "messageLabel": "Meddelande",
+        "messagePlaceholder": "Beskriv ditt problem i detalj...",
+        "submit": "Skicka ärende",
+        "submitting": "Skapar ärende...",
+        "success": "Ärende skapat framgångsrikt",
+        "error": "Misslyckades att skapa ärende"
+      },
+      "detail": {
+        "conversation": "Konversation",
+        "reply": "Svara",
+        "replyPlaceholder": "Skriv ditt svar...",
+        "send": "Skicka",
+        "sending": "Skickar...",
+        "adminReply": "Admin svar",
+        "yourMessage": "Ditt meddelande",
+        "archived": "Arkiverad",
+        "closeTicket": "Stäng ärende",
+        "reopenTicket": "Öppna ärende igen",
+        "assignTicket": "Tilldela ärende",
+        "changeStatus": "Ändra status",
+        "ticketHistory": "Ärendehistorik"
+      },
+      "filters": {
+        "all": "Alla",
+        "filterByStatus": "Filtrera efter status",
+        "filterByCategory": "Filtrera efter kategori",
+        "filterByPriority": "Filtrera efter prioritet",
+        "search": "Sök ärenden...",
+        "clearFilters": "Rensa filter"
+      },
+      "admin": {
+        "dashboard": "Support-dashboard",
+        "assignToMe": "Tilldela till mig",
+        "unassign": "Ta bort tilldelning",
+        "markAsResolved": "Markera som löst",
+        "escalate": "Eskalera",
+        "internalNote": "Intern anteckning",
+        "customerInfo": "Kundinformation",
+        "ticketDetails": "Ärendedetaljer"
+      }
+    },
+    "errors": {
+      "ticketNotFound": "Ärende hittades inte",
+      "unauthorized": "Du har inte behörighet att visa detta ärende",
+      "rateLimitExceeded": "För många förfrågningar. Vänta innan du skapar ett nytt ärende",
+      "invalidCategory": "Ogiltig kategori vald",
+      "messageTooLong": "Meddelandet är för långt (max 5000 tecken)",
+      "messageRequired": "Meddelande krävs",
+      "networkError": "Nätverksfel. Kontrollera din anslutning och försök igen",
+      "serverError": "Serverfel. Försök igen senare",
+      "validationError": "Kontrollera din inmatning och försök igen"
+    },
+    "notifications": {
+      "newTicketCreated": "Nytt supportärende skapat",
+      "ticketUpdated": "Ärende uppdaterat",
+      "adminReplied": "Admin svarade på ditt ärende",
+      "ticketResolved": "Ditt ärende har lösts",
+      "ticketClosed": "Ditt ärende har stängts"
+    }
+  }
 }

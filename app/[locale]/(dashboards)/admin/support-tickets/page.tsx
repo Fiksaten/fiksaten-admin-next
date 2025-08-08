@@ -1,20 +1,20 @@
 import { getSupportTickets } from "@/app/lib/services/supportTicketService";
 import { getaccessToken } from "@/app/lib/actions";
-import SupportTicketAdminTable from "./SupportTicketAdminTable";
+import SupportTicketsContainer from "./SupportTicketsContainer";
 
 export default async function SupportTicketsPage() {
   const accessToken = await getaccessToken();
   const tickets = await getSupportTickets(accessToken);
 
   return (
-    <div className="max-w-7xl mx-auto mt-8">
+    <div className="container mx-auto py-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Support Tickets</h1>
-        <p className="text-muted-foreground mt-1">
-          Manage and respond to customer support tickets
+        <h1 className="text-3xl font-bold">Support Tickets</h1>
+        <p className="text-muted-foreground mt-2">
+          Manage and respond to customer support tickets with enhanced filtering and assignment capabilities
         </p>
       </div>
-      <SupportTicketAdminTable tickets={tickets} accessToken={accessToken} />
+      <SupportTicketsContainer initialTickets={tickets} accessToken={accessToken} />
     </div>
   );
 }

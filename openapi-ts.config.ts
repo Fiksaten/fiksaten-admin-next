@@ -1,7 +1,9 @@
 import { defineConfig } from "@hey-api/openapi-ts";
+import dotenv from "dotenv";
 
-const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+dotenv.config();
 
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 export default defineConfig({
   input: `${baseUrl}/swagger.json`,
   output: "app/lib/openapi-client",

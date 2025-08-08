@@ -1,0 +1,13 @@
+[2025-07-11T12:54:30.526Z] Error: Error opening file "/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/undefined/swagger.json" 
+ENOENT: no such file or directory, open '/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/undefined/swagger.json'
+Stack:
+ResolverError: Error opening file "/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/undefined/swagger.json" 
+ENOENT: no such file or directory, open '/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/undefined/swagger.json'
+    at Object.handler (/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/json-schema-ref-parser/dist/lib/resolvers/file.js:58:19)
+    at async $RefParser.parse (/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/json-schema-ref-parser/dist/lib/index.js:195:17)
+    at async $RefParser.bundle (/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/json-schema-ref-parser/dist/lib/index.js:122:9)
+    at async Zi (/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/dist/index.cjs:12:1892)
+    at async To (/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/dist/index.cjs:38:124348)
+    at async Promise.all (index 0)
+    at async v$ (/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/dist/index.cjs:1338:4634)
+    at async start (/Users/huikka/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/bin/index.cjs:131:21)

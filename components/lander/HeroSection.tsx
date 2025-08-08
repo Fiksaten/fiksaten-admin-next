@@ -7,10 +7,10 @@ const TextContainer = () => {
   const t = useTranslations();
   return (
     <div className="w-full">
-      <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-black dark:text-white">
+      <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-foreground">
         {t("lander.heroSection.title")}
       </h1>
-      <p className="text-base lg:text-lg text-gray-700 mb-6">
+      <p className="text-base lg:text-lg text-muted-foreground mb-6">
         {t("lander.heroSection.description")}
       </p>
       <div className="flex flex-col sm:flex-row xl:justify-start justify-center space-y-4 sm:space-y-0 sm:space-x-4 pb-4">

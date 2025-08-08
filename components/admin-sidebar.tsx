@@ -13,6 +13,7 @@ import {
   CreditCard,
   LogOut,
   User,
+  Tag,
 } from "lucide-react";
 
 import {
@@ -62,6 +63,11 @@ const data = {
       icon: Package,
     },
     {
+      title: "Campaign Orders",
+      url: "/admin/campaign-orders",
+      icon: Package,
+    },
+    {
       title: "Users",
       url: "/admin/users",
       icon: Users,
@@ -72,9 +78,19 @@ const data = {
       icon: Building2,
     },
     {
+      title: "Contractor Interest",
+      url: "/admin/contractor-interest",
+      icon: Users,
+    },
+    {
       title: "Categories",
       url: "/admin/categories",
       icon: FileText,
+    },
+    {
+      title: "Campaigns",
+      url: "/admin/campaigns",
+      icon: Tag,
     },
     {
       title: "Reviews",
@@ -226,7 +242,9 @@ export function AdminSidebar({
                       {user?.firstname} {user?.lastname}
                     </span>
                     <span className="truncate text-xs">
-                      {isSuperAdmin(user?.role) ? "Super Admin" : "Administrator"}
+                      {isSuperAdmin(user?.role)
+                        ? "Super Admin"
+                        : "Administrator"}
                     </span>
                   </div>
                 </SidebarMenuButton>
