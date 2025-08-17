@@ -5003,6 +5003,127 @@ export type GetExpressOrdersWhereContractorResponses = {
 
 export type GetExpressOrdersWhereContractorResponse = GetExpressOrdersWhereContractorResponses[keyof GetExpressOrdersWhereContractorResponses];
 
+export type GetOfferToOrderDetailsData = {
+    body?: never;
+    path: {
+        orderId: string;
+        offerId: string;
+    };
+    query?: never;
+    url: '/orders/{orderId}/offers/{offerId}';
+};
+
+export type GetOfferToOrderDetailsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetOfferToOrderDetailsError = GetOfferToOrderDetailsErrors[keyof GetOfferToOrderDetailsErrors];
+
+export type GetOfferToOrderDetailsResponses = {
+    /**
+     * Offers to order retrieved successfully
+     */
+    200: {
+        offers: {
+            id: string;
+            orderId: string;
+            contractorId: string;
+            categoryId: string;
+            date: string | null;
+            startTime: string | null;
+            endTime: string | null;
+            offerPrice: string | null;
+            materialCost: string | null;
+            offerDescription: string | null;
+            status: 'pending' | 'accepted' | 'declined';
+            createdAt: string;
+            updatedAt: string;
+        };
+        orders: {
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            categoryId: string | null;
+            description: string | null;
+            budget: number | null;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            locationMoreInfo: string | null;
+            paymentIntentId: string | null;
+            offersCount: number;
+            doneAt: string | null;
+            isDraft: boolean;
+            draftStage: number;
+            receiptUrl: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        contractors: {
+            userId: string;
+            name: string;
+            description: string;
+            website: string | null;
+            email: string;
+            phone: string;
+            addressStreet: string | null;
+            addressDetail: string | null;
+            addressZip: string | null;
+            addressCountry: string | null;
+            imageUrl: string | null;
+            reviewAverage: string | null;
+            reviewCount: number | null;
+            businessId: string | null;
+            businessType: string | null;
+            headerImageUrl: string | null;
+            stripeConnectAccountId: string | null;
+            stripeConnected: boolean;
+            iban: string | null;
+            bic: string | null;
+            stripeAccountId: string | null;
+            approvalStatus: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        categories: {
+            id: string;
+            name: string;
+            imageUrl: string;
+            description: string | null;
+            express: boolean;
+            expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+    };
+};
+
+export type GetOfferToOrderDetailsResponse = GetOfferToOrderDetailsResponses[keyof GetOfferToOrderDetailsResponses];
+
 export type GetCustomerServiceTicketsData = {
     body?: never;
     path?: never;
@@ -8271,5 +8392,5 @@ export type GetPublicCampaignsResponses = {
 export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
-    baseUrl: 'https://fiksaten-api-v2-1.onrender.com' | (string & {});
+    baseUrl: 'https://fiksaten-api-v2.onrender.com' | (string & {});
 };
