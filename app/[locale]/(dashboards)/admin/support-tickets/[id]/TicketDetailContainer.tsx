@@ -3,7 +3,7 @@
 //TODO: Fix this file
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AdminTicketDetail } from "@/components/AdminTicketDetail";
 import { useAuth } from "@/components/AuthProvider";
@@ -12,6 +12,10 @@ import {
   respondToSupportTicket,
   updateCustomerServiceTicket,
 } from "@/app/lib/services/supportTicketService";
+import {
+  getTicketAnalysis,
+  reEnqueueAnalysis,
+} from "@/app/lib/services/aiSuggestionService";
 
 // Transform the existing ticket type to match our enhanced interface
 interface EnhancedTicket {
@@ -63,6 +67,39 @@ export default function TicketDetailContainer({
   const router = useRouter();
   const [ticket, setTicket] = useState(initialTicket);
   const [isLoading, setIsLoading] = useState(false);
+  const [analysis, setAnalysis] = useState<any>(null);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [suggestionsError, setSuggestionsError] = useState<string | null>(null);
+  const [analysisPending, setAnalysisPending] = useState(false);
+
+  const fetchAnalysis = useCallback(async () => {
+    setSuggestionsLoading(true);
+    setSuggestionsError(null);
+    try {
+      const res = await getTicketAnalysis(accessToken, ticket.id);
+      setAnalysis(res);
+      setAnalysisPending(res.status === "pending");
+    } catch (e) {
+      setSuggestionsError((e as Error).message);
+    } finally {
+      setSuggestionsLoading(false);
+    }
+  }, [accessToken, ticket.id]);
+
+  useEffect(() => {
+    fetchAnalysis();
+  }, [fetchAnalysis]);
+
+  const handleAnalysisRetry = useCallback(async () => {
+    try {
+      if (analysis?.id) {
+        await reEnqueueAnalysis(accessToken, analysis.id);
+      }
+      fetchAnalysis();
+    } catch (e) {
+      setSuggestionsError((e as Error).message);
+    }
+  }, [analysis?.id, accessToken, fetchAnalysis]);
 
   // Transform ticket to enhanced format
   const enhancedTicket: EnhancedTicket = useMemo(() => {
@@ -248,6 +285,11 @@ export default function TicketDetailContainer({
       currentAdminId={user?.id || "current-admin"}
       availableAdmins={availableAdmins}
       isLoading={isLoading}
+      suggestions={analysis?.suggestions || []}
+      suggestionsLoading={suggestionsLoading}
+      suggestionsError={suggestionsError}
+      analysisPending={analysisPending}
+      onSuggestionRetry={handleAnalysisRetry}
     />
   );
 }

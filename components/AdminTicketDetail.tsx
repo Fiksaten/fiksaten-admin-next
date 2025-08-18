@@ -49,6 +49,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
+import AISuggestionsPanel, { AISuggestion } from "./AISuggestionsPanel";
 
 // Enhanced types based on design document
 interface EnhancedTicket {
@@ -102,6 +103,11 @@ interface AdminTicketDetailProps {
   onBack: () => void;
   currentAdminId: string;
   availableAdmins: Array<{ id: string; name: string }>;
+  suggestions?: AISuggestion[];
+  suggestionsLoading?: boolean;
+  suggestionsError?: string | null;
+  analysisPending?: boolean;
+  onSuggestionRetry?: () => void;
 }
 
 export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
@@ -113,12 +119,27 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
   onBack,
   currentAdminId,
   availableAdmins,
+  suggestions = [],
+  suggestionsLoading = false,
+  suggestionsError = null,
+  analysisPending = false,
+  onSuggestionRetry,
 }) => {
   const [replyMessage, setReplyMessage] = useState("");
   const [isReplying, setIsReplying] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const handleAcceptSuggestion = async (suggestion: AISuggestion) => {
+    if (isReplying) return;
+    setIsReplying(true);
+    try {
+      await onReply(suggestion.answer);
+    } finally {
+      setIsReplying(false);
+    }
+  };
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -411,6 +432,23 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
               </div>
             </CardContent>
           </Card>
+
+          {(
+            suggestionsLoading ||
+            analysisPending ||
+            suggestionsError ||
+            suggestions.length > 0
+          ) && (
+            <AISuggestionsPanel
+              suggestions={suggestions}
+              loading={suggestionsLoading}
+              pending={analysisPending}
+              error={suggestionsError}
+              onRetry={onSuggestionRetry}
+              onCopy={(text) => setReplyMessage(text)}
+              onAccept={handleAcceptSuggestion}
+            />
+          )}
 
           {/* Reply Section */}
           <Card>
