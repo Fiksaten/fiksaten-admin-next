@@ -20,6 +20,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Search,
   Filter,
@@ -34,6 +35,9 @@ import {
   Edit,
   Trash2,
   Send,
+  Building2,
+  Globe,
+  UserCheck,
 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 import { EmailStatusBadge } from "./EmailStatusBadge";
@@ -78,7 +82,7 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
   retryingEmails = new Set(),
 }) => {
   const [sortBy, setSortBy] = useState<
-    "newest" | "oldest" | "name" | "email_status"
+    "newest" | "oldest" | "name" | "email_status" | "status"
   >("newest");
 
   // Statistics for dashboard overview
@@ -93,7 +97,27 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
       return createdAt > dayAgo;
     }).length;
 
-    return { total, emailSent, emailNotSent, emailFailed, recentlyAdded };
+    // Status-based statistics
+    const waitingForResponse = contractors.filter((c) => c.status === "waitingForResponse").length;
+    const interested = contractors.filter((c) => c.status === "interested").length;
+    const notInterested = contractors.filter((c) => c.status === "notInterested").length;
+    const registered = contractors.filter((c) => c.status === "registered").length;
+    const assigned = contractors.filter((c) => c.assignedAdminId).length;
+    const unassigned = contractors.filter((c) => !c.assignedAdminId).length;
+
+    return { 
+      total, 
+      emailSent, 
+      emailNotSent, 
+      emailFailed, 
+      recentlyAdded,
+      waitingForResponse,
+      interested,
+      notInterested,
+      registered,
+      assigned,
+      unassigned
+    };
   }, [contractors, totalContractors]);
 
   // Sort contractors based on selected criteria
@@ -114,6 +138,10 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
             return 1; // Sent
           };
           return getStatusPriority(b) - getStatusPriority(a);
+        case "status":
+          // Sort by business status
+          const statusOrder = { waitingForResponse: 1, interested: 2, notInterested: 3, registered: 4 };
+          return statusOrder[a.status] - statusOrder[b.status];
         default:
           return 0;
       }
@@ -124,7 +152,34 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
     onFilterChange({ ...filters, [key]: value });
   };
 
+  const getStatusBadge = (status: string) => {
+    const statusConfig = {
+      waitingForResponse: {
+        variant: "secondary" as const,
+        className: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+      },
+      interested: {
+        variant: "default" as const,
+        className: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+      },
+      notInterested: {
+        variant: "destructive" as const,
+        className: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+      },
+      registered: {
+        variant: "outline" as const,
+        className: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+      },
+    };
 
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.waitingForResponse;
+
+    return (
+      <Badge variant={config.variant} className={config.className}>
+        {status.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+      </Badge>
+    );
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();
@@ -145,7 +200,7 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
   return (
     <div className="space-y-6">
       {/* Dashboard Statistics */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -198,10 +253,73 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Recent</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.recentlyAdded}</p>
+                <p className="text-sm font-medium text-muted-foreground">Assigned</p>
+                <p className="text-2xl font-bold text-blue-600">{stats.assigned}</p>
               </div>
-              <Clock className="h-8 w-8 text-blue-600" />
+              <UserCheck className="h-8 w-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Recent</p>
+                <p className="text-2xl font-bold text-purple-600">{stats.recentlyAdded}</p>
+              </div>
+              <Clock className="h-8 w-8 text-purple-600" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Status Statistics */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Waiting</p>
+                <p className="text-xl font-bold text-yellow-600">{stats.waitingForResponse}</p>
+              </div>
+              <Clock className="h-6 w-6 text-yellow-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Interested</p>
+                <p className="text-xl font-bold text-green-600">{stats.interested}</p>
+              </div>
+              <UserCheck className="h-6 w-6 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Not Interested</p>
+                <p className="text-xl font-bold text-red-600">{stats.notInterested}</p>
+              </div>
+              <Users className="h-6 w-6 text-red-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Registered</p>
+                <p className="text-xl font-bold text-blue-600">{stats.registered}</p>
+              </div>
+              <Building2 className="h-6 w-6 text-blue-600" />
             </div>
           </CardContent>
         </Card>
@@ -222,7 +340,7 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -249,6 +367,36 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
             </Select>
 
             <Select
+              value={filters.status}
+              onValueChange={(value) => handleFilterChange("status", value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="waitingForResponse">Waiting for Response</SelectItem>
+                <SelectItem value="interested">Interested</SelectItem>
+                <SelectItem value="notInterested">Not Interested</SelectItem>
+                <SelectItem value="registered">Registered</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={filters.assignedAdmin}
+              onValueChange={(value) => handleFilterChange("assignedAdmin", value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="All Admins" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Admins</SelectItem>
+                <SelectItem value="assigned">Assigned</SelectItem>
+                <SelectItem value="unassigned">Unassigned</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
               value={sortBy}
               onValueChange={(value: any) => setSortBy(value)}
             >
@@ -260,6 +408,7 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                 <SelectItem value="oldest">Oldest First</SelectItem>
                 <SelectItem value="name">Name A-Z</SelectItem>
                 <SelectItem value="email_status">Email Status</SelectItem>
+                <SelectItem value="status">Business Status</SelectItem>
               </SelectContent>
             </Select>
 
@@ -293,90 +442,124 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
             </div>
           ) : (
             <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Email Status</TableHead>
-                    <TableHead>Email Sent At</TableHead>
-                    <TableHead>Registered</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sortedContractors.map((contractor) => (
-                    <TableRow
-                      key={contractor.id}
-                      className={cn(
-                        "hover:bg-muted/50",
-                        contractor.welcomeEmailError && "border-l-4 border-l-red-500"
-                      )}
-                    >
-                      <TableCell>
-                        <div className="font-medium">{contractor.name}</div>
-                        {contractor.notes && (
-                          <div className="text-sm text-muted-foreground mt-1">
-                            {contractor.notes.length > 50
-                              ? `${contractor.notes.substring(0, 50)}...`
-                              : contractor.notes}
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-mono text-sm">{contractor.email}</div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {contractor.phoneNumber || (
-                            <span className="text-muted-foreground">Not provided</span>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <EmailStatusBadge
-                          contractor={contractor}
-                          onRetry={onRetryWelcomeEmail}
-                          isRetrying={retryingEmails.has(contractor.id)}
-                          showRetryButton={true}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm text-muted-foreground">
-                          {contractor.welcomeEmailSentAt
-                            ? formatRelativeTime(contractor.welcomeEmailSentAt)
-                            : "—"}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm text-muted-foreground">
-                          {formatRelativeTime(contractor.createdAt)}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => onContractorEdit(contractor)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => onContractorDelete(contractor)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Contact Info</TableHead>
+                      <TableHead>Business Details</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Email Status</TableHead>
+                      <TableHead>Assigned Admin</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {sortedContractors.map((contractor) => (
+                      <TableRow
+                        key={contractor.id}
+                        className={cn(
+                          "hover:bg-muted/50",
+                          contractor.welcomeEmailError && "border-l-4 border-l-red-500"
+                        )}
+                      >
+                        <TableCell>
+                          <div className="font-medium">{contractor.name}</div>
+                          {contractor.notes && (
+                            <div className="text-sm text-muted-foreground mt-1">
+                              {contractor.notes.length > 50
+                                ? `${contractor.notes.substring(0, 50)}...`
+                                : contractor.notes}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="font-mono text-sm">{contractor.email}</div>
+                            {contractor.phoneNumber && (
+                              <div className="text-sm text-muted-foreground">
+                                {contractor.phoneNumber}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            {contractor.businessId && (
+                              <div className="flex items-center gap-1 text-sm">
+                                <Building2 className="h-3 w-3" />
+                                <span className="font-mono">{contractor.businessId}</span>
+                              </div>
+                            )}
+                            {contractor.website && (
+                              <div className="flex items-center gap-1 text-sm">
+                                <Globe className="h-3 w-3" />
+                                <span className="text-blue-600 hover:underline cursor-pointer">
+                                  {contractor.website}
+                                </span>
+                              </div>
+                            )}
+                            {!contractor.businessId && !contractor.website && (
+                              <span className="text-sm text-muted-foreground">No business details</span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {getStatusBadge(contractor.status)}
+                        </TableCell>
+                        <TableCell>
+                          <EmailStatusBadge
+                            contractor={contractor}
+                            onRetry={onRetryWelcomeEmail}
+                            isRetrying={retryingEmails.has(contractor.id)}
+                            showRetryButton={true}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {contractor.assignedAdminId ? (
+                              <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                                <UserCheck className="h-3 w-3 mr-1" />
+                                Assigned
+                              </Badge>
+                            ) : (
+                              <Badge variant="secondary" className="bg-gray-50 text-gray-600">
+                                Unassigned
+                              </Badge>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm text-muted-foreground">
+                            {formatRelativeTime(contractor.createdAt)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onContractorEdit(contractor)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onContractorDelete(contractor)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
 
               {sortedContractors.length === 0 && !isLoading && (
                 <div className="text-center py-8 text-muted-foreground">

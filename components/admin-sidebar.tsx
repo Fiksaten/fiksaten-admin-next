@@ -6,11 +6,9 @@ import {
   FileText,
   Home,
   Settings,
-  Shield,
   Users,
   Package,
-  MessageSquare,
-  CreditCard,
+  MessageSquare, 
   LogOut,
   User,
   Tag,
@@ -27,7 +25,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -40,7 +37,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/components/AuthProvider";
-import { isSuperAdmin, isAdminRole } from "@/lib/permissions";
+import { isSuperAdmin } from "@/lib/permissions";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -98,27 +95,7 @@ const data = {
       icon: MessageSquare,
     },
   ],
-  management: [
-    {
-      title: "Payments",
-      url: "/admin/payments",
-      icon: CreditCard,
-    },
-  ],
-  system: [
-    {
-      title: "Settings",
-      url: "/admin/settings",
-      icon: Settings,
-      role: "admin",
-    },
-    {
-      title: "Security",
-      url: "/admin/security",
-      icon: Shield,
-      role: "superadmin",
-    },
-  ],
+
 };
 
 export function AdminSidebar({
@@ -164,61 +141,6 @@ export function AdminSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.management.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === item.url}
-                    className="w-full"
-                  >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
-        <SidebarGroup>
-          <SidebarGroupLabel>System</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.system
-                .filter(
-                  (item) =>
-                    !item.role ||
-                    (item.role === "superadmin"
-                      ? isSuperAdmin(user?.role)
-                      : isAdminRole(user?.role))
-                )
-                .map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={pathname === item.url}
-                      className="w-full"
-                    >
-                      <Link href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>
@@ -260,7 +182,7 @@ export function AdminSidebar({
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage src="" alt={user?.firstname || "Admin"} />
                       <AvatarFallback className="rounded-lg">
-                        {user?.firstname?.charAt(0) || "A"}
+                          {user?.firstname?.charAt(0) || "A"}
                         {user?.lastname?.charAt(0) || "D"}
                       </AvatarFallback>
                     </Avatar>

@@ -586,6 +586,56 @@ export type StripeWebhookResponses = {
 
 export type StripeWebhookResponse = StripeWebhookResponses[keyof StripeWebhookResponses];
 
+export type TicketWebhookData = {
+    body?: {
+        type?: string;
+        id?: string;
+        ticket?: {
+            id: string;
+            content: string;
+            category?: string;
+            priority?: string;
+            userId?: string;
+        };
+    };
+    path?: never;
+    query?: never;
+    url: '/public/ticket/webhook';
+};
+
+export type TicketWebhookErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+};
+
+export type TicketWebhookError = TicketWebhookErrors[keyof TicketWebhookErrors];
+
+export type TicketWebhookResponses = {
+    /**
+     * Ticket webhook received and processed
+     */
+    200: {
+        received: boolean;
+        analysis?: {
+            status: string;
+            sessionId?: string;
+            message?: string;
+            suggestions?: Array<{
+                type: string;
+                title: string;
+                content: string;
+                confidence: number;
+            }>;
+        };
+    };
+};
+
+export type TicketWebhookResponse = TicketWebhookResponses[keyof TicketWebhookResponses];
+
 export type CreateAvailableAreaRequestData = {
     body?: {
         email: string;
@@ -5157,6 +5207,7 @@ export type GetCustomerServiceTicketsResponses = {
             content: string;
             status: string;
             assignedAdminId: string | null;
+            assignedAdminName: string | null;
             category: string;
             priority: string;
             userTimezone: string;
@@ -5381,8 +5432,10 @@ export type AddCustomerServiceTicketMessageResponse = AddCustomerServiceTicketMe
 
 export type UpdateCustomerServiceTicketData = {
     body?: {
-        status: 'pending' | 'seen' | 'answered';
-        assignedAdminId: string | null;
+        status?: 'pending' | 'seen' | 'answered' | 'resolved' | 'closed';
+        assignedAdminId?: string | null;
+        category?: 'technical' | 'billing' | 'general' | 'bug_report';
+        priority?: 'low' | 'normal' | 'high' | 'urgent';
     };
     path: {
         ticketId: string;
@@ -5701,6 +5754,328 @@ export type AdminRespondToTicketResponses = {
 
 export type AdminRespondToTicketResponse = AdminRespondToTicketResponses[keyof AdminRespondToTicketResponses];
 
+export type GetTicketAiSuggestionsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/customer-service/tickets/{id}/ai-suggestions';
+};
+
+export type GetTicketAiSuggestionsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+};
+
+export type GetTicketAiSuggestionsError = GetTicketAiSuggestionsErrors[keyof GetTicketAiSuggestionsErrors];
+
+export type GetTicketAiSuggestionsResponses = {
+    /**
+     * Suggestions
+     */
+    200: Array<{
+        id: string;
+        analysisId: string;
+        ticketId: string;
+        type: string;
+        title: string | null;
+        contentMarkdown: string | null;
+        confidence: number | null;
+        sources?: unknown;
+        createdAt: string;
+        createdBy: string;
+        status: string;
+        acceptedBy: string | null;
+        acceptedAt: string | null;
+        dismissedBy: string | null;
+        dismissedAt: string | null;
+    }>;
+};
+
+export type GetTicketAiSuggestionsResponse = GetTicketAiSuggestionsResponses[keyof GetTicketAiSuggestionsResponses];
+
+export type AcceptTicketAiSuggestionData = {
+    body?: never;
+    path: {
+        id: string;
+        suggestionId: string;
+    };
+    query?: never;
+    url: '/customer-service/tickets/{id}/ai-suggestions/{suggestionId}/accept';
+};
+
+export type AcceptTicketAiSuggestionErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+};
+
+export type AcceptTicketAiSuggestionError = AcceptTicketAiSuggestionErrors[keyof AcceptTicketAiSuggestionErrors];
+
+export type AcceptTicketAiSuggestionResponses = {
+    /**
+     * Suggestion updated
+     */
+    200: {
+        id: string;
+        analysisId: string;
+        ticketId: string;
+        type: string;
+        title: string | null;
+        contentMarkdown: string | null;
+        confidence: number | null;
+        sources?: unknown;
+        createdAt: string;
+        createdBy: string;
+        status: string;
+        acceptedBy: string | null;
+        acceptedAt: string | null;
+        dismissedBy: string | null;
+        dismissedAt: string | null;
+    };
+};
+
+export type AcceptTicketAiSuggestionResponse = AcceptTicketAiSuggestionResponses[keyof AcceptTicketAiSuggestionResponses];
+
+export type DismissTicketAiSuggestionData = {
+    body?: never;
+    path: {
+        id: string;
+        suggestionId: string;
+    };
+    query?: never;
+    url: '/customer-service/tickets/{id}/ai-suggestions/{suggestionId}/dismiss';
+};
+
+export type DismissTicketAiSuggestionErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+};
+
+export type DismissTicketAiSuggestionError = DismissTicketAiSuggestionErrors[keyof DismissTicketAiSuggestionErrors];
+
+export type DismissTicketAiSuggestionResponses = {
+    /**
+     * Suggestion updated
+     */
+    200: {
+        id: string;
+        analysisId: string;
+        ticketId: string;
+        type: string;
+        title: string | null;
+        contentMarkdown: string | null;
+        confidence: number | null;
+        sources?: unknown;
+        createdAt: string;
+        createdBy: string;
+        status: string;
+        acceptedBy: string | null;
+        acceptedAt: string | null;
+        dismissedBy: string | null;
+        dismissedAt: string | null;
+    };
+};
+
+export type DismissTicketAiSuggestionResponse = DismissTicketAiSuggestionResponses[keyof DismissTicketAiSuggestionResponses];
+
+export type ApplyTicketAiSuggestionData = {
+    body?: {
+        action: 'update_category' | 'update_priority' | 'update_status' | 'add_note';
+        value: string;
+    };
+    path: {
+        id: string;
+        suggestionId: string;
+    };
+    query?: never;
+    url: '/customer-service/tickets/{id}/ai-suggestions/{suggestionId}/apply';
+};
+
+export type ApplyTicketAiSuggestionErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+};
+
+export type ApplyTicketAiSuggestionError = ApplyTicketAiSuggestionErrors[keyof ApplyTicketAiSuggestionErrors];
+
+export type ApplyTicketAiSuggestionResponses = {
+    /**
+     * Suggestion applied successfully
+     */
+    200: {
+        message: string;
+        suggestion: {
+            id: string;
+            analysisId: string;
+            ticketId: string;
+            type: string;
+            title: string | null;
+            contentMarkdown: string | null;
+            confidence: number | null;
+            sources?: unknown;
+            createdAt: string;
+            createdBy: string;
+            status: string;
+            acceptedBy: string | null;
+            acceptedAt: string | null;
+            dismissedBy: string | null;
+            dismissedAt: string | null;
+        };
+        ticketUpdated: boolean;
+    };
+};
+
+export type ApplyTicketAiSuggestionResponse = ApplyTicketAiSuggestionResponses[keyof ApplyTicketAiSuggestionResponses];
+
+export type UpdateCustomerServiceTicketCategoryData = {
+    body?: {
+        category?: 'technical' | 'billing' | 'general' | 'bug_report';
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/customer-service/tickets/{id}/category';
+};
+
+export type UpdateCustomerServiceTicketCategoryErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCustomerServiceTicketCategoryError = UpdateCustomerServiceTicketCategoryErrors[keyof UpdateCustomerServiceTicketCategoryErrors];
+
+export type UpdateCustomerServiceTicketCategoryResponses = {
+    /**
+     * Ticket category updated
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type UpdateCustomerServiceTicketCategoryResponse = UpdateCustomerServiceTicketCategoryResponses[keyof UpdateCustomerServiceTicketCategoryResponses];
+
+export type UpdateCustomerServiceTicketPriorityData = {
+    body?: {
+        priority?: 'urgent' | 'high' | 'normal' | 'low';
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/customer-service/tickets/{id}/priority';
+};
+
+export type UpdateCustomerServiceTicketPriorityErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Ticket not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type UpdateCustomerServiceTicketPriorityError = UpdateCustomerServiceTicketPriorityErrors[keyof UpdateCustomerServiceTicketPriorityErrors];
+
+export type UpdateCustomerServiceTicketPriorityResponses = {
+    /**
+     * Ticket priority updated
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type UpdateCustomerServiceTicketPriorityResponse = UpdateCustomerServiceTicketPriorityResponses[keyof UpdateCustomerServiceTicketPriorityResponses];
+
 export type GetNotificationsData = {
     body?: never;
     path?: never;
@@ -5929,6 +6304,7 @@ export type AddCategoryData = {
     body?: {
         id?: string;
         name: string;
+        imageUrl: string;
         description?: string | null;
         express?: boolean;
         expressPrice?: string | null;
@@ -6751,6 +7127,7 @@ export type UpdateCategoryData = {
     body?: {
         id?: string;
         name: string;
+        imageUrl: string;
         description?: string | null;
         express?: boolean;
         expressPrice?: string | null;
@@ -7192,6 +7569,7 @@ export type CreateInterestedContractorData = {
         notes?: string | null;
         website?: string | null;
         status?: 'waitingForResponse' | 'interested' | 'notInterested' | 'registered';
+        assignedAdminId?: string | null;
     };
     path?: never;
     query?: never;
@@ -7293,6 +7671,7 @@ export type UpdateInterestedContractorData = {
         notes?: string | null;
         website?: string | null;
         status?: 'waitingForResponse' | 'interested' | 'notInterested' | 'registered';
+        assignedAdminId?: string | null;
     };
     path: {
         id: string;
@@ -7350,14 +7729,16 @@ export type UpdateInterestedContractorResponses = {
 
 export type UpdateInterestedContractorResponse = UpdateInterestedContractorResponses[keyof UpdateInterestedContractorResponses];
 
-export type PostSendWelcomeEmailsData = {
-    body?: never;
+export type SendWelcomeEmailsToContractorsData = {
+    body?: {
+        contractorIds?: Array<string>;
+    };
     path?: never;
     query?: never;
-    url: '/send-welcome-emails';
+    url: '/admin/interested-contractors/send-welcome-emails';
 };
 
-export type PostSendWelcomeEmailsErrors = {
+export type SendWelcomeEmailsToContractorsErrors = {
     /**
      * Unauthorized - Authentication required
      */
@@ -7379,9 +7760,9 @@ export type PostSendWelcomeEmailsErrors = {
     };
 };
 
-export type PostSendWelcomeEmailsError = PostSendWelcomeEmailsErrors[keyof PostSendWelcomeEmailsErrors];
+export type SendWelcomeEmailsToContractorsError = SendWelcomeEmailsToContractorsErrors[keyof SendWelcomeEmailsToContractorsErrors];
 
-export type PostSendWelcomeEmailsResponses = {
+export type SendWelcomeEmailsToContractorsResponses = {
     /**
      * Email sending results
      */
@@ -7396,7 +7777,7 @@ export type PostSendWelcomeEmailsResponses = {
     };
 };
 
-export type PostSendWelcomeEmailsResponse = PostSendWelcomeEmailsResponses[keyof PostSendWelcomeEmailsResponses];
+export type SendWelcomeEmailsToContractorsResponse = SendWelcomeEmailsToContractorsResponses[keyof SendWelcomeEmailsToContractorsResponses];
 
 export type PostRetryFailedEmailsData = {
     body?: never;
@@ -7645,6 +8026,63 @@ export type GetAllOrdersResponses = {
 };
 
 export type GetAllOrdersResponse = GetAllOrdersResponses[keyof GetAllOrdersResponses];
+
+export type GetAllAdminsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/users/admins';
+};
+
+export type GetAllAdminsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAllAdminsError = GetAllAdminsErrors[keyof GetAllAdminsErrors];
+
+export type GetAllAdminsResponses = {
+    /**
+     * Admins fetched successfully
+     */
+    200: Array<{
+        id: string;
+        externalId: string | null;
+        firstname: string | null;
+        lastname: string | null;
+        email: string;
+        phoneNumber: string | null;
+        stripeCustomerId: string | null;
+        badgeCountOffers: number;
+        badgeCountMessages: number;
+        role: 'consumer' | 'admin' | 'contractor' | 'deleted';
+        deletedAt: string | null;
+        anonymizedAt: string | null;
+        pushNotificationPermission: boolean | null;
+        smsPermission: boolean | null;
+        emailPermission: boolean | null;
+        createdAt: string;
+        updatedAt: string;
+    }>;
+};
+
+export type GetAllAdminsResponse = GetAllAdminsResponses[keyof GetAllAdminsResponses];
 
 export type GetCategoriesData = {
     body?: never;
@@ -8392,5 +8830,5 @@ export type GetPublicCampaignsResponses = {
 export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
-    baseUrl: 'https://fiksaten-api-v2.onrender.com' | (string & {});
+    baseUrl: 'http://localhost:3000' | (string & {});
 };

@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/app/lib/themeProvider";
 import PostHogProvider from "@/components/PostHogProvider";
-import { NextIntlClientProvider } from "next-intl";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,7 +27,6 @@ export default async function RootLayout(
 
   return (
     <html lang={locale || "fi"} className={inter.className}>
-      <NextIntlClientProvider>
         <PostHogProvider>
           <AuthProvider>
             <ThemeProvider>
@@ -39,7 +37,6 @@ export default async function RootLayout(
             </ThemeProvider>
           </AuthProvider>
         </PostHogProvider>
-      </NextIntlClientProvider>
     </html>
   );
 }

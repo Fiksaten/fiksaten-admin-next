@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { InterestedContractorsService } from "@/app/lib/services/interestedContractors";
 import type {
   InterestedContractor,
   ContractorFilters,
-  ContractorListResponse,
+  CreateContractorRequest,
+  UpdateContractorRequest,
 } from "@/app/lib/types/interestedContractors";
 
 interface UseContractorInterestOptions {
@@ -31,6 +32,8 @@ export function useContractorInterest(options: UseContractorInterestOptions = {}
   const [filters, setFilters] = useState<ContractorFilters>({
     search: "",
     emailStatus: "all",
+    status: "all",
+    assignedAdmin: "all",
   });
 
   // Debounced search
@@ -54,12 +57,14 @@ export function useContractorInterest(options: UseContractorInterestOptions = {}
         page: currentPage,
         limit: pageSize,
         search: debouncedSearch || undefined,
-        emailStatus: filters.emailStatus !== "all" ? filters.emailStatus as any : undefined,
+        emailStatus: filters.emailStatus !== "all" ? filters.emailStatus as "sent" | "not_sent" | "failed" : undefined,
+        status: filters.status !== "all" ? filters.status as "interested" | "registered" | "waitingForResponse" : undefined,
+        assignedAdmin: filters.assignedAdmin !== "all" ? filters.assignedAdmin as "all" | "assigned" | "unassigned" : undefined,
       };
 
       const response = await InterestedContractorsService.getContractors(params, accessToken);
       
-      setContractors(response.contractors);
+      setContractors(response.contractors as InterestedContractor[]);
       setTotalPages(response.pagination.totalPages);
       setTotalContractors(response.pagination.total);
     } catch (err) {
@@ -68,7 +73,7 @@ export function useContractorInterest(options: UseContractorInterestOptions = {}
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, debouncedSearch, filters.emailStatus]);
+  }, [currentPage, pageSize, debouncedSearch, filters.emailStatus, filters.status, filters.assignedAdmin, accessToken]);
 
   // Effects
   useEffect(() => {
@@ -80,7 +85,7 @@ export function useContractorInterest(options: UseContractorInterestOptions = {}
     if (currentPage !== 1) {
       setCurrentPage(1);
     }
-  }, [debouncedSearch, filters.emailStatus]);
+  }, [debouncedSearch, filters.emailStatus, filters.status, filters.assignedAdmin, accessToken, currentPage]);
 
   // Handlers
   const handleFilterChange = useCallback((newFilters: ContractorFilters) => {
@@ -101,7 +106,7 @@ export function useContractorInterest(options: UseContractorInterestOptions = {}
   }, [fetchContractors]);
 
   // CRUD operations
-  const createContractor = useCallback(async (data: any) => {
+  const createContractor = useCallback(async (data: CreateContractorRequest) => {
     try {
       await InterestedContractorsService.createContractor(data, accessToken);
       refreshContractors();
@@ -112,7 +117,7 @@ export function useContractorInterest(options: UseContractorInterestOptions = {}
     }
   }, [refreshContractors, accessToken]);
 
-  const updateContractor = useCallback(async (id: string, data: any) => {
+  const updateContractor = useCallback(async (id: string, data: UpdateContractorRequest) => {
     try {
       await InterestedContractorsService.updateContractor(id, data, accessToken);
       refreshContractors();
@@ -157,20 +162,14 @@ export function useContractorInterest(options: UseContractorInterestOptions = {}
   }, [refreshContractors, accessToken]);
 
   return {
-    // Data
+    // State
     contractors,
     totalContractors,
-    
-    // Loading and error states
     isLoading,
     error,
-    
-    // Pagination
     currentPage,
     totalPages,
     pageSize,
-    
-    // Filters
     filters,
     
     // Handlers
@@ -183,6 +182,8 @@ export function useContractorInterest(options: UseContractorInterestOptions = {}
     createContractor,
     updateContractor,
     deleteContractor,
+    
+    // Email operations
     sendWelcomeEmails,
     retryWelcomeEmail,
   };
