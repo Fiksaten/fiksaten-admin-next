@@ -528,7 +528,7 @@ export type GetExpressCategoriesResponses = {
     200: Array<{
         id: string;
         name: string;
-        imageUrl: string;
+        imageUrl: string | null;
         description: string | null;
         express: boolean;
         expressPrice: string | null;
@@ -2184,7 +2184,7 @@ export type GetCurrentUserChosenCategoriesResponses = {
         categories: Array<{
             id: string;
             name: string;
-            imageUrl: string;
+            imageUrl: string | null;
             description: string | null;
             express: boolean;
             expressPrice: string | null;
@@ -2685,7 +2685,7 @@ export type GetOpenRequestsForContractorResponses = {
         category: {
             id: string;
             name: string;
-            imageUrl: string;
+            imageUrl: string | null;
             description: string | null;
             express: boolean;
             expressPrice: string | null;
@@ -2777,7 +2777,7 @@ export type GetContractorSentRequestsResponses = {
         category: {
             id: string;
             name: string;
-            imageUrl: string;
+            imageUrl: string | null;
             description: string | null;
             express: boolean;
             expressPrice: string | null;
@@ -2869,7 +2869,7 @@ export type GetContractorHistoryRequestsResponses = {
         category: {
             id: string;
             name: string;
-            imageUrl: string;
+            imageUrl: string | null;
             description: string | null;
             express: boolean;
             expressPrice: string | null;
@@ -2961,7 +2961,7 @@ export type GetContractorInProgressRequestsResponses = {
         category: {
             id: string;
             name: string;
-            imageUrl: string;
+            imageUrl: string | null;
             description: string | null;
             express: boolean;
             expressPrice: string | null;
@@ -3314,7 +3314,7 @@ export type GetOwnOrdersResponses = {
             category: {
                 id: string;
                 name: string;
-                imageUrl: string;
+                imageUrl: string | null;
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
@@ -3529,7 +3529,7 @@ export type GetOrderDetailsResponses = {
             category: {
                 id: string;
                 name: string;
-                imageUrl: string;
+                imageUrl: string | null;
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
@@ -3782,7 +3782,7 @@ export type GetOwnDraftOrdersResponses = {
             category: {
                 id: string;
                 name: string;
-                imageUrl: string;
+                imageUrl: string | null;
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
@@ -4124,7 +4124,7 @@ export type GetExpressOrderOptionsResponses = {
         options: Array<{
             id: string;
             name: string;
-            imageUrl: string;
+            imageUrl: string | null;
             description: string | null;
             express: boolean;
             expressPrice: string | null;
@@ -4212,7 +4212,7 @@ export type GetOwnExpressOrdersResponses = {
             category: {
                 id: string;
                 name: string;
-                imageUrl: string;
+                imageUrl: string | null;
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
@@ -4289,7 +4289,7 @@ export type SearchExpressOrdersResponses = {
             category: {
                 id: string;
                 name: string;
-                imageUrl: string;
+                imageUrl: string | null;
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
@@ -4539,7 +4539,7 @@ export type GetExpressOrderDetailsResponses = {
         category: {
             id: string;
             name: string;
-            imageUrl: string;
+            imageUrl: string | null;
             description: string | null;
             express: boolean;
             expressPrice: string | null;
@@ -4645,7 +4645,7 @@ export type GetExpressOrdersByUserIdResponses = {
         category: {
             id: string;
             name: string;
-            imageUrl: string;
+            imageUrl: string | null;
             description: string | null;
             express: boolean;
             expressPrice: string | null;
@@ -5015,7 +5015,7 @@ export type GetExpressOrdersWhereContractorResponses = {
             category: {
                 id: string;
                 name: string;
-                imageUrl: string;
+                imageUrl: string | null;
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
@@ -5156,7 +5156,7 @@ export type GetOfferToOrderDetailsResponses = {
         categories: {
             id: string;
             name: string;
-            imageUrl: string;
+            imageUrl: string | null;
             description: string | null;
             express: boolean;
             expressPrice: string | null;
@@ -6304,7 +6304,7 @@ export type AddCategoryData = {
     body?: {
         id?: string;
         name: string;
-        imageUrl: string;
+        imageUrl?: string | null;
         description?: string | null;
         express?: boolean;
         expressPrice?: string | null;
@@ -7127,7 +7127,7 @@ export type UpdateCategoryData = {
     body?: {
         id?: string;
         name: string;
-        imageUrl: string;
+        imageUrl?: string | null;
         description?: string | null;
         express?: boolean;
         expressPrice?: string | null;
@@ -8127,7 +8127,7 @@ export type GetCategoriesResponses = {
     200: Array<{
         id: string;
         name: string;
-        imageUrl: string;
+        imageUrl: string | null;
         description: string | null;
         express: boolean;
         expressPrice: string | null;
@@ -8550,7 +8550,7 @@ export type CreateExpressPaymentIntentResponses = {
             category: {
                 id: string;
                 name: string;
-                imageUrl: string;
+                imageUrl: string | null;
                 description: string | null;
                 express: boolean;
                 expressPrice: string | null;
@@ -8830,5 +8830,5 @@ export type GetPublicCampaignsResponses = {
 export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
-    baseUrl: 'http://localhost:3000' | (string & {});
+    baseUrl: 'https://fiksaten-api-v2-1.onrender.com' | (string & {});
 };
