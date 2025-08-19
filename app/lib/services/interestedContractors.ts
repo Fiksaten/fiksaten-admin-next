@@ -1,9 +1,14 @@
+import { 
+  sendWelcomeEmailsToContractors,
+  getInterestedContractors,
+  createInterestedContractor,
+  updateInterestedContractor,
+  deleteInterestedContractor,
+  postByIdRetryWelcomeEmail
+} from "../openapi-client";
 import type {
-  InterestedContractor,
-  ContractorListResponse,
   CreateContractorRequest,
   UpdateContractorRequest,
-  EmailSendingResult,
 } from "../types/interestedContractors";
 import { resolveToken } from "./util";
 
@@ -18,78 +23,72 @@ export class InterestedContractorsService {
   /**
    * Get paginated list of interested contractors
    */
-  static async getContractors(params: GetContractorsParams = {}, accessToken?: string): Promise<ContractorListResponse> {
+  static async getContractors(params: GetContractorsParams = {}, accessToken?: string) {
     const token = resolveToken(accessToken);
     if (!token) throw new Error("No access token available");
 
-    const searchParams = new URLSearchParams();
+    const query: Record<string, string> = {};
     
-    if (params.page) searchParams.set("page", params.page.toString());
-    if (params.limit) searchParams.set("limit", params.limit.toString());
-    if (params.search) searchParams.set("search", params.search);
-    if (params.emailStatus) searchParams.set("emailStatus", params.emailStatus);
+    if (params.page) query.page = params.page.toString();
+    if (params.limit) query.limit = params.limit.toString();
+    if (params.search) query.search = params.search;
+    if (params.emailStatus) query.emailStatus = params.emailStatus;
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/interested-contractors?${searchParams}`, {
-      method: "GET",
+    const response = await getInterestedContractors({
+      query,
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch contractors: ${response.statusText}`);
+    if (response.error) {
+      throw new Error(response.error.message || "Failed to fetch contractors");
     }
 
-    return response.json();
+    return response.data;
   }
 
   /**
    * Create a new interested contractor
    */
-  static async createContractor(data: CreateContractorRequest, accessToken?: string): Promise<InterestedContractor> {
+  static async createContractor(data: CreateContractorRequest, accessToken?: string) {
     const token = resolveToken(accessToken);
     if (!token) throw new Error("No access token available");
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/interested-contractors`, {
-      method: "POST",
+    const response = await createInterestedContractor({
+      body: data,
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || `Failed to create contractor: ${response.statusText}`);
+    if (response.error) {
+      throw new Error(response.error.message || "Failed to create contractor");
     }
 
-    return response.json();
+    return response.data;
   }
 
   /**
    * Update an interested contractor
    */
-  static async updateContractor(id: string, data: UpdateContractorRequest, accessToken?: string): Promise<InterestedContractor> {
+  static async updateContractor(id: string, data: UpdateContractorRequest, accessToken?: string){
     const token = resolveToken(accessToken);
     if (!token) throw new Error("No access token available");
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/interested-contractors/${id}`, {
-      method: "PUT",
+    const response = await updateInterestedContractor({
+      path: { id },
+      body: data,
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || `Failed to update contractor: ${response.statusText}`);
+    if (response.error) {
+      throw new Error(response.error.message || "Failed to update contractor");
     }
 
-    return response.json();
+    return response.data;
   }
 
   /**
@@ -99,63 +98,77 @@ export class InterestedContractorsService {
     const token = resolveToken(accessToken);
     if (!token) throw new Error("No access token available");
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/interested-contractors/${id}`, {
-      method: "DELETE",
+    const response = await deleteInterestedContractor({
+      path: { id },
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || `Failed to delete contractor: ${response.statusText}`);
+    if (response.error) {
+      throw new Error(response.error.message || "Failed to delete contractor");
     }
   }
 
   /**
    * Send welcome emails to contractors who haven't received them
    */
-  static async sendWelcomeEmails(accessToken?: string): Promise<EmailSendingResult> {
+  static async sendWelcomeEmails(accessToken?: string) {
     const token = resolveToken(accessToken);
     if (!token) throw new Error("No access token available");
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/interested-contractors/send-welcome-emails`, {
-      method: "POST",
+    const response = await sendWelcomeEmailsToContractors({
+      body: {}, // Send empty body to satisfy API schema
       headers: {
-        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+    if(response.error) {
+      throw new Error(response.error.message || "Failed to send welcome emails");
+    }
+
+    return response.data;
+  }
+
+  /**
+   * Send welcome emails to specific contractors by ID
+   */
+  static async sendWelcomeEmailsToContractors(contractorIds: string[], accessToken?: string) {
+    const token = resolveToken(accessToken);
+    if (!token) throw new Error("No access token available");
+
+    const response = await sendWelcomeEmailsToContractors({
+      body: { contractorIds },
+      headers: {
         "Authorization": `Bearer ${token}`,
       },
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || `Failed to send welcome emails: ${response.statusText}`);
+    if (response.error) {
+      throw new Error(response.error.message || "Failed to send welcome emails");
     }
 
-    return response.json();
+    return response.data;
   }
 
   /**
    * Retry sending welcome email to a specific contractor
    */
-  static async retryWelcomeEmail(contractorId: string, accessToken?: string): Promise<EmailSendingResult> {
+  static async retryWelcomeEmail(contractorId: string, accessToken?: string) {
     const token = resolveToken(accessToken);
     if (!token) throw new Error("No access token available");
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/interested-contractors/${contractorId}/retry-welcome-email`, {
-      method: "POST",
+    const response = await postByIdRetryWelcomeEmail({
+      path: { id: contractorId },
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || `Failed to retry welcome email: ${response.statusText}`);
+    if (response.error) {
+      throw new Error(response.error.message || "Failed to retry welcome email");
     }
 
-    return response.json();
+    return response.data;
   }
 }

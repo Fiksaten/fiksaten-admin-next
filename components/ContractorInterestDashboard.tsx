@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { ContractorInterestTable } from "./ContractorInterestTable";
-import { AddContractorDialog } from "./AddContractorDialog";
+
+import { AddContractorDialog } from "../app/(dashboards)/admin/contractor-interest/AddContractorDialog";
 import { EditContractorDialog } from "./EditContractorDialog";
 import { DeleteContractorDialog } from "./DeleteContractorDialog";
 import { EmailSendingProgressDialog } from "./EmailSendingProgressDialog";
 import { useContractorInterest } from "@/hooks/useContractorInterest";
 import { Button } from "@/components/ui/button";
-import { UserPlus } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserPlus, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type {
   InterestedContractor,
@@ -34,6 +36,7 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
   );
   const [isEmailSending, setIsEmailSending] = useState(false);
   const [retryingEmails, setRetryingEmails] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState("table");
 
   const {
     contractors,
@@ -70,72 +73,93 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
     refreshContractors();
   };
 
+  const handleDeleteSuccess = () => {
+    refreshContractors();
+  };
+
   const handleSendWelcomeEmails = async () => {
+    console.log("Sending welcome emails");
+    console.log("Is email sending: ", isEmailSending);
     setIsEmailSending(true);
-    setEmailSendingResult(null);
-    setEmailSendingError(null);
     setEmailProgressOpen(true);
+    setEmailSendingError(null);
 
-    const result = await sendWelcomeEmails();
-
-    setIsEmailSending(false);
-
-    if (result.success && result.result) {
-      setEmailSendingResult(result.result);
+    try {
+      console.log("Sending welcome emails");
+      const result = await sendWelcomeEmails();
+      if (result.success && result.result) {
+        setEmailSendingResult(result.result);
+        toast({
+          title: "Welcome emails sent successfully",
+          description: `Successfully sent ${result.result.sent} emails. ${
+            result.result.failed && result.result.failed > 0 ? `${result.result.failed} failed.` : ""
+          }`,
+        });
+      } else {
+        setEmailSendingError(result.error || "Failed to send welcome emails");
+        toast({
+          title: "Error sending welcome emails",
+          description: result.error || "An unexpected error occurred",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      setEmailSendingError(errorMessage);
       toast({
-        title: "Welcome emails sent",
-        description: `Successfully sent ${result.result.sent} emails. ${result.result.failed} failed.`,
-      });
-    } else {
-      setEmailSendingError(result.error || "Failed to send welcome emails");
-      toast({
-        title: "Error sending emails",
-        description: result.error || "Failed to send welcome emails",
+        title: "Error sending welcome emails",
+        description: errorMessage,
         variant: "destructive",
       });
+    } finally {
+      setIsEmailSending(false);
     }
   };
 
   const handleRetryWelcomeEmail = async (contractorId: string) => {
     setRetryingEmails((prev) => new Set(prev).add(contractorId));
 
-    const result = await retryWelcomeEmail(contractorId);
-
-    setRetryingEmails((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(contractorId);
-      return newSet;
-    });
-
-    if (result.success && result.result) {
+    try {
+      const result = await retryWelcomeEmail(contractorId);
+      if (result.success) {
+        toast({
+          title: "Welcome email retried successfully",
+          description: "The welcome email has been resent to the contractor.",
+        });
+        refreshContractors();
+      } else {
+        toast({
+          title: "Error retrying welcome email",
+          description: result.error || "Failed to retry welcome email",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
       toast({
-        title: "Email retry successful",
-        description:
-          result.result.sent > 0
-            ? "Welcome email sent successfully"
-            : "Email retry failed",
-        variant: result.result.sent > 0 ? "default" : "destructive",
-      });
-    } else {
-      toast({
-        title: "Email retry failed",
-        description: result.error || "Failed to retry welcome email",
+        title: "Error retrying welcome email",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
+      });
+    } finally {
+      setRetryingEmails((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(contractorId);
+        return newSet;
       });
     }
   };
 
-  const handleDeleteSuccess = async () => {
-    await refreshContractors();
-  };
-
-  // Show error state
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={refreshContractors}>Try Again</Button>
+          <p className="text-lg font-semibold text-destructive mb-2">
+            Error loading contractors
+          </p>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button onClick={refreshContractors} variant="outline">
+            Try Again
+          </Button>
         </div>
       </div>
     );
@@ -143,8 +167,7 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-between">
         <Button
           onClick={handleAddContractor}
           className="flex items-center gap-2"
@@ -154,24 +177,38 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
         </Button>
       </div>
 
-      {/* Main Table */}
-      <ContractorInterestTable
-        contractors={contractors}
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        onContractorEdit={handleContractorEdit}
-        onContractorDelete={handleContractorDelete}
-        onSendWelcomeEmails={handleSendWelcomeEmails}
-        onRetryWelcomeEmail={handleRetryWelcomeEmail}
-        retryingEmails={retryingEmails}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        pageSize={pageSize}
-        onPageSizeChange={handlePageSizeChange}
-        isLoading={isLoading}
-        totalContractors={totalContractors}
-      />
+      {/* Main Content Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="table" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Contractor Table
+          </TabsTrigger>
+        </TabsList>
+
+        
+
+
+        <TabsContent value="table" className="space-y-6">
+          <ContractorInterestTable
+            contractors={contractors}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onContractorEdit={handleContractorEdit}
+            onContractorDelete={handleContractorDelete}
+            onSendWelcomeEmails={handleSendWelcomeEmails}
+            onRetryWelcomeEmail={handleRetryWelcomeEmail}
+            retryingEmails={retryingEmails}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            pageSize={pageSize}
+            onPageSizeChange={handlePageSizeChange}
+            isLoading={isLoading}
+            totalContractors={totalContractors}
+          />
+        </TabsContent>
+      </Tabs>
 
       {/* Add Contractor Dialog */}
       <AddContractorDialog
@@ -203,9 +240,9 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
       <EmailSendingProgressDialog
         open={emailProgressOpen}
         onOpenChange={setEmailProgressOpen}
-        isLoading={isEmailSending}
         result={emailSendingResult}
         error={emailSendingError}
+        isLoading={isEmailSending}
       />
     </div>
   );

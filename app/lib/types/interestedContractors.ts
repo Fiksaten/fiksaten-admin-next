@@ -5,10 +5,14 @@ export interface InterestedContractor {
   name: string;
   email: string;
   phoneNumber: string | null;
+  businessId: string | null;
+  website: string | null;
+  status: "waitingForResponse" | "interested" | "notInterested" | "registered";
   welcomeEmailSent: boolean;
   welcomeEmailSentAt: string | null;
   welcomeEmailError: string | null;
   notes: string | null;
+  assignedAdminId: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,6 +20,8 @@ export interface InterestedContractor {
 export interface ContractorFilters {
   search: string;
   emailStatus: string;
+  status: string;
+  assignedAdmin: string;
 }
 
 export interface ContractorListResponse {
@@ -32,14 +38,22 @@ export interface CreateContractorRequest {
   name: string;
   email: string;
   phoneNumber?: string;
+  businessId?: string;
+  website?: string;
+  status?: "waitingForResponse" | "interested" | "notInterested" | "registered";
   notes?: string;
+  assignedAdminId?: string; // Use undefined for unassigned, or admin UUID
 }
 
 export interface UpdateContractorRequest {
   name?: string;
   email?: string;
   phoneNumber?: string;
+  businessId?: string;
+  website?: string;
+  status?: "waitingForResponse" | "interested" | "notInterested" | "registered";
   notes?: string;
+  assignedAdminId?: string; // Use undefined for unassigned, or admin UUID
 }
 
 export interface EmailSendingResult {
