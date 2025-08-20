@@ -12,12 +12,16 @@ import {
   register as apiRegister,
   contractorJoinRequest,
   getCurrentUser,
+  GetCurrentUserResponse as User,
+  RegisterData,
+  ContractorJoinRequestData,
 } from "@/app/lib/openapi-client";
 import { client as apiClient } from "@/app/lib/apiClient";
 import { toast } from "@/hooks/use-toast";
-import { User } from "@/app/lib/types/userTypes";
 import dotenv from "dotenv";
-import { Register, ContractorRegisterData } from "@/app/lib/types/authTypes";
+
+type Register = NonNullable<RegisterData["body"]>;
+type ContractorRegisterData = NonNullable<ContractorJoinRequestData["body"]>;
 dotenv.config();
 
 type Tokens = {

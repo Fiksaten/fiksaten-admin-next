@@ -24,26 +24,15 @@ import { toast } from "@/hooks/use-toast";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { updateCampaignOrder } from "@/app/lib/services/campaignOrderService";
 import DayTimeSelection from "@/components/DayTimeSelection";
+import type {
+  GetAllCampaignOrdersResponses,
+  UpdateCampaignOrderData,
+} from "@/app/lib/openapi-client";
 
-interface CampaignOrder {
-  id: string;
-  status: string;
-  categoryName: string;
-  startTime: string;
-  endTime: string;
-  weekdays: string[] | null;
-  chosenDay: string | null;
-  chosenStartTime: string | null;
-  orderStreet: string | null;
-  orderZip: string | null;
-  orderCityName: string;
-  createdAt: string;
-  userId: string;
-  contractorId: string | null;
-}
+type CampaignOrder = GetAllCampaignOrdersResponses[200][number];
 
 interface Props {
-  campaignOrders: CampaignOrder[];
+  campaignOrders: GetAllCampaignOrdersResponses[200];
   accessToken: string;
 }
 
@@ -51,7 +40,9 @@ export default function CampaignOrdersTable({
   campaignOrders: initialCampaignOrders,
   accessToken,
 }: Props) {
-  const [campaignOrders, setCampaignOrders] = useState(initialCampaignOrders);
+  const [campaignOrders, setCampaignOrders] = useState<
+    GetAllCampaignOrdersResponses[200]
+  >(initialCampaignOrders);
   const [selectedOrder, setSelectedOrder] = useState<CampaignOrder | null>(
     null
   );
@@ -59,7 +50,7 @@ export default function CampaignOrdersTable({
   const [showDayTimeSelection, setShowDayTimeSelection] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    status: "pending" as "pending" | "accepted" | "declined" | "done",
+    status: "pending" as UpdateCampaignOrderData["body"]["status"],
     chosenDay: "",
     chosenStartTime: "",
     contractorId: "",
@@ -99,7 +90,9 @@ export default function CampaignOrdersTable({
 
     setLoading(true);
     try {
-      const updateData: any = { status: form.status };
+      const updateData: UpdateCampaignOrderData["body"] = {
+        status: form.status,
+      };
       if (form.chosenDay) updateData.chosenDay = form.chosenDay;
       if (form.chosenStartTime)
         updateData.chosenStartTime = form.chosenStartTime;
@@ -120,9 +113,10 @@ export default function CampaignOrdersTable({
       });
       closeDialog();
     } catch (error) {
+      const err = error as Error;
       toast({
         title: "Error",
-        description: "Failed to update campaign order",
+        description: err.message,
         variant: "destructive",
       });
     } finally {
@@ -159,9 +153,10 @@ export default function CampaignOrdersTable({
       });
       closeDialog();
     } catch (error) {
+      const err = error as Error;
       toast({
         title: "Error",
-        description: "Failed to update campaign order",
+        description: err.message,
         variant: "destructive",
       });
     } finally {
@@ -345,7 +340,7 @@ export default function CampaignOrdersTable({
                 onChange={(e) =>
                   setForm((prev) => ({
                     ...prev,
-                    status: e.target.value as any,
+                    status: e.target.value as UpdateCampaignOrderData["body"]["status"],
                   }))
                 }
                 className="w-full p-2 border rounded"

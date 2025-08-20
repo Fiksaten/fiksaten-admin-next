@@ -398,7 +398,7 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
 
             <Select
               value={sortBy}
-              onValueChange={(value: any) => setSortBy(value)}
+              onValueChange={(value: string) => setSortBy(value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sort by" />

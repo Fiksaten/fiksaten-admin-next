@@ -345,7 +345,9 @@ export const EditContractorDialog: React.FC<EditContractorDialogProps> = ({
               <Label htmlFor="status">Status</Label>
               <Select
                 value={watch("status")}
-                onValueChange={(value) => setValue("status", value as any)}
+                onValueChange={(value) =>
+                  setValue("status", value as EditContractorFormData["status"])
+                }
                 disabled={isSubmitting}
               >
                 <SelectTrigger>

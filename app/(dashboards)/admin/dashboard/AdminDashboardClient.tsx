@@ -38,12 +38,12 @@ import {
   PieChart as PieChartIcon,
 } from "lucide-react";
 import { format } from "date-fns";
-import { LandingPageAnalytics } from "@/app/lib/types/analyticsTypes";
+import { GetLandingPageAnalyticsResponse } from "@/app/lib/openapi-client";
 
 export default function AdminDashboardClient({
   analytics,
 }: {
-  analytics: LandingPageAnalytics;
+  analytics: GetLandingPageAnalyticsResponse;
 }) {
   const colors = {
     charts: [

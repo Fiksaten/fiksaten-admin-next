@@ -5,7 +5,9 @@ import {
   approveContractor,
   declineContractor,
 } from "@/app/lib/services/contractorService";
-import { ContractorJoinRequests } from "@/app/lib/types/contractorTypes";
+import { GetAllContractorJoinRequestsResponse } from "@/app/lib/openapi-client";
+
+type ContractorJoinRequests = GetAllContractorJoinRequestsResponse;
 import { Button } from "@/components/ui/button";
 import {
   Table,

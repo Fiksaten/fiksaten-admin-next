@@ -3,9 +3,11 @@ import {
   addCategory as createCategoryApi,
   deleteCategory as deleteCategoryApi,
   updateCategory as updateCategoryApi,
+  AddCategoryData,
 } from "../openapi-client";
-import { CreateCategoryBody } from "../types/categoryTypes";
 import { resolveToken } from "./util";
+
+type CreateCategoryBody = AddCategoryData["body"];
 
 const getCategories = async (accessToken?: string) => {
   const token = resolveToken(accessToken);

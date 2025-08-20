@@ -266,7 +266,9 @@ export const AddContractorDialog: React.FC<AddContractorDialogProps> = ({
               <Label htmlFor="status">Status</Label>
               <Select
                 value={watch("status")}
-                onValueChange={(value) => setValue("status", value as any)}
+                onValueChange={(value) =>
+                  setValue("status", value as AddContractorFormData["status"])
+                }
                 disabled={isSubmitting}
               >
                 <SelectTrigger>

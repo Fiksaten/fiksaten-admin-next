@@ -15,7 +15,7 @@ import {
 interface AiSuggestionsProps {
   ticketId: string;
   accessToken: string;
-  onSuggestionAccepted?: (suggestion: any) => void;
+  onSuggestionAccepted?: (suggestion: AiSuggestion) => void;
   onCategorySuggestion?: (category: string) => void;
   onPrioritySuggestion?: (priority: string) => void;
   onResponseSuggestion?: (response: string) => void;
@@ -172,9 +172,10 @@ export default function AiSuggestions({
         description: "AI suggestions refreshed",
       });
     } catch (error) {
+      const err = error as Error;
       toast({
         title: "Error",
-        description: "Failed to refresh suggestions",
+        description: err.message,
         variant: "destructive",
       });
     } finally {

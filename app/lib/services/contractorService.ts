@@ -7,16 +7,17 @@ import {
   getAllContractorJoinRequests as getAllContractorJoinRequestsApi,
   getContractor as getContractorDataApi,
   getCurrentContractorData as getCurrentContractorDataApi,
+  UpdateCurrentContractorDataData,
+  ContractorJoinRequestData,
+  GetCurrentContractorDataResponse,
 } from "../openapi-client";
-
-import {
-  ContractorJoinRequestBody,
-  ContractorUpdateBody,
-  CurrentContractorResponse,
-} from "../types/contractorTypes";
 import Cookies from "js-cookie";
 import { resolveToken } from "./util";
 import { getaccessToken } from "../actions";
+
+type ContractorUpdateBody = UpdateCurrentContractorDataData["body"];
+type ContractorJoinRequestBody = ContractorJoinRequestData["body"];
+type CurrentContractorResponse = GetCurrentContractorDataResponse;
 
 const approveContractor = async (
   accessToken: string | undefined,
