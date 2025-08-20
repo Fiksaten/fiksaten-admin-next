@@ -8,9 +8,10 @@ import {
   Settings,
   Users,
   Package,
-  MessageSquare, 
+  MessageSquare,
   LogOut,
   User,
+  UserX,
   Tag,
 } from "lucide-react";
 
@@ -68,6 +69,11 @@ const data = {
       title: "Users",
       url: "/admin/users",
       icon: Users,
+    },
+    {
+      title: "Deleted Users",
+      url: "/admin/deleted-users",
+      icon: UserX,
     },
     {
       title: "Contractors",
