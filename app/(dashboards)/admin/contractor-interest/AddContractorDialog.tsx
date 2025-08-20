@@ -291,7 +291,9 @@ export const AddContractorDialog: React.FC<AddContractorDialogProps> = ({
             <Label htmlFor="assignedAdminId">Assigned Admin (Optional)</Label>
             <Select
               value={watch("assignedAdminId") || "none"}
-              onValueChange={(value) => setValue("assignedAdminId", value === "none" ? "" : value)}
+              onValueChange={(value) =>
+                setValue("assignedAdminId", value as AddContractorFormData["assignedAdminId"])
+              }
               disabled={isSubmitting || isLoadingAdmins}
             >
               <SelectTrigger>

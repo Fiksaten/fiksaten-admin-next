@@ -477,7 +477,16 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
 
             <Select
               value={sortBy}
+<<<<<<< HEAD
               onValueChange={(value: string) => setSortBy(value)}
+=======
+              onValueChange={(value) => {
+                const allowed = ["newest","oldest","priority","status"] as const;
+                if ((allowed as readonly string[]).includes(value)) {
+                  setSortBy(value as (typeof allowed)[number]);
+                }
+              }}
+>>>>>>> dc99e57 (refactor: remove any and ts-ignore)
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sort by" />

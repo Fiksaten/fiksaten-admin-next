@@ -620,7 +620,7 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleStatusChange("closed", ticket.assignedAdminId !== null)}
+                      onClick={() => handleStatusChange("resolved", ticket.assignedAdminId !== null)}
                       disabled={isUpdatingStatus}
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />

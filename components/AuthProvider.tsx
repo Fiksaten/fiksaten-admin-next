@@ -1,4 +1,5 @@
 "use client";
+
 import {
   createContext,
   useContext,
@@ -8,6 +9,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+<<<<<<< HEAD
 import {
   register as apiRegister,
   contractorJoinRequest,
@@ -23,6 +25,14 @@ import dotenv from "dotenv";
 type Register = NonNullable<RegisterData["body"]>;
 type ContractorRegisterData = NonNullable<ContractorJoinRequestData["body"]>;
 dotenv.config();
+=======
+import {
+  getCurrentUser,
+  GetCurrentUserResponse as User,
+} from "@/app/lib/openapi-client";
+import { toast } from "@/hooks/use-toast";
+
+>>>>>>> dc99e57 (refactor: remove any and ts-ignore)
 
 type Tokens = {
   accessToken: string;
@@ -34,10 +44,6 @@ type AuthContextType = {
   user: User | null;
   tokens: Tokens | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (
-    registerData: Register,
-    contractor: ContractorRegisterData | undefined
-  ) => Promise<void>;
   logout: () => void;
 };
 
@@ -150,77 +156,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (
-    registerData: Register,
-    contractor?: ContractorRegisterData | undefined
-  ) => {
-    try {
-      const { email, firstname, lastname, password, phoneNumber } =
-        registerData;
-      const { data } = await apiRegister({
-        client: apiClient,
-        body: {
-          email,
-          firstname,
-          lastname,
-          password,
-          phoneNumber,
-        },
-        throwOnError: true,
-      });
-
-      Cookies.set("accessToken", data.accessToken ?? "", {
-        secure: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      });
-      Cookies.set("refreshToken", data.refreshToken ?? "", {
-        secure: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      });
-      Cookies.set("username", data.username ?? "", {
-        secure: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      });
-      setTokens({
-        accessToken: data.accessToken ?? "",
-        refreshToken: data.refreshToken ?? "",
-        username: data.username ?? "",
-      });
-
-      if (contractor) {
-        await contractorJoinRequest({
-          client: apiClient,
-          headers: {
-            Authorization: `Bearer ${data.accessToken}`,
-          },
-          body: {
-            name: contractor.name,
-            description: contractor.description,
-            website: contractor.website,
-            email: contractor.email,
-            phone: contractor.phone,
-            addressStreet: contractor.addressStreet,
-            addressDetail: contractor.addressDetail,
-            addressZip: contractor.addressZip,
-            addressCountry: contractor.addressCountry,
-            imageUrl: contractor.imageUrl,
-            businessId: contractor.businessId,
-            businessType: contractor.businessType,
-            iban: contractor.iban,
-            bic: contractor.bic,
-          },
-        });
-      }
-
-      if (data.accessToken) {
-        await fetchUserData(data.accessToken);
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      throw new Error("Login error");
-    }
-  };
-
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
@@ -231,7 +166,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, tokens, login, logout, register }}>
+    <AuthContext.Provider value={{ user, tokens, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
