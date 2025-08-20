@@ -1,0 +1,13 @@
+[2025-08-20T16:52:15.704Z] Error: Error opening file "localhost:3000/swagger.json" 
+ENOENT: no such file or directory, open 'localhost:3000/swagger.json'
+Stack:
+ResolverError: Error opening file "localhost:3000/swagger.json" 
+ENOENT: no such file or directory, open 'localhost:3000/swagger.json'
+    at Object.handler (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/json-schema-ref-parser/dist/lib/resolvers/file.js:58:19)
+    at async $RefParser.parse (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/json-schema-ref-parser/dist/lib/index.js:195:17)
+    at async $RefParser.bundle (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/json-schema-ref-parser/dist/lib/index.js:122:9)
+    at async Zi (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/dist/index.cjs:12:1892)
+    at async To (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/dist/index.cjs:38:124348)
+    at async Promise.all (index 0)
+    at async v$ (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/dist/index.cjs:1338:4634)
+    at async start (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/bin/index.cjs:131:21)

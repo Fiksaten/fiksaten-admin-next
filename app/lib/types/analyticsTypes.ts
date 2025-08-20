@@ -1,3 +1,3 @@
-import { GetLandingPageAnalyticsResponse } from "../openapi-client";
+import { GetAdminAnalyticsResponse } from "../openapi-client";
 
-export type LandingPageAnalytics = GetLandingPageAnalyticsResponse;
+export type AdminAnalytics = GetAdminAnalyticsResponse;
