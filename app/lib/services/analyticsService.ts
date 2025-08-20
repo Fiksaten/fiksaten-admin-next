@@ -1,27 +1,13 @@
-import {
-  getLandingPageAnalytics as getLandingPageAnalyticsApi,
-  GetLandingPageAnalyticsResponse,
-} from "../openapi-client";
+import { getAdminAnalytics as getAdminAnalyticsApi } from "../openapi-client";
 import { resolveToken } from "./util";
 
-type CacheEntry<T> = {
-  data: T;
-  timestamp: number;
-};
-
-const analyticsCache = new Map<string, CacheEntry<unknown>>();
-const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
-
-const getLandingPageAnalytics = async (accessToken?: string) => {
+const getAdminAnalytics = async (accessToken?: string) => {
   const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
-  const cached = analyticsCache.get(token);
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION_MS) {
-    return cached.data as GetLandingPageAnalyticsResponse;
-  }
-  const res = await getLandingPageAnalyticsApi({
+
+  const res = await getAdminAnalyticsApi({
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -29,8 +15,8 @@ const getLandingPageAnalytics = async (accessToken?: string) => {
   if (res.error) {
     throw new Error(res.error.message);
   }
-  analyticsCache.set(token, { data: res.data, timestamp: Date.now() });
-  return res.data as GetLandingPageAnalyticsResponse;
+
+  return res.data;
 };
 
-export { getLandingPageAnalytics };
+export { getAdminAnalytics };
