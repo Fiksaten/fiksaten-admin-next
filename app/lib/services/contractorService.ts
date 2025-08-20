@@ -15,13 +15,8 @@ import Cookies from "js-cookie";
 import { resolveToken } from "./util";
 import { getaccessToken } from "../actions";
 
-<<<<<<< HEAD
-type ContractorUpdateBody = UpdateCurrentContractorDataData["body"];
-type ContractorJoinRequestBody = ContractorJoinRequestData["body"];
-=======
 type ContractorUpdateBody = NonNullable<UpdateCurrentContractorDataData["body"]>;
 type ContractorJoinRequestBody = NonNullable<ContractorJoinRequestData["body"]>;
->>>>>>> dc99e57 (refactor: remove any and ts-ignore)
 type CurrentContractorResponse = GetCurrentContractorDataResponse;
 
 const approveContractor = async (

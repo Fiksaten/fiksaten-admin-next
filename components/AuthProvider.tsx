@@ -9,30 +9,12 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-<<<<<<< HEAD
-import {
-  register as apiRegister,
-  contractorJoinRequest,
-  getCurrentUser,
-  GetCurrentUserResponse as User,
-  RegisterData,
-  ContractorJoinRequestData,
-} from "@/app/lib/openapi-client";
-import { client as apiClient } from "@/app/lib/apiClient";
-import { toast } from "@/hooks/use-toast";
-import dotenv from "dotenv";
-
-type Register = NonNullable<RegisterData["body"]>;
-type ContractorRegisterData = NonNullable<ContractorJoinRequestData["body"]>;
-dotenv.config();
-=======
 import {
   getCurrentUser,
   GetCurrentUserResponse as User,
 } from "@/app/lib/openapi-client";
 import { toast } from "@/hooks/use-toast";
 
->>>>>>> dc99e57 (refactor: remove any and ts-ignore)
 
 type Tokens = {
   accessToken: string;
