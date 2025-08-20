@@ -3,9 +3,13 @@ import {
   requestAccountDeletion as requestAccountDeletionApi,
   getAllUsers as getAllUsersApi,
   getUserById as getUserByIdApi,
+  UpdateCurrentUserData,
+  RequestAccountDeletionData,
 } from "../openapi-client";
-import { RequestAccountDeletionBody, UserUpdateBody } from "../types/userTypes";
 import { resolveToken } from "./util";
+
+type UserUpdateBody = UpdateCurrentUserData["body"];
+type RequestAccountDeletionBody = RequestAccountDeletionData["body"];
 
 const updateUser = async (
   accessToken: string | undefined,

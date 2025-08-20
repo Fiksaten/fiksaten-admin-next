@@ -15,7 +15,7 @@ import {
 interface AiSuggestionsProps {
   ticketId: string;
   accessToken: string;
-  onSuggestionAccepted?: (suggestion: any) => void;
+  onSuggestionAccepted?: (suggestion: AiSuggestion) => void;
   onCategorySuggestion?: (category: string) => void;
   onPrioritySuggestion?: (priority: string) => void;
   onResponseSuggestion?: (response: string) => void;
@@ -95,24 +95,24 @@ const getSuggestionActionButton = (type: string, content: string | null) => {
   switch (type) {
     case "CATEGORY":
       return (
-        <Button size="sm" variant="outline" className="h-8 px-3 bg-indigo-50 hover:bg-indigo-100 border-indigo-200 text-indigo-700">
+        <>
           <Target className="h-3 w-3 mr-1" />
           Apply Category
-        </Button>
+        </>
       );
     case "PRIORITY":
       return (
-        <Button size="sm" variant="outline" className="h-8 px-3 bg-red-50 hover:bg-red-100 border-red-200 text-red-700">
+        <>
           <Zap className="h-3 w-3 mr-1" />
           Apply Priority
-        </Button>
+        </>
       );
     case "SUGGESTED_ANSWER":
       return (
-        <Button size="sm" variant="outline" className="h-8 px-3 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700">
+        <>
           <MessageSquare className="h-3 w-3 mr-1" />
           Use as Reply
-        </Button>
+        </>
       );
     default:
       return null;
@@ -172,9 +172,10 @@ export default function AiSuggestions({
         description: "AI suggestions refreshed",
       });
     } catch (error) {
+      const err = error as Error;
       toast({
         title: "Error",
-        description: "Failed to refresh suggestions",
+        description: err.message,
         variant: "destructive",
       });
     } finally {

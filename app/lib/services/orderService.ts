@@ -7,6 +7,7 @@ import {
   getAllOrders as getAllOrdersApi,
 } from "../openapi-client";
 import { resolveToken } from "./util";
+import type { GetAllOrdersResponses, UpdateOrderData } from "../openapi-client";
 
 const getOwnOrders = async (accessToken?: string) => {
   const token = resolveToken(accessToken);
@@ -49,7 +50,7 @@ const removeOrder = async (
 const updateOrder = async (
   accessToken: string | undefined,
   orderId: string,
-  body: { status: string; contractorId?: string }
+  body: UpdateOrderData["body"]
 ) => {
   const token = resolveToken(accessToken);
   if (!token) {
@@ -62,7 +63,6 @@ const updateOrder = async (
     path: {
       orderId,
     },
-    // @ts-ignore
     body,
   });
   if (res.error) {
@@ -119,7 +119,7 @@ const getAllOrders = async (
   accessToken: string | undefined,
   page: number,
   limit: number
-) => {
+): Promise<GetAllOrdersResponses[200]> => {
   const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");

@@ -1,9 +1,10 @@
 "use client";
 
 import CampaignOrdersTable from "./CampaignOrdersTable";
+import type { GetAllCampaignOrdersResponses } from "@/app/lib/openapi-client";
 
 interface Props {
-  campaignOrders: any[];
+  campaignOrders: GetAllCampaignOrdersResponses[200];
   accessToken: string;
 }
 

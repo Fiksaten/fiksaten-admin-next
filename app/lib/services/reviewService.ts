@@ -4,9 +4,15 @@ import {
   getReviewsForContractor,
   addNewReviewForContractor,
   getAllReviews,
+  AddNewReviewForContractorData,
 } from "../openapi-client";
-import { ReviewBody } from "../types/reviewTypes";
 import { resolveToken } from "./util";
+
+<<<<<<< HEAD
+type ReviewBody = AddNewReviewForContractorData["body"];
+=======
+type ReviewBody = NonNullable<AddNewReviewForContractorData["body"]>;
+>>>>>>> dc99e57 (refactor: remove any and ts-ignore)
 
 const acceptReview = async (
   accessToken: string | undefined,

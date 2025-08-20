@@ -3,14 +3,19 @@ import {
   sendCustomNotificationToAllUsers,
   sendCustomNotificationToAllConsumers,
   sendCustomNotificationToAllContractors,
+  SendCustomNotificationToUserData,
+  SendCustomNotificationToAllUsersData,
+  SendCustomNotificationToAllConsumersData,
+  SendCustomNotificationToAllContractorsData,
 } from "../openapi-client";
-import {
-  SendNotificationToUserBody,
-  SendNotificationToAllUsersBody,
-  SendNotificationToAllConsumersBody,
-  SendNotificationToAllContractorsBody,
-} from "../types/notificationTypes";
 import { resolveToken } from "./util";
+
+type SendNotificationToUserBody = SendCustomNotificationToUserData["body"];
+type SendNotificationToAllUsersBody = SendCustomNotificationToAllUsersData["body"];
+type SendNotificationToAllConsumersBody =
+  SendCustomNotificationToAllConsumersData["body"];
+type SendNotificationToAllContractorsBody =
+  SendCustomNotificationToAllContractorsData["body"];
 
 const sendNotificationToUser = async (
   accessToken: string | undefined,

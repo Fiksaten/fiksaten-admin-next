@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
@@ -44,6 +44,7 @@ import {
   Calendar,
   MapPin,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 import { changeTicketCategory, changeTicketPriority, respondToSupportTicket, updateCustomerServiceTicket, updateCustomerServiceTicketStatus } from "@/app/lib/services/supportTicketService";
 import { GetAllAdminsResponse, GetCustomerServiceTicketResponse } from "@/app/lib/openapi-client";
@@ -133,7 +134,10 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
   };
 
   const getStatusBadge = (status: string) => {
-    const statusConfig = {
+    const statusConfig: Record<
+      string,
+      { variant: BadgeProps["variant"]; icon: LucideIcon; className: string }
+    > = {
       pending: {
         variant: "secondary",
         icon: Clock,
@@ -171,7 +175,7 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
     const Icon = config.icon;
 
     return (
-      <Badge variant={config.variant as any} className={config.className}>
+      <Badge variant={config.variant} className={config.className}>
         <Icon className="w-3 h-3 mr-1" />
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
@@ -616,7 +620,7 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleStatusChange("closed", ticket.assignedAdminId !== null)}
+                      onClick={() => handleStatusChange("resolved", ticket.assignedAdminId !== null)}
                       disabled={isUpdatingStatus}
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />

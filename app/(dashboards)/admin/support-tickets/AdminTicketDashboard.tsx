@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -35,6 +35,7 @@ import {
   Users,
   Building2,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 import { GetCustomerServiceTicketsResponse } from "@/app/lib/openapi-client";
 import { useRouter } from "next/navigation";
@@ -130,7 +131,10 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
   };
 
   const getStatusBadge = (status: string) => {
-    const statusConfig = {
+    const statusConfig: Record<
+      string,
+      { variant: BadgeProps["variant"]; icon: LucideIcon; className: string }
+    > = {
       pending: {
         variant: "secondary",
         icon: Clock,
@@ -168,7 +172,7 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
     const Icon = config.icon;
 
     return (
-      <Badge variant={config.variant as any} className={config.className}>
+      <Badge variant={config.variant} className={config.className}>
         <Icon className="w-3 h-3 mr-1" />
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
@@ -473,7 +477,16 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
 
             <Select
               value={sortBy}
-              onValueChange={(value: any) => setSortBy(value)}
+<<<<<<< HEAD
+              onValueChange={(value: string) => setSortBy(value)}
+=======
+              onValueChange={(value) => {
+                const allowed = ["newest","oldest","priority","status"] as const;
+                if ((allowed as readonly string[]).includes(value)) {
+                  setSortBy(value as (typeof allowed)[number]);
+                }
+              }}
+>>>>>>> dc99e57 (refactor: remove any and ts-ignore)
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sort by" />

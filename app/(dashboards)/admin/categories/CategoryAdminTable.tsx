@@ -45,10 +45,13 @@ import {
 } from "@/app/lib/services/categoryService";
 import { uploadImage } from "@/app/lib/services/imageService";
 import {
-  Categories,
-  Category,
-  CreateCategoryBody,
-} from "@/app/lib/types/categoryTypes";
+  GetCategoriesResponse,
+  AddCategoryData,
+} from "@/app/lib/openapi-client";
+
+type Categories = GetCategoriesResponse;
+type Category = Categories[number];
+type CreateCategoryBody = AddCategoryData["body"];
 import Image from "next/image";
 
 type PickerType = "DROPDOWN" | "TEXTFIELD" | "TEXTAREA" | "SWITCH";
