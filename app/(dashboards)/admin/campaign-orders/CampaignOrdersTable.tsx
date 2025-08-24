@@ -30,6 +30,9 @@ import type {
 } from "@/app/lib/openapi-client";
 
 type CampaignOrder = GetAllCampaignOrdersResponses[200][number];
+type CampaignOrderStatus = NonNullable<
+  UpdateCampaignOrderData["body"]
+>["status"];
 
 interface Props {
   campaignOrders: GetAllCampaignOrdersResponses[200];
@@ -50,7 +53,7 @@ export default function CampaignOrdersTable({
   const [showDayTimeSelection, setShowDayTimeSelection] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    status: "pending" as UpdateCampaignOrderData["body"]["status"],
+    status: "pending" as CampaignOrderStatus,
     chosenDay: "",
     chosenStartTime: "",
     contractorId: "",
@@ -59,7 +62,7 @@ export default function CampaignOrdersTable({
   const openEdit = (order: CampaignOrder) => {
     setSelectedOrder(order);
     setForm({
-      status: order.status as "pending" | "accepted" | "declined" | "done",
+      status: order.status as CampaignOrderStatus,
       chosenDay: order.chosenDay || "",
       chosenStartTime: order.chosenStartTime || "",
       contractorId: order.contractorId || "",
@@ -90,7 +93,7 @@ export default function CampaignOrdersTable({
 
     setLoading(true);
     try {
-      const updateData: UpdateCampaignOrderData["body"] = {
+      const updateData: NonNullable<UpdateCampaignOrderData["body"]> = {
         status: form.status,
       };
       if (form.chosenDay) updateData.chosenDay = form.chosenDay;
@@ -340,7 +343,7 @@ export default function CampaignOrdersTable({
                 onChange={(e) =>
                   setForm((prev) => ({
                     ...prev,
-                    status: e.target.value as UpdateCampaignOrderData["body"]["status"],
+                    status: e.target.value as CampaignOrderStatus,
                   }))
                 }
                 className="w-full p-2 border rounded"

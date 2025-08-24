@@ -6,6 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   BarChart,
   Bar,
@@ -36,14 +38,44 @@ import {
   Target,
   BarChart3,
   PieChart as PieChartIcon,
+  PlusCircle,
+  Ticket,
+  UserCog,
 } from "lucide-react";
 import { format } from "date-fns";
 import { AdminAnalytics } from "@/app/lib/types/analyticsTypes";
+import Link from "next/link";
+
+type RecentOrder = {
+  id: string;
+  type: "express" | "campaign" | "normal";
+  status: string;
+  createdAt: string;
+  city: string;
+  street: string;
+  category: string;
+};
+
+type RecentTicket = {
+  id: string;
+  createdAt: string;
+  lastActivityAt?: string | null;
+  status: string;
+  priority: string | null;
+  user: { firstname: string; lastname: string; email: string; role: string };
+  unreadCount: number;
+  messagesCount: number;
+  content: string;
+};
 
 export default function AdminDashboardClient({
   analytics,
+  recentOrders = [],
+  recentTickets = [],
 }: {
   analytics: AdminAnalytics;
+  recentOrders?: RecentOrder[];
+  recentTickets?: RecentTicket[];
 }) {
   const colors = {
     charts: [
@@ -90,6 +122,39 @@ export default function AdminDashboardClient({
 
   const formatDate = (date: string) => {
     return format(new Date(date), "dd.MM.yyyy");
+  };
+
+  const formatRelativeTime = (dateString: string) => {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffMs = now.getTime() - date.getTime();
+    const minutes = Math.floor(diffMs / (1000 * 60));
+    if (minutes < 1) return "just now";
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    return formatDate(dateString);
+  };
+
+  const getOrderStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "accepted":
+        return "bg-blue-100 text-blue-800";
+      case "declined":
+        return "bg-red-100 text-red-800";
+      case "done":
+        return "bg-green-100 text-green-800";
+      case "waitingForPayment":
+        return "bg-purple-100 text-purple-800";
+      case "expired":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
   };
 
   const summaryCards = [
@@ -160,7 +225,7 @@ export default function AdminDashboardClient({
   ];
 
   const userGrowthData = analytics.marketing.userGrowth.map((u) => ({
-    month: u.month, 
+    month: u.month,
     count: Number(u.count),
   }));
 
@@ -217,6 +282,42 @@ export default function AdminDashboardClient({
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <PlusCircle className="h-5 w-5" /> Quick Actions
+                </CardTitle>
+                <CardDescription>
+                  Jump to common admin workflows
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <Button asChild variant="secondary" className="justify-start">
+                    <Link href="/admin/orders">
+                      <Package className="h-4 w-4 mr-2" /> Manage Orders
+                    </Link>
+                  </Button>
+                  <Button asChild variant="secondary" className="justify-start">
+                    <Link href="/admin/support-tickets">
+                      <Ticket className="h-4 w-4 mr-2" /> Support Tickets
+                    </Link>
+                  </Button>
+                  <Button asChild variant="secondary" className="justify-start">
+                    <Link href="/admin/campaigns">
+                      <Target className="h-4 w-4 mr-2" /> Campaigns
+                    </Link>
+                  </Button>
+                  <Button asChild variant="secondary" className="justify-start">
+                    <Link href="/admin/users">
+                      <UserCog className="h-4 w-4 mr-2" /> Users
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
               {summaryCards.slice(0, 10).map((card) => {
                 const Icon = card.icon;
@@ -282,8 +383,14 @@ export default function AdminDashboardClient({
                           fontSize: 12,
                           fill: "hsl(var(--muted-foreground))",
                         }}
+                        tickFormatter={(value: number) => value.toString()}
                       />
-                      <Tooltip contentStyle={{ backgroundColor: "white", color: "black" }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "white",
+                          color: "black",
+                        }}
+                      />
                       <Line
                         type="monotone"
                         dataKey="count"
@@ -337,8 +444,14 @@ export default function AdminDashboardClient({
                           fontSize: 12,
                           fill: "hsl(var(--muted-foreground))",
                         }}
+                        tickFormatter={(value: number) => value.toString()}
                       />
-                      <Tooltip contentStyle={{ backgroundColor: "white", color: "black" }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "white",
+                          color: "black",
+                        }}
+                      />
                       <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                         {analytics.operations.orderStatusBreakdown.map(
                           (entry, index) => (
@@ -351,6 +464,136 @@ export default function AdminDashboardClient({
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Activity */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="h-5 w-5" /> Recent Orders
+                  </CardTitle>
+                  <CardDescription>
+                    Latest orders across all types
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {recentOrders.length === 0 ? (
+                    <div className="text-sm text-muted-foreground">
+                      No recent orders
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {recentOrders.map((o) => (
+                        <div
+                          key={o.id}
+                          className="flex items-start justify-between"
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="capitalize">
+                                {o.type}
+                              </Badge>
+                              <Badge
+                                className={getOrderStatusBadgeClass(o.status)}
+                              >
+                                {o.status}
+                              </Badge>
+                              <span className="text-xs text-muted-foreground font-mono">
+                                {o.id.slice(0, 8)}...
+                              </span>
+                            </div>
+                            <div className="text-sm text-foreground">
+                              {o.category} — {o.street}
+                              {o.street ? ", " : ""}
+                              {o.city}
+                            </div>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {formatRelativeTime(o.createdAt)}
+                          </div>
+                        </div>
+                      ))}
+                      <div className="pt-2">
+                        <Button asChild variant="outline" size="sm">
+                          <Link href="/admin/orders">View all orders</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageCircle className="h-5 w-5" /> Recent Tickets
+                  </CardTitle>
+                  <CardDescription>
+                    Latest support conversations
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {recentTickets.length === 0 ? (
+                    <div className="text-sm text-muted-foreground">
+                      No recent tickets
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {recentTickets.map((t) => (
+                        <div
+                          key={t.id}
+                          className="flex items-start justify-between"
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="capitalize">
+                                {t.user.role}
+                              </Badge>
+                              {t.unreadCount > 0 && (
+                                <Badge
+                                  variant="destructive"
+                                  className="text-xs"
+                                >
+                                  {t.unreadCount} new
+                                </Badge>
+                              )}
+                              <span className="text-xs text-muted-foreground">
+                                {t.user.firstname} {t.user.lastname}
+                              </span>
+                            </div>
+                            <div className="text-sm text-foreground max-w-[36ch] truncate">
+                              {t.content}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {t.messagesCount} messages
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="text-xs text-muted-foreground">
+                              {formatRelativeTime(
+                                t.lastActivityAt || t.createdAt
+                              )}
+                            </div>
+                            <Button asChild size="sm" variant="outline">
+                              <Link href={`/admin/support-tickets/${t.id}`}>
+                                Open
+                              </Link>
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="pt-2">
+                        <Button asChild variant="outline" size="sm">
+                          <Link href="/admin/support-tickets">
+                            View all tickets
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -392,7 +635,12 @@ export default function AdminDashboardClient({
                           fill: "hsl(var(--muted-foreground))",
                         }}
                       />
-                      <Tooltip contentStyle={{ backgroundColor: "white", color: "black" }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "white",
+                          color: "black",
+                        }}
+                      />
                       <Bar dataKey="order_count" radius={[4, 4, 0, 0]}>
                         {analytics.marketing.popularCategories.map(
                           (entry, index) => (
@@ -442,7 +690,12 @@ export default function AdminDashboardClient({
                           fill: "hsl(var(--muted-foreground))",
                         }}
                       />
-                      <Tooltip contentStyle={{ backgroundColor: "white", color: "black" }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "white",
+                          color: "black",
+                        }}
+                      />
                       <Bar dataKey="express_order_count" radius={[4, 4, 0, 0]}>
                         {analytics.marketing.expressCategoryUsage.map(
                           (entry, index) => (
@@ -495,14 +748,17 @@ export default function AdminDashboardClient({
                           fontSize: 12,
                           fill: "hsl(var(--muted-foreground))",
                         }}
-                        tickFormatter={(value) => formatCurrency(value)}
+                        tickFormatter={(value: number) => formatCurrency(value)}
                       />
                       <Tooltip
                         formatter={(value: number) => [
                           formatCurrency(value),
                           "Revenue",
                         ]}
-                        contentStyle={{ backgroundColor: "white", color: "black" }}
+                        contentStyle={{
+                          backgroundColor: "white",
+                          color: "black",
+                        }}
                       />
                       <Bar dataKey="revenue" radius={[4, 4, 0, 0]}>
                         {revenueData.map((entry, index) => (
@@ -522,7 +778,7 @@ export default function AdminDashboardClient({
                   .filter((card) => card.category === "finance")
                   .map((card) => {
                     const Icon = card.icon;
-                    
+
                     return (
                       <Card key={card.title}>
                         <CardContent className="p-6">
@@ -562,8 +818,8 @@ export default function AdminDashboardClient({
                         cx="50%"
                         cy="50%"
                         labelLine={true}
-                        label={({ role, percent }) =>
-                          `${role} (${(percent * 100).toFixed(0)}%)`
+                        label={(props: { role: string; percent: number }) =>
+                          `${props.role} (${(props.percent * 100).toFixed(0)}%)`
                         }
                         outerRadius={100}
                         fill="#8884d8"
@@ -578,7 +834,6 @@ export default function AdminDashboardClient({
                           )
                         )}
                       </Pie>
-                      
                     </PieChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -599,8 +854,10 @@ export default function AdminDashboardClient({
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ status, percent }) =>
-                          `${status} (${(percent * 100).toFixed(0)}%)`
+                        label={(props: { status: string; percent: number }) =>
+                          `${props.status} (${(props.percent * 100).toFixed(
+                            0
+                          )}%)`
                         }
                         outerRadius={100}
                         fill="#8884d8"
@@ -613,7 +870,12 @@ export default function AdminDashboardClient({
                           />
                         ))}
                       </Pie>
-                      <Tooltip contentStyle={{ backgroundColor: "white", color: "black" }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "white",
+                          color: "black",
+                        }}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -651,7 +913,12 @@ export default function AdminDashboardClient({
                             fill: "hsl(var(--muted-foreground))",
                           }}
                         />
-                        <Tooltip contentStyle={{ backgroundColor: "white", color: "black" }} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "white",
+                            color: "black",
+                          }}
+                        />
                         <Legend />
                         <Bar
                           dataKey="sent"

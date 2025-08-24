@@ -44,10 +44,19 @@ import {
   Calendar,
   MapPin,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
 import { cn } from "@/app/lib/utils";
-import { changeTicketCategory, changeTicketPriority, respondToSupportTicket, updateCustomerServiceTicket, updateCustomerServiceTicketStatus } from "@/app/lib/services/supportTicketService";
-import { GetAllAdminsResponse, GetCustomerServiceTicketResponse } from "@/app/lib/openapi-client";
+import {
+  changeTicketCategory,
+  changeTicketPriority,
+  respondToSupportTicket,
+  updateCustomerServiceTicket,
+  updateCustomerServiceTicketStatus,
+} from "@/app/lib/services/supportTicketService";
+import {
+  GetAllAdminsResponse,
+  GetCustomerServiceTicketResponse,
+} from "@/app/lib/openapi-client";
 import { useRouter } from "next/navigation";
 import AiSuggestions from "./AiSuggestions";
 import { toast } from "@/hooks/use-toast";
@@ -60,7 +69,7 @@ interface AdminTicketDetailProps {
   setTicket: (ticket: GetCustomerServiceTicketResponse["ticket"]) => void;
   setMessages: (messages: GetCustomerServiceTicketResponse["messages"]) => void;
   currentAdminId: string;
-  accessToken: string;  
+  accessToken: string;
   admins: GetAllAdminsResponse;
 }
 
@@ -91,27 +100,38 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
     try {
       await respondToSupportTicket(accessToken, ticket?.id, replyMessage);
       setReplyMessage("");
-      setMessages([...(messages || []), {
-        id: "new",
-        customerServiceTicketId: ticket.id,
-        message: replyMessage,
-        sender: "admin",
-        senderUserId: currentAdminId,
-        senderName: "Fiksaten tiimi",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }]);
+      setMessages([
+        ...(messages || []),
+        {
+          id: "new",
+          customerServiceTicketId: ticket.id,
+          message: replyMessage,
+          sender: "admin",
+          senderUserId: currentAdminId,
+          senderName: "Fiksaten tiimi",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ]);
     } finally {
       setIsReplying(false);
     }
   };
 
-  const handleStatusChange = async (newStatus: TicketStatus, assignToMe: boolean) => {
+  const handleStatusChange = async (
+    newStatus: TicketStatus,
+    assignToMe: boolean
+  ) => {
     if (isUpdatingStatus) return;
 
     setIsUpdatingStatus(true);
     try {
-      await updateCustomerServiceTicketStatus(accessToken, ticket?.id, newStatus, assignToMe);
+      await updateCustomerServiceTicketStatus(
+        accessToken,
+        ticket?.id,
+        newStatus,
+        assignToMe
+      );
       setTicket({ ...ticket, status: newStatus });
     } finally {
       setIsUpdatingStatus(false);
@@ -136,7 +156,11 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<
       string,
-      { variant: BadgeProps["variant"]; icon: LucideIcon; className: string }
+      {
+        variant: BadgeProps["variant"];
+        icon: ComponentType<any>;
+        className: string;
+      }
     > = {
       pending: {
         variant: "secondary",
@@ -284,7 +308,11 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" onClick={() => router.push("/admin/support-tickets")}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/admin/support-tickets")}
+          >
             <ArrowLeft className="h-4 w-4 mr-1" />
             Back to Tickets
           </Button>
@@ -308,7 +336,6 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
-        
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -375,7 +402,7 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
                 <div ref={messagesEndRef} />
               </div>
             </CardContent>
-        
+
             <CardContent>
               <div className="space-y-4">
                 <div>
@@ -410,20 +437,28 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
               </div>
             </CardContent>
           </Card>
-           <AiSuggestions
+          <AiSuggestions
             ticketId={ticket.id}
             accessToken={accessToken}
             onSuggestionAccepted={(suggestion) => {
-              if (suggestion.type === "SUGGESTED_ANSWER" && suggestion.contentMarkdown) {
+              if (
+                suggestion.type === "SUGGESTED_ANSWER" &&
+                suggestion.contentMarkdown
+              ) {
                 setReplyMessage(suggestion.contentMarkdown);
                 toast({
                   title: "Suggestion Applied",
-                  description: "AI suggestion has been added to your reply field",
+                  description:
+                    "AI suggestion has been added to your reply field",
                 });
               } else if (suggestion.type === "NEXT_STEPS") {
-                if (suggestion.contentMarkdown?.toLowerCase().includes("resolve")) {
+                if (
+                  suggestion.contentMarkdown?.toLowerCase().includes("resolve")
+                ) {
                   handleStatusChange("resolved", false);
-                } else if (suggestion.contentMarkdown?.toLowerCase().includes("close")) {
+                } else if (
+                  suggestion.contentMarkdown?.toLowerCase().includes("close")
+                ) {
                   handleStatusChange("closed", false);
                 }
               }
@@ -433,22 +468,36 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
                 title: "Category Suggestion",
                 description: `AI suggests category: ${category}`,
               });
-              const categoryMap: Record<string, "technical" | "billing" | "general" | "bug_report"> = { 
-                "technical": "technical",
-                "billing": "billing",
-                "general": "general",
-                "bug_report": "bug_report",
+              const categoryMap: Record<
+                string,
+                "technical" | "billing" | "general" | "bug_report"
+              > = {
+                technical: "technical",
+                billing: "billing",
+                general: "general",
+                bug_report: "bug_report",
               };
-              changeTicketCategory(accessToken, ticket.id, categoryMap[category as keyof typeof categoryMap]);
+              changeTicketCategory(
+                accessToken,
+                ticket.id,
+                categoryMap[category as keyof typeof categoryMap]
+              );
             }}
             onPrioritySuggestion={(priority) => {
-              const priorityMap: Record<string, "urgent" | "high" | "normal" | "low"> = { 
-                "urgent": "urgent",
-                "high": "high",
-                "normal": "normal",
-                "low": "low",
+              const priorityMap: Record<
+                string,
+                "urgent" | "high" | "normal" | "low"
+              > = {
+                urgent: "urgent",
+                high: "high",
+                normal: "normal",
+                low: "low",
               };
-              changeTicketPriority(accessToken, ticket.id, priorityMap[priority as keyof typeof priorityMap]);
+              changeTicketPriority(
+                accessToken,
+                ticket.id,
+                priorityMap[priority as keyof typeof priorityMap]
+              );
               toast({
                 title: "Priority Suggestion",
                 description: `AI suggests priority: ${priority}`,
@@ -463,7 +512,6 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
             }}
           />
         </div>
-        
 
         {/* Sidebar */}
         <div className="space-y-6">
@@ -479,7 +527,10 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
               <div className="flex items-center gap-3">
                 <Avatar className="h-12 w-12">
                   <AvatarFallback>
-                    {getInitials(ticket.user?.firstname || "", ticket.user?.lastname || "")}
+                    {getInitials(
+                      ticket.user?.firstname || "",
+                      ticket.user?.lastname || ""
+                    )}
                   </AvatarFallback>
                 </Avatar>
                 <div>
@@ -620,7 +671,12 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleStatusChange("resolved", ticket.assignedAdminId !== null)}
+                      onClick={() =>
+                        handleStatusChange(
+                          "resolved",
+                          ticket.assignedAdminId !== null
+                        )
+                      }
                       disabled={isUpdatingStatus}
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />
@@ -688,8 +744,6 @@ export const AdminTicketDetail: React.FC<AdminTicketDetailProps> = ({
               </div>
             </CardContent>
           </Card>
-
-         
         </div>
       </div>
     </div>

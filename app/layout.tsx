@@ -16,27 +16,23 @@ export const metadata: Metadata = {
   description: "Fiksaten",
 };
 
-export default async function RootLayout(
-  props: Readonly<{
-    children: React.ReactNode;
-    params: Promise<{ locale: string }>;
-  }>
-) {
-  const { locale } = await props.params;
-  const { children } = props;
-
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang={locale || "fi"} className={inter.className}>
-        <PostHogProvider>
-          <AuthProvider>
-            <ThemeProvider>
-              <body className={`${inter.className} antialiased`}>
-                <Toaster />
-                {children}
-              </body>
-            </ThemeProvider>
-          </AuthProvider>
-        </PostHogProvider>
+    <html lang={"fi"} className={inter.className}>
+      <PostHogProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <body className={`${inter.className} antialiased`}>
+              <Toaster />
+              {children}
+            </body>
+          </ThemeProvider>
+        </AuthProvider>
+      </PostHogProvider>
     </html>
   );
 }
