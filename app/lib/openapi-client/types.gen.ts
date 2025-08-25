@@ -3144,6 +3144,103 @@ export type GetContractorByOrderIdResponses = {
 
 export type GetContractorByOrderIdResponse = GetContractorByOrderIdResponses[keyof GetContractorByOrderIdResponses];
 
+export type GetContractorAnalyticsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/contractors/analytics';
+};
+
+export type GetContractorAnalyticsErrors = {
+    /**
+     * Analytics snapshot not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetContractorAnalyticsError = GetContractorAnalyticsErrors[keyof GetContractorAnalyticsErrors];
+
+export type GetContractorAnalyticsResponses = {
+    /**
+     * Contractor analytics fetched successfully
+     */
+    200: {
+        operations: {
+            totalOrders: number;
+            totalExpressOrders: number;
+            orderStatusBreakdown: Array<{
+                status: string;
+                count: number;
+            }>;
+            avgCompletionTime: number | null;
+            contractorApproval: Array<{
+                approvalStatus: string | null;
+                count: number;
+            }>;
+            avgOffersPerOrder: string | null;
+            citiesCovered: number;
+        };
+        marketing: {
+            userGrowth: Array<{
+                month: string;
+                count: number;
+            }>;
+            userRoleDistribution: Array<{
+                role: string;
+                count: number;
+            }>;
+            popularCategories: Array<{
+                name: string;
+                order_count: number;
+            }>;
+            expressCategoryUsage: Array<{
+                name: string;
+                express_order_count: number;
+            }>;
+            notificationStats: Array<{
+                type: string;
+                sent: number;
+                read: number;
+            }>;
+            repeatCustomers: number;
+        };
+        finance: {
+            totalRevenue: number;
+            outstandingPayments: number;
+            avgOrderValue: number;
+            revenueByCategory: Array<{
+                name: string;
+                revenue: string;
+            }>;
+        };
+        support: {
+            ticketVolume: Array<{
+                status: string;
+                count: number;
+            }>;
+            avgResolutionTime: number | null;
+            escalations: number;
+            reviewCount: number;
+        };
+        trends: {
+            userGrowth: number | null;
+        };
+        projections: {
+            nextMonthUserGrowth: number | null;
+        };
+    };
+};
+
+export type GetContractorAnalyticsResponse = GetContractorAnalyticsResponses[keyof GetContractorAnalyticsResponses];
+
 export type GetContractorChartDataData = {
     body?: never;
     path?: never;
@@ -6857,28 +6954,16 @@ export type GetDeletedUsersResponses = {
 
 export type GetDeletedUsersResponse = GetDeletedUsersResponses[keyof GetDeletedUsersResponses];
 
-export type GetLandingPageAnalyticsData = {
+export type GetAdminAnalyticsData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/admin/analytics/landing-page';
+    url: '/admin/analytics';
 };
 
-export type GetLandingPageAnalyticsErrors = {
+export type GetAdminAnalyticsErrors = {
     /**
-     * Bad request
-     */
-    400: {
-        message: string;
-    };
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Landing page analytics not found
+     * Analytics snapshot not found
      */
     404: {
         message: string;
@@ -6891,11 +6976,11 @@ export type GetLandingPageAnalyticsErrors = {
     };
 };
 
-export type GetLandingPageAnalyticsError = GetLandingPageAnalyticsErrors[keyof GetLandingPageAnalyticsErrors];
+export type GetAdminAnalyticsError = GetAdminAnalyticsErrors[keyof GetAdminAnalyticsErrors];
 
-export type GetLandingPageAnalyticsResponses = {
+export type GetAdminAnalyticsResponses = {
     /**
-     * Landing page analytics fetched successfully
+     * Admin analytics fetched successfully
      */
     200: {
         operations: {
@@ -6955,10 +7040,16 @@ export type GetLandingPageAnalyticsResponses = {
             escalations: number;
             reviewCount: number;
         };
+        trends: {
+            userGrowth: number | null;
+        };
+        projections: {
+            nextMonthUserGrowth: number | null;
+        };
     };
 };
 
-export type GetLandingPageAnalyticsResponse = GetLandingPageAnalyticsResponses[keyof GetLandingPageAnalyticsResponses];
+export type GetAdminAnalyticsResponse = GetAdminAnalyticsResponses[keyof GetAdminAnalyticsResponses];
 
 export type SendCustomNotificationToUserData = {
     body?: {
@@ -8830,5 +8921,5 @@ export type GetPublicCampaignsResponses = {
 export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
-    baseUrl: 'https://fiksaten-api-v2-1.onrender.com' | (string & {});
+    baseUrl: 'https://fiksaten-api-v2.onrender.com' | (string & {});
 };

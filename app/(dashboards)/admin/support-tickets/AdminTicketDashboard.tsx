@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -35,6 +35,7 @@ import {
   Users,
   Building2,
 } from "lucide-react";
+import type { ComponentType } from "react";
 import { cn } from "@/app/lib/utils";
 import { GetCustomerServiceTicketsResponse } from "@/app/lib/openapi-client";
 import { useRouter } from "next/navigation";
@@ -78,27 +79,37 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
   // Helper function to get admin name by ID
   const getAdminName = (adminId: string | null) => {
     if (!adminId) return null;
-    const admin = admins.find(a => a.id === adminId);
+    const admin = admins.find((a) => a.id === adminId);
     return admin ? `${admin.firstname} ${admin.lastname}` : adminId;
   };
 
   const stats = useMemo(() => {
     const total = ticketsResponse.tickets.length;
-    const pending = ticketsResponse.tickets.filter((t) => t.status === "pending").length;
+    const pending = ticketsResponse.tickets.filter(
+      (t) => t.status === "pending"
+    ).length;
     const open = ticketsResponse.tickets.filter(
       (t) => t.status === "seen" || t.status === "answered"
     ).length;
     const resolved = ticketsResponse.tickets.filter(
       (t) => t.status === "resolved" || t.status === "closed"
     ).length;
-    const unassigned = ticketsResponse.tickets.filter((t) => !t.assignedAdminId).length;
-    const urgent = ticketsResponse.tickets.filter((t) => t.priority === "urgent").length;
+    const unassigned = ticketsResponse.tickets.filter(
+      (t) => !t.assignedAdminId
+    ).length;
+    const urgent = ticketsResponse.tickets.filter(
+      (t) => t.priority === "urgent"
+    ).length;
 
     // Count tickets by admin
-    const adminStats = admins.map(admin => ({
-      admin,
-      count: ticketsResponse.tickets.filter(t => t.assignedAdminId === admin.id).length
-    })).filter(stat => stat.count > 0);
+    const adminStats = admins
+      .map((admin) => ({
+        admin,
+        count: ticketsResponse.tickets.filter(
+          (t) => t.assignedAdminId === admin.id
+        ).length,
+      }))
+      .filter((stat) => stat.count > 0);
 
     return { total, pending, open, resolved, unassigned, urgent, adminStats };
   }, [ticketsResponse, admins]);
@@ -116,7 +127,10 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
           );
         case "priority":
           const priorityOrder = { urgent: 4, high: 3, normal: 2, low: 1 };
-          return priorityOrder[b.priority as keyof typeof priorityOrder] - priorityOrder[a.priority as keyof typeof priorityOrder];
+          return (
+            priorityOrder[b.priority as keyof typeof priorityOrder] -
+            priorityOrder[a.priority as keyof typeof priorityOrder]
+          );
         case "status":
           return a.status.localeCompare(b.status);
         default:
@@ -130,7 +144,14 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
   };
 
   const getStatusBadge = (status: string) => {
-    const statusConfig = {
+    const statusConfig: Record<
+      string,
+      {
+        variant: BadgeProps["variant"];
+        icon: ComponentType<any>;
+        className: string;
+      }
+    > = {
       pending: {
         variant: "secondary",
         icon: Clock,
@@ -168,7 +189,7 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
     const Icon = config.icon;
 
     return (
-      <Badge variant={config.variant as any} className={config.className}>
+      <Badge variant={config.variant} className={config.className}>
         <Icon className="w-3 h-3 mr-1" />
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
@@ -176,7 +197,15 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
   };
 
   const getPriorityBadge = (priority: string | null) => {
-    if (!priority) return <Badge variant="outline" className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">Normal</Badge>;
+    if (!priority)
+      return (
+        <Badge
+          variant="outline"
+          className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+        >
+          Normal
+        </Badge>
+      );
     const priorityConfig = {
       urgent: {
         className: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
@@ -213,7 +242,15 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
   };
 
   const getCategoryBadge = (category: string | null) => {
-    if (!category) return <Badge variant="outline" className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">General</Badge>;
+    if (!category)
+      return (
+        <Badge
+          variant="outline"
+          className="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+        >
+          General
+        </Badge>
+      );
     const categoryConfig = {
       technical: {
         className:
@@ -473,7 +510,17 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
 
             <Select
               value={sortBy}
-              onValueChange={(value: any) => setSortBy(value)}
+              onValueChange={(value) => {
+                const allowed = [
+                  "newest",
+                  "oldest",
+                  "priority",
+                  "status",
+                ] as const;
+                if ((allowed as readonly string[]).includes(value)) {
+                  setSortBy(value as (typeof allowed)[number]);
+                }
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sort by" />
@@ -525,7 +572,9 @@ export const AdminTicketDashboard: React.FC<AdminTicketDashboardProps> = ({
                           "border-l-4 border-l-red-500",
                         ticket.isArchived && "opacity-60"
                       )}
-                      onClick={() => router.push(`/admin/support-tickets/${ticket.id}`)}
+                      onClick={() =>
+                        router.push(`/admin/support-tickets/${ticket.id}`)
+                      }
                     >
                       <TableCell>
                         <div className="space-y-1">

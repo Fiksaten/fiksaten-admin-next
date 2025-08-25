@@ -38,7 +38,7 @@ import {
   sendNotificationToAllConsumers,
   sendNotificationToAllContractors,
 } from "@/app/lib/services/notificationService";
-import { User } from "@/app/lib/types/userTypes";
+import { GetCurrentUserResponse as User } from "@/app/lib/openapi-client";
 
 interface Props {
   initialUsers: User[];

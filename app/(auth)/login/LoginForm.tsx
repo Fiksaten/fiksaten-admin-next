@@ -8,19 +8,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { FormInput } from "@/components/FormInput";
 
-const useLoginSchema = () => {
-  return yup.object().shape({
-    email: yup
-      .string()
-      .email("Invalid email")
-      .required("Email is required"),
-    password: yup
-      .string()
-      .required("Password is required"),
-  });
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const loginSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup.string().required("Password is required"),
@@ -35,7 +22,7 @@ export default function LoginForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: yupResolver(useLoginSchema()),
+    resolver: yupResolver(loginSchema),
     mode: "onBlur",
   });
 
@@ -93,9 +80,7 @@ export default function LoginForm() {
             <div className="flex mt-4 gap-1">
               <p>Don&apos;t have an account?</p>
               <Link href="/register" className="block text-center">
-                <span className="text-blue-500 underline">
-                  Register
-                </span>
+                <span className="text-blue-500 underline">Register</span>
               </Link>
             </div>
           </div>

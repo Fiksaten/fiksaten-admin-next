@@ -30,25 +30,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import { updateOrder, removeOrder } from "@/app/lib/services/orderService";
 import { useRouter, useSearchParams } from "next/navigation";
+import type { GetAllOrdersResponses } from "@/app/lib/openapi-client";
 
-interface OrderData {
-  express: any[];
-  campaign: any[];
-  normal: any[];
-  pagination: {
-    express: { total: number; page: number; limit: number; totalPages: number };
-    campaign: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
-    normal: { total: number; page: number; limit: number; totalPages: number };
-  };
-}
+type OrdersResponse = GetAllOrdersResponses[200];
+type OrderStatus =
+  | "pending"
+  | "accepted"
+  | "declined"
+  | "waitingForPayment"
+  | "done"
+  | "expired";
+type OrderType = "express" | "campaign" | "normal";
+type AnyOrder =
+  | OrdersResponse["express"][number]
+  | OrdersResponse["campaign"][number]
+  | OrdersResponse["normal"][number];
 
 interface Props {
-  initialOrders: OrderData;
+  initialOrders: OrdersResponse;
   accessToken: string;
   currentLimit: number;
 }
@@ -58,18 +57,20 @@ export default function AdminOrdersTable({
   accessToken,
   currentLimit,
 }: Props) {
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState<OrdersResponse>(initialOrders);
   const [open, setOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
-  const [form, setForm] = useState({ status: "" });
+  const [selectedOrder, setSelectedOrder] = useState<AnyOrder | null>(null);
+  const [form, setForm] = useState<{ status: OrderStatus } | { status: "" }>({
+    status: "",
+  });
   const [loading, setLoading] = useState(false);
   const [loadingId, setLoadingId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("express");
+  const [activeTab, setActiveTab] = useState<OrderType>("express");
 
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const openEdit = (order: any) => {
+  const openEdit = (order: AnyOrder) => {
     setSelectedOrder(order);
     setForm({ status: order.status });
     setOpen(true);
@@ -85,12 +86,14 @@ export default function AdminOrdersTable({
     if (!selectedOrder) return;
     setLoading(true);
     try {
-      await updateOrder(accessToken, selectedOrder.id, { status: form.status });
+      if (form.status === "") throw new Error("Please select a status");
+      await updateOrder(accessToken, selectedOrder.id, {
+        status: form.status as OrderStatus,
+      });
       // Update the order in the appropriate array
       setOrders((prev) => ({
         ...prev,
-        // @ts-ignore
-        [activeTab]: prev[activeTab].map((o: any) =>
+        [activeTab]: prev[activeTab].map((o) =>
           o.id === selectedOrder.id ? { ...o, status: form.status } : o
         ),
       }));
@@ -114,8 +117,7 @@ export default function AdminOrdersTable({
       await removeOrder(accessToken, orderId);
       setOrders((prev) => ({
         ...prev,
-        // @ts-ignore
-        [activeTab]: prev[activeTab].filter((o: any) => o.id !== orderId),
+        [activeTab]: prev[activeTab].filter((o) => o.id !== orderId),
       }));
       toast({ title: "Order deleted" });
     } catch (err) {
@@ -166,7 +168,7 @@ export default function AdminOrdersTable({
     router.push(`?${params.toString()}`);
   };
 
-  const renderPagination = (type: "express" | "campaign" | "normal") => {
+  const renderPagination = (type: OrderType) => {
     const pagination = orders.pagination[type];
     const totalPages = pagination.totalPages;
     const currentPage = pagination.page;
@@ -205,7 +207,7 @@ export default function AdminOrdersTable({
     );
   };
 
-  const renderOrderTable = (orders: any[], type: string) => {
+  const renderOrderTable = (orders: AnyOrder[], type: OrderType) => {
     if (!orders || orders.length === 0) {
       return (
         <div className="text-center py-8 text-gray-500">
@@ -238,17 +240,26 @@ export default function AdminOrdersTable({
                 </Badge>
               </TableCell>
               <TableCell>
-                {type === "campaign"
-                  ? order.categoryName
-                  : order.category?.name}
+                {"categoryName" in order
+                  ? (order as OrdersResponse["campaign"][number]).categoryName
+                  : (
+                      order as
+                        | OrdersResponse["express"][number]
+                        | OrdersResponse["normal"][number]
+                    ).category?.name}
               </TableCell>
               <TableCell>
                 <div className="text-sm">
                   <div>{order.orderStreet}</div>
                   <div className="text-gray-500">
-                    {type === "campaign"
-                      ? order.orderCityName
-                      : order.city?.cityName}
+                    {"orderCityName" in order
+                      ? (order as OrdersResponse["campaign"][number])
+                          .orderCityName
+                      : (
+                          order as
+                            | OrdersResponse["express"][number]
+                            | OrdersResponse["normal"][number]
+                        ).city?.cityName}
                   </div>
                 </div>
               </TableCell>
@@ -332,7 +343,10 @@ export default function AdminOrdersTable({
         </CardContent>
       </Card>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) => setActiveTab(v as OrderType)}
+      >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="express">
             Express Orders ({orders.pagination.express.total})
@@ -371,7 +385,9 @@ export default function AdminOrdersTable({
               <Label htmlFor="status">Status</Label>
               <Select
                 value={form.status}
-                onValueChange={(value) => setForm({ status: value })}
+                onValueChange={(value) =>
+                  setForm({ status: value as OrderStatus })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />

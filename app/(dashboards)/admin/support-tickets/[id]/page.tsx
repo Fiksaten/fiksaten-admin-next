@@ -28,7 +28,7 @@ export default async function TicketDetailPage({
         <TicketDetailContainer ticket={ticket} admins={admins.data || []} accessToken={accessToken} />
       </div>
     );
-  } catch (error) {
+  } catch {
     notFound();
   }
 }

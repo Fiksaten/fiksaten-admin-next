@@ -345,7 +345,9 @@ export const EditContractorDialog: React.FC<EditContractorDialogProps> = ({
               <Label htmlFor="status">Status</Label>
               <Select
                 value={watch("status")}
-                onValueChange={(value) => setValue("status", value as any)}
+                onValueChange={(value) =>
+                  setValue("status", value as EditContractorFormData["status"])
+                }
                 disabled={isSubmitting}
               >
                 <SelectTrigger>
@@ -357,6 +359,7 @@ export const EditContractorDialog: React.FC<EditContractorDialogProps> = ({
                   <SelectItem value="notInterested">Not Interested</SelectItem>
                   <SelectItem value="registered">Registered</SelectItem>
                 </SelectContent>
+                
               </Select>
               {errors.status && (
                 <p className="text-sm text-destructive">{errors.status.message}</p>
@@ -368,7 +371,12 @@ export const EditContractorDialog: React.FC<EditContractorDialogProps> = ({
             <Label htmlFor="assignedAdminId">Assigned Admin (Optional)</Label>
             <Select
               value={watch("assignedAdminId") || "none"}
-              onValueChange={(value) => setValue("assignedAdminId", value === "none" ? "" : value)}
+                onValueChange={(value) =>
+                  setValue(
+                    "assignedAdminId",
+                    value as EditContractorFormData["assignedAdminId"]
+                  )
+                }
               disabled={isSubmitting || isLoadingAdmins}
             >
               <SelectTrigger>

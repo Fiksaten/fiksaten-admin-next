@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { acceptReview, declineReview } from "@/app/lib/services/reviewService";
-import { Review } from "@/app/lib/types/reviewTypes";
+import { GetAllReviewsResponse } from "@/app/lib/openapi-client";
+
+type Review = GetAllReviewsResponse[number];
 
 interface Props {
   initialReviews: Review[];

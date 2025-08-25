@@ -3,8 +3,14 @@ import {
   updateCampaignOrder as updateCampaignOrderApi,
 } from "../openapi-client";
 import { resolveToken } from "./util";
+import type {
+  GetAllCampaignOrdersResponses,
+  UpdateCampaignOrderData,
+} from "../openapi-client";
 
-const getAllCampaignOrders = async (accessToken?: string) => {
+const getAllCampaignOrders = async (
+  accessToken?: string
+): Promise<GetAllCampaignOrdersResponses[200]> => {
   const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
@@ -23,12 +29,7 @@ const getAllCampaignOrders = async (accessToken?: string) => {
 const updateCampaignOrder = async (
   accessToken: string,
   orderId: string,
-  updateData: {
-    status: "pending" | "accepted" | "declined" | "done";
-    chosenDay?: string;
-    chosenStartTime?: string;
-    contractorId?: string;
-  }
+  updateData: UpdateCampaignOrderData["body"]
 ) => {
   const token = resolveToken(accessToken);
   if (!token) {

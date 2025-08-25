@@ -398,7 +398,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
 
             <Select
               value={sortBy}
-              onValueChange={(value: any) => setSortBy(value)}
+              onValueChange={(value) => {
+                const allowed = ["newest","oldest","name","email_status","status"] as const;
+                if ((allowed as readonly string[]).includes(value)) {
+                  setSortBy(value as (typeof allowed)[number]);
+                }
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sort by" />
