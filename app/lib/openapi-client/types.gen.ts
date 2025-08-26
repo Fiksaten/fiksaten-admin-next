@@ -7,6 +7,7 @@ export type RegisterData = {
         lastname: string;
         password: string;
         phoneNumber: string;
+        acceptsMarketing: boolean;
     };
     path?: never;
     query?: never;
@@ -59,6 +60,7 @@ export type RegisterResponses = {
             pushNotificationPermission: boolean | null;
             smsPermission: boolean | null;
             emailPermission: boolean | null;
+            acceptsMarketing: boolean;
             createdAt: string;
             updatedAt: string;
         };
@@ -674,6 +676,44 @@ export type CreateAvailableAreaRequestResponses = {
 
 export type CreateAvailableAreaRequestResponse = CreateAvailableAreaRequestResponses[keyof CreateAvailableAreaRequestResponses];
 
+export type ShhhData = {
+    body?: {
+        email: string;
+        cityName: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/shhh';
+};
+
+export type ShhhErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type ShhhError = ShhhErrors[keyof ShhhErrors];
+
+export type ShhhResponses = {
+    /**
+     * Available area request created
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type ShhhResponse = ShhhResponses[keyof ShhhResponses];
+
 export type DeleteCurrentUserData = {
     body?: never;
     path?: never;
@@ -765,6 +805,7 @@ export type GetCurrentUserResponses = {
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
+        acceptsMarketing: boolean;
         createdAt: string;
         updatedAt: string;
     };
@@ -778,7 +819,7 @@ export type UpdateCurrentUserData = {
         externalId?: string | null;
         firstname?: string | null;
         lastname?: string | null;
-        email: string;
+        email?: string;
         phoneNumber?: string | null;
         stripeCustomerId?: string | null;
         badgeCountOffers?: number;
@@ -789,6 +830,7 @@ export type UpdateCurrentUserData = {
         pushNotificationPermission?: boolean | null;
         smsPermission?: boolean | null;
         emailPermission?: boolean | null;
+        acceptsMarketing?: boolean;
     };
     path?: never;
     query?: never;
@@ -838,6 +880,7 @@ export type UpdateCurrentUserResponses = {
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
+        acceptsMarketing: boolean;
         createdAt: string;
         updatedAt: string;
     };
@@ -942,6 +985,7 @@ export type GetUserNotificationPermissionsResponses = {
         emailPermission: boolean | null;
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
+        acceptsMarketing: boolean | null;
     };
 };
 
@@ -952,6 +996,7 @@ export type UpdateCurrentUserPermissionsData = {
         emailPermission: boolean | null;
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
+        acceptsMarketing: boolean | null;
     };
     path?: never;
     query?: never;
@@ -989,140 +1034,11 @@ export type UpdateCurrentUserPermissionsResponses = {
         emailPermission: boolean | null;
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
+        acceptsMarketing: boolean | null;
     };
 };
 
 export type UpdateCurrentUserPermissionsResponse = UpdateCurrentUserPermissionsResponses[keyof UpdateCurrentUserPermissionsResponses];
-
-export type GetUserNotificationPreferencesData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/user/me/notification-preferences';
-};
-
-export type GetUserNotificationPreferencesErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Internal server error
-     */
-    500: {
-        message: string;
-    };
-};
-
-export type GetUserNotificationPreferencesError = GetUserNotificationPreferencesErrors[keyof GetUserNotificationPreferencesErrors];
-
-export type GetUserNotificationPreferencesResponses = {
-    /**
-     * User notification preferences retrieved successfully
-     */
-    200: {
-        preferences: {
-            [key: string]: {
-                pushEnabled: boolean;
-                emailEnabled: boolean;
-                smsEnabled: boolean;
-            };
-        };
-        generalPermissions: {
-            pushNotificationPermission: boolean;
-            emailPermission: boolean;
-            smsPermission: boolean;
-        };
-    };
-};
-
-export type GetUserNotificationPreferencesResponse = GetUserNotificationPreferencesResponses[keyof GetUserNotificationPreferencesResponses];
-
-export type UpdateUserNotificationPreferencesData = {
-    body?: {
-        preferences: Array<{
-            notificationType: string;
-            pushEnabled: boolean;
-            emailEnabled: boolean;
-            smsEnabled: boolean;
-        }>;
-    };
-    path?: never;
-    query?: never;
-    url: '/user/me/notification-preferences';
-};
-
-export type UpdateUserNotificationPreferencesErrors = {
-    /**
-     * Invalid request data
-     */
-    400: {
-        message: string;
-    };
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Internal server error
-     */
-    500: {
-        message: string;
-    };
-};
-
-export type UpdateUserNotificationPreferencesError = UpdateUserNotificationPreferencesErrors[keyof UpdateUserNotificationPreferencesErrors];
-
-export type UpdateUserNotificationPreferencesResponses = {
-    /**
-     * Notification preferences updated successfully
-     */
-    200: {
-        message: string;
-        updatedCount: number;
-    };
-};
-
-export type UpdateUserNotificationPreferencesResponse = UpdateUserNotificationPreferencesResponses[keyof UpdateUserNotificationPreferencesResponses];
-
-export type DisableAllNotificationsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/user/me/disable-all-notifications';
-};
-
-export type DisableAllNotificationsErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
-    /**
-     * Internal server error
-     */
-    500: {
-        message: string;
-    };
-};
-
-export type DisableAllNotificationsError = DisableAllNotificationsErrors[keyof DisableAllNotificationsErrors];
-
-export type DisableAllNotificationsResponses = {
-    /**
-     * All notifications disabled successfully
-     */
-    200: {
-        message: string;
-    };
-};
-
-export type DisableAllNotificationsResponse = DisableAllNotificationsResponses[keyof DisableAllNotificationsResponses];
 
 export type GetCurrentUserBadgesData = {
     body?: never;
@@ -1662,6 +1578,7 @@ export type GetUserByIdResponses = {
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
+        acceptsMarketing: boolean;
         createdAt: string;
         updatedAt: string;
     };
@@ -2414,6 +2331,7 @@ export type GetCurrentContractorDataResponses = {
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
+        acceptsMarketing: boolean;
         contractor: {
             userId: string;
             name: string;
@@ -2708,6 +2626,7 @@ export type GetOpenRequestsForContractorResponses = {
             phoneNumber: string | null;
             deletedAt: string | null;
             anonymizedAt: string | null;
+            acceptsMarketing: boolean;
         } | null;
     }>;
 };
@@ -2800,6 +2719,7 @@ export type GetContractorSentRequestsResponses = {
             phoneNumber: string | null;
             deletedAt: string | null;
             anonymizedAt: string | null;
+            acceptsMarketing: boolean;
         } | null;
     }>;
 };
@@ -2892,6 +2812,7 @@ export type GetContractorHistoryRequestsResponses = {
             phoneNumber: string | null;
             deletedAt: string | null;
             anonymizedAt: string | null;
+            acceptsMarketing: boolean;
         } | null;
     }>;
 };
@@ -2984,6 +2905,7 @@ export type GetContractorInProgressRequestsResponses = {
             phoneNumber: string | null;
             deletedAt: string | null;
             anonymizedAt: string | null;
+            acceptsMarketing: boolean;
         } | null;
     }>;
 };
@@ -3434,6 +3356,7 @@ export type GetOwnOrdersResponses = {
                 phoneNumber: string | null;
                 deletedAt: string | null;
                 anonymizedAt: string | null;
+                acceptsMarketing: boolean;
             };
         }>;
     };
@@ -3649,6 +3572,7 @@ export type GetOrderDetailsResponses = {
                 phoneNumber: string | null;
                 deletedAt: string | null;
                 anonymizedAt: string | null;
+                acceptsMarketing: boolean;
             };
             orderImages: Array<{
                 id: string;
@@ -3902,6 +3826,7 @@ export type GetOwnDraftOrdersResponses = {
                 phoneNumber: string | null;
                 deletedAt: string | null;
                 anonymizedAt: string | null;
+                acceptsMarketing: boolean;
             };
         }>;
     };
@@ -4659,6 +4584,7 @@ export type GetExpressOrderDetailsResponses = {
             phoneNumber: string | null;
             deletedAt: string | null;
             anonymizedAt: string | null;
+            acceptsMarketing: boolean;
         };
         qna: Array<{
             id: string;
@@ -6201,7 +6127,7 @@ export type GetNotificationsResponses = {
         title: string;
         message: string;
         read: boolean;
-        type: 'info' | 'newExpressOrder' | 'newOrder' | 'newOrderMoreInfoRequest' | 'newOrderMoreInfoRequestResponse' | 'newOrderMoreInfoRequestResponseImage' | 'expressOrderCompleted' | 'expressOrderCancelled' | 'expressOrderAccepted' | 'expressOrderWaitingForPayment' | 'supportTicketResponse' | 'supportTicketNew' | 'newContractorRating' | 'reviewDeclined' | 'contractorApproved' | 'contractorRejected' | 'contractorMoreInfoNeeded' | 'newContractor' | 'offerExpired' | 'newOffer' | 'offerAccepted' | 'orderCancelled' | 'orderReminder' | 'orderRescheduled' | 'offerWithdrawn' | 'orderDeadlineApproaching' | 'welcomeMessage' | 'inactiveUserReminder' | 'newFeaturesAvailable' | 'maintenanceNotification' | 'promotionalOffer' | 'reviewRequest' | 'reviewResponse' | 'disputeOpened' | 'disputeResolved' | 'qualityAssurance' | 'areaNowAvailable' | 'contractorAvailable' | 'serviceAreaExpanded' | 'ticketEscalated' | 'ticketResolved' | 'stripeAccountUpdated' | 'stripeConnectionNeeded' | 'campaignOrderUpdated';
+        type: 'info' | 'newExpressOrder' | 'newOrder' | 'newOrderMoreInfoRequest' | 'newOrderMoreInfoRequestResponse' | 'newOrderMoreInfoRequestResponseImage' | 'expressOrderCompleted' | 'expressOrderCancelled' | 'expressOrderAccepted' | 'expressOrderWaitingForPayment' | 'supportTicketResponse' | 'supportTicketNew' | 'newContractorRating' | 'reviewDeclined' | 'contractorApproved' | 'contractorRejected' | 'contractorMoreInfoNeeded' | 'newContractor' | 'offerExpired' | 'newOffer' | 'offerAccepted' | 'orderCancelled' | 'orderReminder' | 'orderRescheduled' | 'offerWithdrawn' | 'orderDeadlineApproaching' | 'welcomeMessage' | 'inactiveUserReminder' | 'newFeaturesAvailable' | 'maintenanceNotification' | 'promotionalOffer' | 'reviewRequest' | 'reviewResponse' | 'disputeOpened' | 'disputeResolved' | 'qualityAssurance' | 'areaNowAvailable' | 'contractorAvailable' | 'serviceAreaExpanded' | 'ticketEscalated' | 'ticketResolved' | 'stripeAccountUpdated' | 'stripeConnectionNeeded' | 'campaignOrderUpdated' | 'newExpressCategory' | 'newCategory';
         content: string | number | boolean | null | {
             [key: string]: unknown;
         } | Array<unknown>;
@@ -6891,6 +6817,7 @@ export type GetAllUsersResponses = {
             pushNotificationPermission: boolean | null;
             smsPermission: boolean | null;
             emailPermission: boolean | null;
+            acceptsMarketing: boolean;
             createdAt: string;
             updatedAt: string;
         }>;
@@ -6947,6 +6874,7 @@ export type GetDeletedUsersResponses = {
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
+        acceptsMarketing: boolean;
         createdAt: string;
         updatedAt: string;
     }>;
@@ -8168,6 +8096,7 @@ export type GetAllAdminsResponses = {
         pushNotificationPermission: boolean | null;
         smsPermission: boolean | null;
         emailPermission: boolean | null;
+        acceptsMarketing: boolean;
         createdAt: string;
         updatedAt: string;
     }>;
@@ -8664,6 +8593,7 @@ export type CreateExpressPaymentIntentResponses = {
                 phoneNumber: string | null;
                 deletedAt: string | null;
                 anonymizedAt: string | null;
+                acceptsMarketing: boolean;
             } | null;
         };
     };
@@ -8921,5 +8851,5 @@ export type GetPublicCampaignsResponses = {
 export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
-    baseUrl: 'https://fiksaten-api-v2.onrender.com' | (string & {});
+    baseUrl: 'https://fiksaten-api-v2-1.onrender.com' | (string & {});
 };
