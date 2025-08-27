@@ -1,20 +1,31 @@
 "use client";
 
-import * as React from "react";
 import {
   Building2,
   FileText,
   Home,
-  Settings,
-  Users,
-  Package,
-  MessageSquare,
   LogOut,
+  MessageSquare,
+  Package,
+  Settings,
+  Tag,
   User,
   UserX,
-  Tag,
+  Users,
 } from "lucide-react";
+import * as React from "react";
 
+import { useAuth } from "@/components/AuthProvider";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -27,17 +38,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { useAuth } from "@/components/AuthProvider";
 import { isSuperAdmin } from "@/lib/permissions";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -98,6 +98,11 @@ const data = {
     {
       title: "Reviews",
       url: "/admin/reviews",
+      icon: MessageSquare,
+    },
+    {
+      title: "Notifications",
+      url: "/admin/notifications",
       icon: MessageSquare,
     },
   ],

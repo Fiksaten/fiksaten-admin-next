@@ -1,10 +1,11 @@
 import {
-  updateCurrentUser,
-  requestAccountDeletion as requestAccountDeletionApi,
-  getAllUsers as getAllUsersApi,
-  getUserById as getUserByIdApi,
-  UpdateCurrentUserData,
   RequestAccountDeletionData,
+  UpdateCurrentUserData,
+  getAllUsers as getAllUsersApi,
+  getCurrentUser as getCurrentUserApi,
+  getUserById as getUserByIdApi,
+  requestAccountDeletion as requestAccountDeletionApi,
+  updateCurrentUser,
 } from "../openapi-client";
 import { resolveToken } from "./util";
 
@@ -100,4 +101,22 @@ const getUserById = async (accessToken: string | undefined, userId: string) => {
   return res.data;
 };
 
-export { updateUser, requestAccountDeletion, getAllUsers, getUserById };
+const getCurrentUser = async (accessToken: string | undefined) => {
+  const token =
+    resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
+  const res = await getCurrentUserApi({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (res.error) {
+    throw new Error(res.error.message);
+  }
+  return res.data;
+};
+
+export { getAllUsers, getCurrentUser, getUserById, requestAccountDeletion, updateUser };
+

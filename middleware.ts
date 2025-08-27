@@ -1,18 +1,17 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { getCurrentUser } from "./app/lib/services/userService";
 import { verifyToken } from "./lib/auth";
 import { isAdminRole } from "./lib/permissions";
 
 async function fetchUser(token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) {
+  try {
+    const res = await getCurrentUser(token);
+    return res;
+  } catch (error) {
+    console.error(error);
     return null;
   }
-  return res.json();
 }
 
 export default async function middleware(request: NextRequest) {

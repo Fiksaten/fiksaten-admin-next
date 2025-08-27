@@ -1,13 +1,14 @@
 import {
-  sendCustomNotificationToUser,
-  sendCustomNotificationToAllUsers,
-  sendCustomNotificationToAllConsumers,
-  sendCustomNotificationToAllContractors,
-  SendCustomNotificationToUserData,
-  SendCustomNotificationToAllUsersData,
   SendCustomNotificationToAllConsumersData,
   SendCustomNotificationToAllContractorsData,
+  SendCustomNotificationToAllUsersData,
+  SendCustomNotificationToUserData,
+  sendCustomNotificationToAllConsumers,
+  sendCustomNotificationToAllContractors,
+  sendCustomNotificationToAllUsers,
+  sendCustomNotificationToUser,
 } from "../openapi-client";
+import { client as openapiClient } from "../openapi-client/client.gen";
 import { resolveToken } from "./util";
 
 type SendNotificationToUserBody = SendCustomNotificationToUserData["body"];
@@ -97,9 +98,32 @@ const sendNotificationToAllContractors = async (
   return res.data;
 };
 
+
+type NotificationsInsights = {
+  totals: { sent: number; read: number; unread: number; readRate: number };
+  byType: Array<{ type: string; sent: number; read: number }>;
+  last30Days: Array<{ date: string; sent: number; read: number }>;
+  topUsersByUnread: Array<{ userId: string; email: string | null; unread: number }>;
+};
+
+const getNotificationsInsights = async (
+  accessToken?: string
+): Promise<NotificationsInsights> => {
+  const token = resolveToken(accessToken);
+  if (!token) throw new Error("No access token available");
+
+  const res = await openapiClient.get<NotificationsInsights, unknown>({
+    url: "/admin/notifications/insights",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if ((res as any).error) {
+    throw new Error((res as any).error.message ?? "Failed to fetch insights");
+  }
+  return (res as any).data ?? (res as any);
+};
+
+
 export {
-  sendNotificationToUser,
-  sendNotificationToAllUsers,
-  sendNotificationToAllConsumers,
-  sendNotificationToAllContractors,
+  getNotificationsInsights, sendNotificationToAllConsumers,
+  sendNotificationToAllContractors, sendNotificationToAllUsers, sendNotificationToUser, type NotificationsInsights
 };

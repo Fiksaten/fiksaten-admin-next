@@ -1,10 +1,20 @@
-import { getAllUsers } from "@/app/lib/services/userService";
 import { getaccessToken } from "@/app/lib/actions";
+import { getUsersInsights } from "@/app/lib/services/adminService";
+import { getAllUsers } from "@/app/lib/services/userService";
 import UserAdminTable from "./UserAdminTable";
+import UsersInsightsClient from "./ui/UsersInsightsClient";
 
 export default async function UsersPage() {
   const accessToken = await getaccessToken();
-  const usersData = await getAllUsers(accessToken);
+  const [usersData, insights] = await Promise.all([
+    getAllUsers(accessToken),
+    getUsersInsights(accessToken ?? undefined),
+  ]);
   const users = usersData?.users || [];
-  return <UserAdminTable initialUsers={users} accessToken={accessToken} />;
+  return (
+    <div className="space-y-6">
+      <UsersInsightsClient insights={insights} />
+      <UserAdminTable initialUsers={users} accessToken={accessToken} />
+    </div>
+  );
 }

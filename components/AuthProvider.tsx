@@ -1,19 +1,19 @@
 "use client";
 
 import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import {
-  getCurrentUser,
   GetCurrentUserResponse as User,
+  getCurrentUser,
 } from "@/app/lib/openapi-client";
 import { toast } from "@/hooks/use-toast";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 
 type Tokens = {
@@ -30,7 +30,6 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -43,7 +42,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // fetching user data
 
         const { data, error } = await getCurrentUser({
-          baseUrl: baseUrl,
           headers: { Authorization: `Bearer ${token}` },
           throwOnError: false,
         });

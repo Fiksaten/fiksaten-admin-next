@@ -7,7 +7,7 @@ export type RegisterData = {
         lastname: string;
         password: string;
         phoneNumber: string;
-        acceptsMarketing: boolean;
+        acceptsMarketing?: boolean;
     };
     path?: never;
     query?: never;
@@ -676,23 +676,16 @@ export type CreateAvailableAreaRequestResponses = {
 
 export type CreateAvailableAreaRequestResponse = CreateAvailableAreaRequestResponses[keyof CreateAvailableAreaRequestResponses];
 
-export type ShhhData = {
+export type EmailUnsubData = {
     body?: {
         email: string;
-        cityName: string;
     };
     path?: never;
     query?: never;
-    url: '/shhh';
+    url: '/email-unsub';
 };
 
-export type ShhhErrors = {
-    /**
-     * Unauthorized
-     */
-    401: {
-        message: string;
-    };
+export type EmailUnsubErrors = {
     /**
      * Internal server error
      */
@@ -701,18 +694,18 @@ export type ShhhErrors = {
     };
 };
 
-export type ShhhError = ShhhErrors[keyof ShhhErrors];
+export type EmailUnsubError = EmailUnsubErrors[keyof EmailUnsubErrors];
 
-export type ShhhResponses = {
+export type EmailUnsubResponses = {
     /**
-     * Available area request created
+     * Email unsubscribed
      */
     200: {
         message: string;
     };
 };
 
-export type ShhhResponse = ShhhResponses[keyof ShhhResponses];
+export type EmailUnsubResponse = EmailUnsubResponses[keyof EmailUnsubResponses];
 
 export type DeleteCurrentUserData = {
     body?: never;
@@ -8103,6 +8096,114 @@ export type GetAllAdminsResponses = {
 };
 
 export type GetAllAdminsResponse = GetAllAdminsResponses[keyof GetAllAdminsResponses];
+
+export type GetUsersInsightsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/users/insights';
+};
+
+export type GetUsersInsightsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+};
+
+export type GetUsersInsightsError = GetUsersInsightsErrors[keyof GetUsersInsightsErrors];
+
+export type GetUsersInsightsResponses = {
+    /**
+     * Users insights
+     */
+    200: {
+        totals: {
+            total: number;
+            admins: number;
+            contractors: number;
+            consumers: number;
+            activeThisMonth: number;
+        };
+        growthLast12: Array<{
+            month: string;
+            count: number;
+        }>;
+        roleBreakdown: Array<{
+            role: string;
+            count: number;
+        }>;
+        topEmailsByActivity: Array<{
+            email: string | null;
+            actions: number;
+        }>;
+    };
+};
+
+export type GetUsersInsightsResponse = GetUsersInsightsResponses[keyof GetUsersInsightsResponses];
+
+export type GetAdminNotificationsInsightsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/notifications/insights';
+};
+
+export type GetAdminNotificationsInsightsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Forbidden
+     */
+    403: {
+        message: string;
+    };
+};
+
+export type GetAdminNotificationsInsightsError = GetAdminNotificationsInsightsErrors[keyof GetAdminNotificationsInsightsErrors];
+
+export type GetAdminNotificationsInsightsResponses = {
+    /**
+     * Notifications insights
+     */
+    200: {
+        totals: {
+            sent: number;
+            read: number;
+            unread: number;
+            readRate: number;
+        };
+        byType: Array<{
+            type: string;
+            sent: number;
+            read: number;
+        }>;
+        last30Days: Array<{
+            date: string;
+            sent: number;
+            read: number;
+        }>;
+        topUsersByUnread: Array<{
+            userId: string;
+            email: string | null;
+            unread: number;
+        }>;
+    };
+};
+
+export type GetAdminNotificationsInsightsResponse = GetAdminNotificationsInsightsResponses[keyof GetAdminNotificationsInsightsResponses];
 
 export type GetCategoriesData = {
     body?: never;

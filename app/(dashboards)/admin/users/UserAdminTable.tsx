@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { GetCurrentUserResponse as User } from "@/app/lib/openapi-client";
 import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
+  sendNotificationToAllConsumers,
+  sendNotificationToAllContractors,
+  sendNotificationToAllUsers,
+  sendNotificationToUser,
+} from "@/app/lib/services/notificationService";
+import {
+  requestAccountDeletion,
+  updateUser,
+} from "@/app/lib/services/userService";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,9 +21,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -29,16 +29,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  updateUser,
-  requestAccountDeletion,
-} from "@/app/lib/services/userService";
-import {
-  sendNotificationToUser,
-  sendNotificationToAllUsers,
-  sendNotificationToAllConsumers,
-  sendNotificationToAllContractors,
-} from "@/app/lib/services/notificationService";
-import { GetCurrentUserResponse as User } from "@/app/lib/openapi-client";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
+import { useMemo, useState } from "react";
 
 interface Props {
   initialUsers: User[];
@@ -55,6 +55,15 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [form, setForm] = useState<Partial<User>>({});
   const [loading, setLoading] = useState(false);
+
+  // Filters
+  type RoleFilter = "all" | "admin" | "contractor" | "consumer";
+  type TimeframeFilter = "all" | "30d" | "90d" | "365d";
+  const [filters, setFilters] = useState<{ role: RoleFilter; timeframe: TimeframeFilter; search: string }>({
+    role: "all",
+    timeframe: "all",
+    search: "",
+  });
 
   // Notification form state
   const [notificationForm, setNotificationForm] = useState({
@@ -220,6 +229,48 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
     }
   };
 
+  // Derived filtered users
+  const filteredUsers = useMemo(() => {
+    const lowerSearch = filters.search.trim().toLowerCase();
+    const now = new Date();
+    let minDate: Date | null = null;
+    if (filters.timeframe === "30d") minDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    if (filters.timeframe === "90d") minDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    if (filters.timeframe === "365d") minDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+
+    return users
+      .filter((u) => {
+        // Role filter
+        if (filters.role !== "all" && u.role !== filters.role) return false;
+
+        // Timeframe filter (by createdAt)
+        if (minDate) {
+          const created = u.createdAt ? new Date(u.createdAt) : null;
+          if (!created || created < minDate) return false;
+        }
+
+        // Search filter (email, firstname, lastname, phone)
+        if (lowerSearch) {
+          const hay = [
+            u.email || "",
+            u.firstname || "",
+            u.lastname || "",
+            u.phoneNumber || "",
+          ]
+            .join(" ")
+            .toLowerCase();
+          if (!hay.includes(lowerSearch)) return false;
+        }
+
+        return true;
+      })
+      .sort((a, b) => {
+        const ad = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bd = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bd - ad;
+      });
+  }, [users, filters]);
+
   return (
     <div className="max-w-6xl mx-auto mt-8">
       <div className="flex justify-between items-center mb-4">
@@ -227,6 +278,63 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
         <Button onClick={() => openNotification()} variant="outline">
           Send Bulk Notification
         </Button>
+      </div>
+
+      {/* Filters */}
+      <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div>
+          <Label htmlFor="search">Search</Label>
+          <Input
+            id="search"
+            value={filters.search}
+            onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
+            placeholder="Name, email, phone"
+          />
+        </div>
+        <div>
+          <Label htmlFor="role">Role</Label>
+          <Select
+            value={filters.role}
+            onValueChange={(value: RoleFilter) => setFilters((f) => ({ ...f, role: value }))}
+          >
+            <SelectTrigger id="role">
+              <SelectValue placeholder="All roles" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="contractor">Contractor</SelectItem>
+              <SelectItem value="consumer">Consumer</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="timeframe">Created</Label>
+          <Select
+            value={filters.timeframe}
+            onValueChange={(value: TimeframeFilter) => setFilters((f) => ({ ...f, timeframe: value }))}
+          >
+            <SelectTrigger id="timeframe">
+              <SelectValue placeholder="Any time" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Any time</SelectItem>
+              <SelectItem value="30d">Last 30 days</SelectItem>
+              <SelectItem value="90d">Last 90 days</SelectItem>
+              <SelectItem value="365d">Last 12 months</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setFilters({ role: "all", timeframe: "all", search: "" })}
+          >
+            Reset
+          </Button>
+          <div className="text-sm text-muted-foreground ml-auto">{filteredUsers.length} / {users.length}</div>
+        </div>
       </div>
 
       <Table>
@@ -242,7 +350,7 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.firstname}</TableCell>
               <TableCell>{user.lastname}</TableCell>
