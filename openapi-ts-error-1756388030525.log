@@ -1,0 +1,10 @@
+[2025-08-28T13:33:50.525Z] Error: NEXT_PUBLIC_API_URL environment variable is not set
+Stack:
+Error: NEXT_PUBLIC_API_URL environment variable is not set
+    at /Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/openapi-ts.config.ts:9:9
+    at async Function.import (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/c12/node_modules/jiti/dist/jiti.cjs:1:199772)
+    at async resolveConfig (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/c12/dist/shared/c12.CLRr5qYj.cjs:360:18)
+    at async Object.loadConfig (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/c12/dist/shared/c12.CLRr5qYj.cjs:164:23)
+    at async Pm (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/dist/index.cjs:42:83043)
+    at async v$ (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/dist/index.cjs:1338:4492)
+    at async start (/Users/jonijuntto/koodaus/fiksaten/fiksaten-admin-next/node_modules/@hey-api/openapi-ts/bin/index.cjs:131:21)

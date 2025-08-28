@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
 import { InterestedContractorsService } from "@/app/lib/services/interestedContractors";
 import type {
-  InterestedContractor,
   ContractorFilters,
   CreateContractorRequest,
+  InterestedContractor,
   UpdateContractorRequest,
 } from "@/app/lib/types/interestedContractors";
+import { useCallback, useEffect, useState } from "react";
 
 interface UseContractorInterestOptions {
   initialPageSize?: number;
@@ -53,18 +53,34 @@ export function useContractorInterest(options: UseContractorInterestOptions = {}
     setError(null);
 
     try {
+      // Only send supported parameters to the API
       const params = {
         page: currentPage,
         limit: pageSize,
         search: debouncedSearch || undefined,
         emailStatus: filters.emailStatus !== "all" ? filters.emailStatus as "sent" | "not_sent" | "failed" : undefined,
-        status: filters.status !== "all" ? filters.status as "interested" | "registered" | "waitingForResponse" : undefined,
-        assignedAdmin: filters.assignedAdmin !== "all" ? filters.assignedAdmin as "all" | "assigned" | "unassigned" : undefined,
       };
 
       const response = await InterestedContractorsService.getContractors(params, accessToken);
       
-      setContractors(response.contractors as InterestedContractor[]);
+      // Apply client-side filtering for unsupported parameters
+      let filteredContractors = response.contractors as InterestedContractor[];
+      
+      // Filter by status
+      if (filters.status !== "all") {
+        filteredContractors = filteredContractors.filter(c => c.status === filters.status);
+      }
+      
+      // Filter by assigned admin
+      if (filters.assignedAdmin !== "all") {
+        if (filters.assignedAdmin === "assigned") {
+          filteredContractors = filteredContractors.filter(c => c.assignedAdminId);
+        } else if (filters.assignedAdmin === "unassigned") {
+          filteredContractors = filteredContractors.filter(c => !c.assignedAdminId);
+        }
+      }
+      
+      setContractors(filteredContractors);
       setTotalPages(response.pagination.totalPages);
       setTotalContractors(response.pagination.total);
     } catch (err) {
