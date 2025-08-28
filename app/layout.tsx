@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import { ThemeProvider } from "@/app/lib/themeProvider";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Toaster } from "@/components/ui/toaster";
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "@/app/lib/themeProvider";
-import PostHogProvider from "@/components/PostHogProvider";
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +22,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang={"fi"} className={inter.className}>
-      <PostHogProvider>
         <AuthProvider>
           <ThemeProvider>
             <body className={`${inter.className} antialiased`}>
@@ -32,7 +30,6 @@ export default function RootLayout({
             </body>
           </ThemeProvider>
         </AuthProvider>
-      </PostHogProvider>
     </html>
   );
 }

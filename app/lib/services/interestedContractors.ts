@@ -1,10 +1,10 @@
-import { 
-  sendWelcomeEmailsToContractors,
-  getInterestedContractors,
+import {
   createInterestedContractor,
-  updateInterestedContractor,
   deleteInterestedContractor,
-  postByIdRetryWelcomeEmail
+  getInterestedContractors,
+  postByIdRetryWelcomeEmail,
+  sendWelcomeEmailsToContractors,
+  updateInterestedContractor
 } from "../openapi-client";
 import type {
   CreateContractorRequest,
@@ -17,6 +17,8 @@ export interface GetContractorsParams {
   limit?: number;
   search?: string;
   emailStatus?: "sent" | "not_sent" | "failed";
+  status?: "waitingForResponse" | "interested" | "notInterested" | "registered";
+  assignedAdmin?: "assigned" | "unassigned";
 }
 
 export class InterestedContractorsService {
@@ -33,6 +35,8 @@ export class InterestedContractorsService {
     if (params.limit) query.limit = params.limit.toString();
     if (params.search) query.search = params.search;
     if (params.emailStatus) query.emailStatus = params.emailStatus;
+    if (params.status) query.status = params.status;
+    if (params.assignedAdmin) query.assignedAdmin = params.assignedAdmin;
 
     const response = await getInterestedContractors({
       query,

@@ -1,8 +1,26 @@
 "use client";
 
-import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { useMemo, useState } from "react";
 
+import type {
+  ContractorFilters,
+  InterestedContractor,
+} from "@/app/lib/types/interestedContractors";
+import { cn } from "@/app/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -13,38 +31,32 @@ import {
 } from "@/components/ui/select";
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
-  Search,
-  Filter,
+  AlertTriangle,
+  Building2,
   ChevronLeft,
   ChevronRight,
+  Clock,
+  Edit,
+  Filter,
+  Globe,
   Mail,
   MailCheck,
   MailX,
-  Users,
-  UserPlus,
-  Clock,
-  Edit,
-  Trash2,
+  Search,
   Send,
-  Building2,
-  Globe,
+  Trash2,
   UserCheck,
+  UserPlus,
+  Users,
 } from "lucide-react";
-import { cn } from "@/app/lib/utils";
 import { EmailStatusBadge } from "./EmailStatusBadge";
-import type {
-  InterestedContractor,
-  ContractorFilters,
-} from "@/app/lib/types/interestedContractors";
 
 interface ContractorInterestTableProps {
   contractors: InterestedContractor[];
@@ -85,7 +97,10 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
     "newest" | "oldest" | "name" | "email_status" | "status"
   >("newest");
 
-  // Statistics for dashboard overview
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const stats = useMemo(() => {
     const total = totalContractors;
     const emailSent = contractors.filter((c) => c.welcomeEmailSent).length;
@@ -97,7 +112,6 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
       return createdAt > dayAgo;
     }).length;
 
-    // Status-based statistics
     const waitingForResponse = contractors.filter((c) => c.status === "waitingForResponse").length;
     const interested = contractors.filter((c) => c.status === "interested").length;
     const notInterested = contractors.filter((c) => c.status === "notInterested").length;
@@ -120,7 +134,6 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
     };
   }, [contractors, totalContractors]);
 
-  // Sort contractors based on selected criteria
   const sortedContractors = useMemo(() => {
     return [...contractors].sort((a, b) => {
       switch (sortBy) {
@@ -131,15 +144,13 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
         case "name":
           return a.name.localeCompare(b.name);
         case "email_status":
-          // Sort by email status: failed, not sent, sent
           const getStatusPriority = (contractor: InterestedContractor) => {
-            if (!contractor.welcomeEmailSent && contractor.welcomeEmailError) return 3; // Failed
-            if (!contractor.welcomeEmailSent) return 2; // Not sent
-            return 1; // Sent
+            if (!contractor.welcomeEmailSent && contractor.welcomeEmailError) return 3;
+            if (!contractor.welcomeEmailSent) return 2;
+            return 1;
           };
           return getStatusPriority(b) - getStatusPriority(a);
         case "status":
-          // Sort by business status
           const statusOrder = { waitingForResponse: 1, interested: 2, notInterested: 3, registered: 4 };
           return statusOrder[a.status] - statusOrder[b.status];
         default:
@@ -197,9 +208,25 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
     return formatDate(dateString);
   };
 
+  const handlePasswordConfirm = () => {
+    if (password === "sekoiluonlopetettu") {
+      setPasswordError("");
+      setPassword("");
+      setShowPasswordDialog(false);
+      onSendWelcomeEmails();
+    } else {
+      setPasswordError("Incorrect password");
+    }
+  };
+
+  const handleDialogClose = () => {
+    setPassword("");
+    setPasswordError("");
+    setShowPasswordDialog(false);
+  };
+
   return (
     <div className="space-y-6">
-      {/* Dashboard Statistics */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Card>
           <CardContent className="p-4">
@@ -333,10 +360,69 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
               <Filter className="h-5 w-5" />
               Filters & Search
             </CardTitle>
-            <Button onClick={onSendWelcomeEmails} className="flex items-center gap-2">
-              <Send className="h-4 w-4" />
-              Send Welcome Emails
-            </Button>
+            <AlertDialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+              <AlertDialogTrigger asChild>
+                <Button onClick={() => setShowPasswordDialog(true)} className="flex items-center gap-2">
+                  <Send className="h-4 w-4" />
+                  Send Welcome Emails
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                    <AlertTriangle className="h-5 w-5" />
+                    Confirm Welcome Email Sending
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    <div className="space-y-3">
+                      <p className="text-red-600 font-medium">
+                        ⚠️ WARNING: You are about to send welcome emails to {stats.emailNotSent} contractors.
+                      </p>
+                      <p>
+                        This action will send welcome emails to all contractors who haven&apos;t received them yet. 
+                        Please enter the confirmation password to proceed.
+                      </p>
+                      <div className="space-y-2">
+                        <label htmlFor="password" className="text-sm font-medium">
+                          Confirmation Password:
+                        </label>
+                        <Input
+                          id="welcome-email-password"
+                          name="welcome-email-password"
+                          type="password"
+                          value={password}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (passwordError) setPasswordError("");
+                          }}
+                          placeholder="Enter password"
+                          className={passwordError ? "border-red-500" : ""}
+                          autoComplete="new-password"
+                          autoCorrect="off"
+                          autoCapitalize="off"
+                          data-form-type="other"
+                          data-lpignore="true"
+                        />
+                        {passwordError && (
+                          <p className="text-sm text-red-600">{passwordError}</p>
+                        )}
+                      </div>
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={handleDialogClose}>
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handlePasswordConfirm}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    Send Welcome Emails
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardHeader>
         <CardContent>
@@ -346,6 +432,8 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
               <Input
                 placeholder="Search by name or email..."
                 value={filters.search}
+                autoComplete="off"
+                autoCorrect="off"
                 onChange={(e) => handleFilterChange("search", e.target.value)}
                 className="pl-10"
               />

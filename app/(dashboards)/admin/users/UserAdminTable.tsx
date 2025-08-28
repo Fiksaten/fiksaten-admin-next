@@ -11,6 +11,17 @@ import {
   requestAccountDeletion,
   updateUser,
 } from "@/app/lib/services/userService";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +49,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
+import { AlertTriangle } from "lucide-react";
 import { useMemo, useState } from "react";
 
 interface Props {
@@ -55,6 +67,12 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [form, setForm] = useState<Partial<User>>({});
   const [loading, setLoading] = useState(false);
+
+  // Add password protection state
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [pendingNotificationAction, setPendingNotificationAction] = useState<"bulk" | "individual" | null>(null);
 
   // Filters
   type RoleFilter = "all" | "admin" | "contractor" | "consumer";
@@ -85,12 +103,25 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
     setForm({});
   };
 
+  // Modify the openNotification function to require password for bulk notifications
   const openNotification = (user?: User) => {
     if (user) {
+      // Individual user notification - no password required
       setSelectedUser(user);
       setNotificationForm((prev) => ({ ...prev, target: "user" }));
+      setNotificationOpen(true);
+    } else {
+      // Bulk notification - require password
+      setPendingNotificationAction("bulk");
+      setShowPasswordDialog(true);
     }
-    setNotificationOpen(true);
+  };
+
+  // Add a new function for individual notifications that requires password
+  const openIndividualNotificationWithPassword = (user: User) => {
+    setSelectedUser(user);
+    setPendingNotificationAction("individual");
+    setShowPasswordDialog(true);
   };
 
   const closeNotificationDialog = () => {
@@ -229,6 +260,37 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
     }
   };
 
+  const handlePasswordConfirm = () => {
+    if (password === "sekoiluonlopetettu") {
+      setPasswordError("");
+      setPassword("");
+      setShowPasswordDialog(false);
+
+      if (pendingNotificationAction === "bulk") {
+        openNotification();
+      } else if (pendingNotificationAction === "individual") {
+        if (selectedUser) {
+          openNotification(selectedUser);
+        }
+      }
+      setPendingNotificationAction(null);
+    } else {
+      setPasswordError("Incorrect password");
+      toast({
+        title: "Access Denied",
+        description: "Wrong password. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDialogClose = () => {
+    setPassword("");
+    setPasswordError("");
+    setShowPasswordDialog(false);
+    setPendingNotificationAction(null);
+  };
+
   // Derived filtered users
   const filteredUsers = useMemo(() => {
     const lowerSearch = filters.search.trim().toLowerCase();
@@ -275,9 +337,68 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
     <div className="max-w-6xl mx-auto mt-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Users</h2>
-        <Button onClick={() => openNotification()} variant="outline">
-          Send Bulk Notification
-        </Button>
+        <AlertDialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+          <AlertDialogTrigger asChild>
+            <Button onClick={() => setShowPasswordDialog(true)} variant="outline">
+              Send Bulk Notification
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                <AlertTriangle className="h-5 w-5" />
+                Confirm Bulk Notification
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                <div className="space-y-3">
+                  <p className="text-red-600 font-medium">
+                    ⚠️ WARNING: You are about to send a bulk notification to multiple users.
+                  </p>
+                  <p>
+                    This action will send notifications to all users, consumers, or contractors based on your selection. 
+                    Please enter the confirmation password to proceed.
+                  </p>
+                  <div className="space-y-2">
+                    <label htmlFor="bulk-notification-password" className="text-sm font-medium">
+                      Confirmation Password:
+                    </label>
+                    <Input
+                      id="bulk-notification-password"
+                      name="bulk-notification-password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (passwordError) setPasswordError("");
+                      }}
+                      placeholder="Enter password"
+                      className={passwordError ? "border-red-500" : ""}
+                      autoComplete="new-password"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      data-form-type="other"
+                      data-lpignore="true"
+                    />
+                    {passwordError && (
+                      <p className="text-sm text-red-600">{passwordError}</p>
+                    )}
+                  </div>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleDialogClose}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handlePasswordConfirm}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                Continue to Notification
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       {/* Filters */}
@@ -383,13 +504,72 @@ export default function UserAdminTable({ initialUsers, accessToken }: Props) {
                   >
                     Edit
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => openNotification(user)}
-                  >
-                    Notify
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openIndividualNotificationWithPassword(user)}
+                      >
+                        Notify
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                          <AlertTriangle className="h-5 w-5" />
+                          Confirm Individual Notification
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          <div className="space-y-3">
+                            <p className="text-red-600 font-medium">
+                              ⚠️ WARNING: You are about to send a notification to {user.email}.
+                            </p>
+                            <p>
+                              This action will send a notification to a specific user. 
+                              Please enter the confirmation password to proceed.
+                            </p>
+                            <div className="space-y-2">
+                              <label htmlFor="individual-notification-password" className="text-sm font-medium">
+                                Confirmation Password:
+                              </label>
+                              <Input
+                                id="individual-notification-password"
+                                name="individual-notification-password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => {
+                                  setPassword(e.target.value);
+                                  if (passwordError) setPasswordError("");
+                                }}
+                                placeholder="Enter password"
+                                className={passwordError ? "border-red-500" : ""}
+                                autoComplete="new-password"
+                                autoCorrect="off"
+                                autoCapitalize="off"
+                                data-form-type="other"
+                                data-lpignore="true"
+                              />
+                              {passwordError && (
+                                <p className="text-sm text-red-600">{passwordError}</p>
+                              )}
+                            </div>
+                          </div>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel onClick={handleDialogClose}>
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handlePasswordConfirm}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          Continue to Notification
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                   <Button
                     size="sm"
                     variant="destructive"

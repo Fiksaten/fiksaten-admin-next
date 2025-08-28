@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const baseUrl = "https://fiksaten-api-v2.onrender.com";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 if (!baseUrl) {
   throw new Error("NEXT_PUBLIC_API_URL environment variable is not set");
