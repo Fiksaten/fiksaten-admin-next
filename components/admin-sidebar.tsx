@@ -5,6 +5,7 @@ import {
   FileText,
   Home,
   LogOut,
+  MapPin,
   MessageSquare,
   Package,
   Settings,
@@ -89,6 +90,16 @@ const data = {
       title: "Categories",
       url: "/admin/categories",
       icon: FileText,
+    },
+    {
+      title: "City Categories",
+      url: "/admin/city-categories",
+      icon: MapPin,
+    },
+    {
+      title: "Available Area Requests",
+      url: "/admin/available-area-requests",
+      icon: MapPin,
     },
     {
       title: "Campaigns",

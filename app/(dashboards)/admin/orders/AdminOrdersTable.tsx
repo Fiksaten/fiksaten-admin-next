@@ -1,15 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import type { GetAllOrdersResponses } from "@/app/lib/openapi-client";
+import { removeOrder, updateOrder } from "@/app/lib/services/orderService";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -24,13 +19,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
-import { updateOrder, removeOrder } from "@/app/lib/services/orderService";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { GetAllOrdersResponses } from "@/app/lib/openapi-client";
+import { useState } from "react";
 
 type OrdersResponse = GetAllOrdersResponses[200];
 type OrderStatus =
@@ -266,6 +266,13 @@ export default function AdminOrdersTable({
               <TableCell>{formatDate(order.createdAt)}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => router.push(`/admin/orders/${type}/${order.id}`)}
+                  >
+                    View Details
+                  </Button>
                   <Button
                     size="sm"
                     variant="outline"

@@ -1,19 +1,21 @@
+import Cookies from "js-cookie";
+import { getaccessToken } from "../actions";
 import {
-  approveContractor as approveContractorApi,
-  declineContractor as declineContractorApi,
-  chooseCategoriesAsContractor,
-  updateCurrentContractorData as updateCurrentContractorDataApi,
-  contractorJoinRequest as requestJoinContractorApi,
-  getAllContractorJoinRequests as getAllContractorJoinRequestsApi,
-  getContractor as getContractorDataApi,
-  getCurrentContractorData as getCurrentContractorDataApi,
-  UpdateCurrentContractorDataData,
   ContractorJoinRequestData,
   GetCurrentContractorDataResponse,
+  UpdateCurrentContractorDataData,
+  approveContractor as approveContractorApi,
+  chooseCategoriesAsContractor,
+  declineContractor as declineContractorApi,
+  getAllContractorJoinRequests as getAllContractorJoinRequestsApi,
+  getAllContractors as getAllContractorsApi,
+  getContractor as getContractorDataApi,
+  getContractorDetails as getContractorDetailsApi,
+  getCurrentContractorData as getCurrentContractorDataApi,
+  contractorJoinRequest as requestJoinContractorApi,
+  updateCurrentContractorData as updateCurrentContractorDataApi,
 } from "../openapi-client";
-import Cookies from "js-cookie";
 import { resolveToken } from "./util";
-import { getaccessToken } from "../actions";
 
 type ContractorUpdateBody = NonNullable<UpdateCurrentContractorDataData["body"]>;
 type ContractorJoinRequestBody = NonNullable<ContractorJoinRequestData["body"]>;
@@ -183,13 +185,43 @@ const getCurrentContractorData = async (accessToken?: string) => {
   return res.data as CurrentContractorResponse;
 };
 
-export {
-  approveContractor,
-  declineContractor,
-  chooseCategories,
-  updateCurrentContractorData,
-  requestJoinContractor,
-  getAllContractorJoinRequests,
-  getContractorData,
-  getCurrentContractorData,
+const getAllContractors = async (accessToken?: string) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
+  const res = await getAllContractorsApi({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (res.error) {
+    throw new Error(res.error.message);
+  }
+  return res.data;
 };
+
+const getContractorDetails = async (accessToken: string, contractorId: string) => {
+  const token = resolveToken(accessToken);
+  if (!token) {
+    throw new Error("No access token available");
+  }
+  const res = await getContractorDetailsApi({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    path: {
+      contractorId,
+    },
+  });
+  console.log(res);
+  if (res.error) {
+    throw new Error(res.error.message);
+  }
+  return res.data;
+};
+
+export {
+  approveContractor, chooseCategories, declineContractor, getAllContractorJoinRequests, getAllContractors, getContractorData, getContractorDetails, getCurrentContractorData, requestJoinContractor, updateCurrentContractorData
+};
+

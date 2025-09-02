@@ -505,6 +505,77 @@ export type GetCategoriesWithContractorsInCityResponses = {
 
 export type GetCategoriesWithContractorsInCityResponse = GetCategoriesWithContractorsInCityResponses[keyof GetCategoriesWithContractorsInCityResponses];
 
+export type GetCategoriesWithContractorDetailsInCityData = {
+    body?: never;
+    path: {
+        cityId: string;
+    };
+    query?: never;
+    url: '/cities/{cityId}/categories/details';
+};
+
+export type GetCategoriesWithContractorDetailsInCityErrors = {
+    /**
+     * Bad request - Invalid city ID
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * City not found or no categories with contractors
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetCategoriesWithContractorDetailsInCityError = GetCategoriesWithContractorDetailsInCityErrors[keyof GetCategoriesWithContractorDetailsInCityErrors];
+
+export type GetCategoriesWithContractorDetailsInCityResponses = {
+    /**
+     * Categories with contractor details fetched successfully
+     */
+    200: Array<{
+        category: {
+            id: string;
+            name: string;
+            imageUrl: string;
+            description: string | null;
+            express: boolean;
+            expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        contractors: Array<{
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            phoneNumber: string | null;
+        }>;
+    }>;
+};
+
+export type GetCategoriesWithContractorDetailsInCityResponse = GetCategoriesWithContractorDetailsInCityResponses[keyof GetCategoriesWithContractorDetailsInCityResponses];
+
 export type GetExpressCategoriesData = {
     body?: never;
     path?: never;
@@ -8039,6 +8110,303 @@ export type GetAllOrdersResponses = {
 
 export type GetAllOrdersResponse = GetAllOrdersResponses[keyof GetAllOrdersResponses];
 
+export type GetAdminOrderDetailsData = {
+    body?: never;
+    path: {
+        orderId: string;
+    };
+    query?: never;
+    url: '/admin/orders/{orderId}';
+};
+
+export type GetAdminOrderDetailsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAdminOrderDetailsError = GetAdminOrderDetailsErrors[keyof GetAdminOrderDetailsErrors];
+
+export type GetAdminOrderDetailsResponses = {
+    /**
+     * Order details retrieved successfully
+     */
+    200: {
+        order: {
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            categoryId: string | null;
+            description: string | null;
+            budget: number | null;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            locationMoreInfo: string | null;
+            paymentIntentId: string | null;
+            offersCount: number;
+            doneAt: string | null;
+            isDraft: boolean;
+            draftStage: number;
+            receiptUrl: string | null;
+            createdAt: string;
+            updatedAt: string;
+            category: {
+                id: string;
+                name: string;
+                imageUrl: string | null;
+                description: string | null;
+                express: boolean;
+                expressPrice: string | null;
+                maxPrice: string | null;
+                platformFee: string | null;
+                hasNeededToolsAffectsPrice: boolean;
+                hasNeededToolsPriceFactor: string | null;
+                requiresCertification: boolean;
+                certificationId: string | null;
+            };
+            city: {
+                id: string;
+                cityName: string;
+            };
+            user: {
+                id: string;
+                firstname: string | null;
+                lastname: string | null;
+                email: string;
+                phoneNumber: string | null;
+                deletedAt: string | null;
+                anonymizedAt: string | null;
+                acceptsMarketing: boolean;
+            };
+            orderImages: Array<{
+                id: string;
+                orderId: string | null;
+                imageUrl: string;
+            } | null>;
+            moreInfoRequest: {
+                id: string;
+                orderId: string;
+                contractorId: string;
+                status: string;
+                userId: string;
+                inquiry: string;
+            } | null;
+            moreInfoRequestResponses: Array<{
+                id: string;
+                orderMoreInfoRequestId: string;
+                response: string;
+                userId: string;
+                contractorId: string;
+            }>;
+            offers: Array<{
+                id: string;
+                orderId: string;
+                contractorId: string;
+                categoryId: string;
+                date: string | null;
+                startTime: string | null;
+                endTime: string | null;
+                offerPrice: string | null;
+                materialCost: string | null;
+                offerDescription: string | null;
+                status: 'pending' | 'accepted' | 'declined';
+            }>;
+        };
+    };
+};
+
+export type GetAdminOrderDetailsResponse = GetAdminOrderDetailsResponses[keyof GetAdminOrderDetailsResponses];
+
+export type GetAdminExpressOrderDetailsData = {
+    body?: never;
+    path: {
+        orderId: string;
+    };
+    query?: never;
+    url: '/admin/orders/express/{orderId}/details';
+};
+
+export type GetAdminExpressOrderDetailsErrors = {
+    /**
+     * Express order not found
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Express order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAdminExpressOrderDetailsError = GetAdminExpressOrderDetailsErrors[keyof GetAdminExpressOrderDetailsErrors];
+
+export type GetAdminExpressOrderDetailsResponses = {
+    /**
+     * Express order details retrieved successfully
+     */
+    200: {
+        id: string;
+        userId: string;
+        contractorId: string | null;
+        categoryId: string;
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+        paymentIntentId: string | null;
+        completionCode: string | null;
+        orderStreet: string | null;
+        orderCity: string | null;
+        orderZip: string | null;
+        startTime: string;
+        endTime: string;
+        weekdays: Array<string | null> | null;
+        chosenDay: string | null;
+        chosenStartTime: string | null;
+        doneAt: string | null;
+        userHasNeededTools: boolean;
+        receiptUrl: string | null;
+        createdAt: string;
+        updatedAt: string;
+        category: {
+            id: string;
+            name: string;
+            imageUrl: string | null;
+            description: string | null;
+            express: boolean;
+            expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
+        };
+        city: {
+            id: string;
+            cityName: string;
+        };
+        user: {
+            id: string;
+            firstname: string | null;
+            lastname: string | null;
+            email: string;
+            phoneNumber: string | null;
+            deletedAt: string | null;
+            anonymizedAt: string | null;
+            acceptsMarketing: boolean;
+        };
+        qna: Array<{
+            id: string;
+            expressOrderId: string;
+            questionId: string;
+            answer: string;
+            question: {
+                id: string;
+                categoryId: string;
+                questionText: string;
+                pickerType: 'DROPDOWN' | 'TEXTFIELD' | 'TEXTAREA' | 'SWITCH';
+                options: Array<string | null> | null;
+                affectsPrice: boolean;
+                priceFactors: string | number | boolean | null | {
+                    [key: string]: unknown;
+                } | Array<unknown>;
+            };
+        }>;
+    };
+};
+
+export type GetAdminExpressOrderDetailsResponse = GetAdminExpressOrderDetailsResponses[keyof GetAdminExpressOrderDetailsResponses];
+
+export type GetAdminCampaignOrderDetailsData = {
+    body?: never;
+    path: {
+        campaignOrderId: string;
+    };
+    query?: never;
+    url: '/admin/orders/campaign/{campaignOrderId}';
+};
+
+export type GetAdminCampaignOrderDetailsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Campaign order not found
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAdminCampaignOrderDetailsError = GetAdminCampaignOrderDetailsErrors[keyof GetAdminCampaignOrderDetailsErrors];
+
+export type GetAdminCampaignOrderDetailsResponses = {
+    /**
+     * Campaign order details retrieved successfully
+     */
+    200: {
+        id: string;
+        userId: string;
+        contractorId: string | null;
+        campaignCodeCategoryId: string;
+        status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+        orderStreet: string | null;
+        orderCity: string | null;
+        orderZip: string | null;
+        startTime: string;
+        endTime: string;
+        weekdays: Array<string | null> | null;
+        chosenDay: string | null;
+        chosenStartTime: string | null;
+        doneAt: string | null;
+        createdAt: string;
+        updatedAt: string;
+        categoryName: string;
+        orderCityName: string;
+    };
+};
+
+export type GetAdminCampaignOrderDetailsResponse = GetAdminCampaignOrderDetailsResponses[keyof GetAdminCampaignOrderDetailsResponses];
+
 export type GetAllAdminsData = {
     body?: never;
     path?: never;
@@ -8204,6 +8572,307 @@ export type GetAdminNotificationsInsightsResponses = {
 };
 
 export type GetAdminNotificationsInsightsResponse = GetAdminNotificationsInsightsResponses[keyof GetAdminNotificationsInsightsResponses];
+
+export type GetAllContractorsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/contractors';
+};
+
+export type GetAllContractorsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAllContractorsError = GetAllContractorsErrors[keyof GetAllContractorsErrors];
+
+export type GetAllContractorsResponses = {
+    /**
+     * Contractors fetched successfully
+     */
+    200: Array<{
+        userId: string;
+        name: string;
+        description: string;
+        website: string | null;
+        email: string;
+        phone: string;
+        addressStreet: string | null;
+        addressDetail: string | null;
+        addressZip: string | null;
+        addressCountry: string | null;
+        imageUrl: string | null;
+        reviewAverage: string | null;
+        reviewCount: number | null;
+        businessId: string | null;
+        businessType: string | null;
+        headerImageUrl: string | null;
+        stripeConnectAccountId: string | null;
+        stripeConnected: boolean;
+        iban: string | null;
+        bic: string | null;
+        stripeAccountId: string | null;
+        approvalStatus: string | null;
+        createdAt: string;
+        updatedAt: string;
+    }>;
+};
+
+export type GetAllContractorsResponse = GetAllContractorsResponses[keyof GetAllContractorsResponses];
+
+export type GetContractorDetailsData = {
+    body?: never;
+    path: {
+        contractorId: string;
+    };
+    query?: never;
+    url: '/admin/contractors/{contractorId}';
+};
+
+export type GetContractorDetailsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetContractorDetailsError = GetContractorDetailsErrors[keyof GetContractorDetailsErrors];
+
+export type GetContractorDetailsResponses = {
+    /**
+     * Contractor details fetched successfully
+     */
+    200: {
+        userId: string;
+        name: string;
+        description: string;
+        website: string | null;
+        email: string;
+        phone: string;
+        addressStreet: string | null;
+        addressDetail: string | null;
+        addressZip: string | null;
+        addressCountry: string | null;
+        imageUrl: string | null;
+        reviewAverage: string | null;
+        reviewCount: number | null;
+        businessId: string | null;
+        businessType: string | null;
+        headerImageUrl: string | null;
+        stripeConnectAccountId: string | null;
+        stripeConnected: boolean;
+        iban: string | null;
+        bic: string | null;
+        stripeAccountId: string | null;
+        approvalStatus: string | null;
+        createdAt: string;
+        updatedAt: string;
+        user: {
+            id: string;
+            externalId: string | null;
+            firstname: string | null;
+            lastname: string | null;
+            email: string;
+            phoneNumber: string | null;
+            stripeCustomerId: string | null;
+            badgeCountOffers: number;
+            badgeCountMessages: number;
+            role: 'consumer' | 'admin' | 'contractor' | 'deleted';
+            deletedAt: string | null;
+            anonymizedAt: string | null;
+            pushNotificationPermission: boolean | null;
+            smsPermission: boolean | null;
+            emailPermission: boolean | null;
+            acceptsMarketing: boolean;
+            createdAt: string;
+            updatedAt: string;
+        };
+        reviews: Array<{
+            id: string;
+            userId: string;
+            contractorId: string;
+            orderId: string | null;
+            expressOrderId: string | null;
+            accepted: boolean;
+            starRating: number;
+            reviewTitle: string;
+            review: string;
+            createdAt: string;
+            updatedAt: string;
+        }> | null;
+        cities: Array<{
+            id: string;
+            cityName: string;
+            createdAt: string;
+            updatedAt: string;
+        }> | null;
+        categories: Array<{
+            id: string;
+            name: string;
+            imageUrl: string | null;
+            description: string | null;
+            express: boolean;
+            expressPrice: string | null;
+            maxPrice: string | null;
+            platformFee: string | null;
+            hasNeededToolsAffectsPrice: boolean;
+            hasNeededToolsPriceFactor: string | null;
+            requiresCertification: boolean;
+            certificationId: string | null;
+            createdAt: string;
+            updatedAt: string;
+        }> | null;
+        orders: Array<{
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            categoryId: string | null;
+            description: string | null;
+            budget: number | null;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            locationMoreInfo: string | null;
+            paymentIntentId: string | null;
+            offersCount: number;
+            doneAt: string | null;
+            isDraft: boolean;
+            draftStage: number;
+            receiptUrl: string | null;
+            createdAt: string;
+            updatedAt: string;
+        }> | null;
+        expressOrders: Array<{
+            id: string;
+            userId: string;
+            contractorId: string | null;
+            categoryId: string;
+            status: 'pending' | 'accepted' | 'declined' | 'waitingForPayment' | 'done' | 'expired';
+            paymentIntentId: string | null;
+            completionCode: string | null;
+            orderStreet: string | null;
+            orderCity: string | null;
+            orderZip: string | null;
+            startTime: string;
+            endTime: string;
+            weekdays: Array<string | null> | null;
+            chosenDay: string | null;
+            chosenStartTime: string | null;
+            doneAt: string | null;
+            userHasNeededTools: boolean;
+            receiptUrl: string | null;
+            createdAt: string;
+            updatedAt: string;
+        }> | null;
+        offers: Array<{
+            id: string;
+            orderId: string;
+            contractorId: string;
+            categoryId: string;
+            date: string | null;
+            startTime: string | null;
+            endTime: string | null;
+            offerPrice: string | null;
+            materialCost: string | null;
+            offerDescription: string | null;
+            status: 'pending' | 'accepted' | 'declined';
+            createdAt: string;
+            updatedAt: string;
+        }> | null;
+        notificationsCount: number | null;
+        interestedContractorsStatus: Array<{
+            id: string;
+            name: string;
+            email: string;
+            phoneNumber: string | null;
+            businessId: string | null;
+            welcomeEmailSent: boolean;
+            welcomeEmailSentAt: string | null;
+            welcomeEmailError: string | null;
+            notes: string | null;
+            website: string | null;
+            status: 'waitingForResponse' | 'interested' | 'notInterested' | 'registered';
+            assignedAdminId: string | null;
+            createdAt: string;
+            updatedAt: string;
+        }> | null;
+    };
+};
+
+export type GetContractorDetailsResponse = GetContractorDetailsResponses[keyof GetContractorDetailsResponses];
+
+export type GetAllAvailableAreaRequestsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/available-area-requests';
+};
+
+export type GetAllAvailableAreaRequestsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetAllAvailableAreaRequestsError = GetAllAvailableAreaRequestsErrors[keyof GetAllAvailableAreaRequestsErrors];
+
+export type GetAllAvailableAreaRequestsResponses = {
+    /**
+     * Available area requests fetched successfully
+     */
+    200: Array<{
+        id: string;
+        email: string;
+        cityId: string | null;
+        notFoundCity: string | null;
+        status: string;
+        createdAt: string;
+        updatedAt: string;
+    }>;
+};
+
+export type GetAllAvailableAreaRequestsResponse = GetAllAvailableAreaRequestsResponses[keyof GetAllAvailableAreaRequestsResponses];
 
 export type GetCategoriesData = {
     body?: never;
@@ -8431,6 +9100,68 @@ export type GetCitiesWithContractorsForCategoryResponses = {
 };
 
 export type GetCitiesWithContractorsForCategoryResponse = GetCitiesWithContractorsForCategoryResponses[keyof GetCitiesWithContractorsForCategoryResponses];
+
+export type GetCitiesWithContractorDetailsForCategoryData = {
+    body?: never;
+    path: {
+        categoryId: string;
+    };
+    query?: never;
+    url: '/categories/{categoryId}/cities/details';
+};
+
+export type GetCitiesWithContractorDetailsForCategoryErrors = {
+    /**
+     * Bad request - Invalid category ID
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Category not found or no cities with contractors
+     */
+    404: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetCitiesWithContractorDetailsForCategoryError = GetCitiesWithContractorDetailsForCategoryErrors[keyof GetCitiesWithContractorDetailsForCategoryErrors];
+
+export type GetCitiesWithContractorDetailsForCategoryResponses = {
+    /**
+     * Cities with contractor details fetched successfully
+     */
+    200: Array<{
+        city: {
+            id: string;
+            cityName: string;
+            cityCode: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        contractors: Array<{
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            phoneNumber: string | null;
+        }>;
+    }>;
+};
+
+export type GetCitiesWithContractorDetailsForCategoryResponse = GetCitiesWithContractorDetailsForCategoryResponses[keyof GetCitiesWithContractorDetailsForCategoryResponses];
 
 export type GetReviewsForContractorData = {
     body?: never;
