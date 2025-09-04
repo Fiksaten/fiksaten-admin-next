@@ -9,7 +9,6 @@ export default async function AvailableAreaRequestsPage() {
   return (
     <AvailableAreaRequestsTable
       availableAreaRequests={availableAreaRequests}
-      accessToken={accessToken}
     />
   );
 }

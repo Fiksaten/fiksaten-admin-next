@@ -9,6 +9,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, Download, ImageIcon, X } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 interface ImageGalleryProps {
@@ -84,7 +85,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {images.map((image, index) => (
               <div key={image.id} className="relative group cursor-pointer">
-                <img
+                <Image
                   src={image.imageUrl}
                   alt={`Order image ${index + 1}`}
                   className="w-full h-48 object-cover rounded-lg border transition-transform duration-200 group-hover:scale-105"
@@ -133,7 +134,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           {selectedImageIndex !== null && (
             <div className="relative p-4">
               <div className="relative">
-                <img
+                <Image
                   src={images[selectedImageIndex].imageUrl}
                   alt={`Order image ${selectedImageIndex + 1}`}
                   className="w-full h-auto max-h-[70vh] object-contain rounded-lg"

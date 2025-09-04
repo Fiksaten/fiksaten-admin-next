@@ -65,12 +65,14 @@ export default function CityCategoriesTable({
     if (selectedCategory) {
       loadCitiesForCategory(selectedCategory);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory]);
 
   useEffect(() => {
     if (selectedCity) {
       loadCategoriesForCity(selectedCity);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCity]);
 
 

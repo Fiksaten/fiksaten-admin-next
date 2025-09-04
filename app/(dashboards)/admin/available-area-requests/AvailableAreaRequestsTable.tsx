@@ -8,25 +8,24 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
-    AlertCircle,
-    Building2,
-    Calendar,
-    CheckCircle,
-    Clock,
-    Filter,
-    Mail,
-    MapPin,
-    Search,
-    Send,
-    TrendingUp,
-    Users,
-    XCircle
+  AlertCircle,
+  Building2,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Filter,
+  Mail,
+  MapPin,
+  Search,
+  Send,
+  TrendingUp,
+  Users,
+  XCircle
 } from "lucide-react";
 import { useMemo, useState } from "react";
 
 interface AvailableAreaRequestsTableProps {
   availableAreaRequests: GetAllAvailableAreaRequestsResponse;
-  accessToken: string;
 }
 
 type Status = "pending" | "notified" | "cancelled";
@@ -41,7 +40,6 @@ interface Filters {
 
 export default function AvailableAreaRequestsTable({
   availableAreaRequests,
-  accessToken,
 }: AvailableAreaRequestsTableProps) {
   const [filters, setFilters] = useState<Filters>({
     status: "all",
@@ -434,7 +432,7 @@ export default function AvailableAreaRequestsTable({
                         )}
                       </TableCell>
                       <TableCell>
-                        {getStatusBadge(request.status)}
+                        {getStatusBadge(request.status as Status)}
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col">

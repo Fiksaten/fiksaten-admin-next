@@ -432,10 +432,12 @@ export default function OrderDetailsPage({ orderData, images, orderType, accessT
                           <span>{order.orderZip}</span>
                         </div>
                       )}
-                      {order.locationMoreInfo && (
+                      {/* @ts-ignore */}
+                      {order?.locationMoreInfo && (
                         <div className="p-3 bg-white dark:bg-gray-800 rounded-lg">
                           <span className="text-sm font-medium text-gray-600 dark:text-gray-400 block mb-2">Lisätiedot</span>
-                          <p className="text-sm">{order.locationMoreInfo}</p>
+                          {/* @ts-ignore */}
+                          <p className="text-sm">{order?.locationMoreInfo}</p>
                         </div>
                       )}
                     </div>
