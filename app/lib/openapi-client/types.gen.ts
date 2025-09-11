@@ -9745,5 +9745,5 @@ export type GetPublicCampaignsResponses = {
 export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
-    baseUrl: 'http://localhost:3000' | (string & {});
+    baseUrl: 'https://fiksaten-api-v2-1.onrender.com' | (string & {});
 };
