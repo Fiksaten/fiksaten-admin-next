@@ -6833,6 +6833,11 @@ export type GetAllUsersData = {
         page?: number | null;
         limit?: number | null;
         search?: string;
+        role?: 'admin' | 'contractor' | 'consumer';
+        dateFrom?: string;
+        dateTo?: string;
+        sortBy?: 'createdAt' | 'email' | 'firstname' | 'lastname';
+        sortOrder?: 'asc' | 'desc';
     };
     url: '/admin/users';
 };
@@ -7588,6 +7593,12 @@ export type GetInterestedContractorsData = {
         limit?: number;
         search?: string;
         emailStatus?: 'sent' | 'not_sent' | 'failed';
+        status?: 'waitingForResponse' | 'interested' | 'notInterested' | 'registered';
+        assignedAdmin?: 'assigned' | 'unassigned';
+        dateFrom?: string;
+        dateTo?: string;
+        sortBy?: 'createdAt' | 'name' | 'email' | 'status' | 'emailStatus';
+        sortOrder?: 'asc' | 'desc';
     };
     url: '/admin/interested-contractors';
 };
@@ -7949,6 +7960,57 @@ export type PostByIdRetryWelcomeEmailResponses = {
 };
 
 export type PostByIdRetryWelcomeEmailResponse = PostByIdRetryWelcomeEmailResponses[keyof PostByIdRetryWelcomeEmailResponses];
+
+export type GetContractorStatsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/stats/admin/interested-contractors/stats';
+};
+
+export type GetContractorStatsErrors = {
+    /**
+     * Bad request
+     */
+    400: {
+        message: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        message: string;
+    };
+};
+
+export type GetContractorStatsError = GetContractorStatsErrors[keyof GetContractorStatsErrors];
+
+export type GetContractorStatsResponses = {
+    /**
+     * Contractor statistics fetched successfully
+     */
+    200: {
+        total: number;
+        emailSent: number;
+        emailNotSent: number;
+        emailFailed: number;
+        recentlyAdded: number;
+        waitingForResponse: number;
+        interested: number;
+        notInterested: number;
+        registered: number;
+        assigned: number;
+        unassigned: number;
+    };
+};
+
+export type GetContractorStatsResponse = GetContractorStatsResponses[keyof GetContractorStatsResponses];
 
 export type GetAllOrdersData = {
     body?: never;
@@ -9683,5 +9745,5 @@ export type GetPublicCampaignsResponses = {
 export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
-    baseUrl: 'https://fiksaten-api-v2.onrender.com' | (string & {});
+    baseUrl: 'http://localhost:3000' | (string & {});
 };

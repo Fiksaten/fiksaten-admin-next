@@ -21,7 +21,9 @@ interface ContractorInterestDashboardProps {
   accessToken: string;
 }
 
-export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardProps> = ({ accessToken }) => {
+export const ContractorInterestDashboard: React.FC<
+  ContractorInterestDashboardProps
+> = ({ accessToken }) => {
   const { toast } = useToast();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -47,6 +49,8 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
     totalPages,
     pageSize,
     filters,
+    stats,
+    isStatsLoading,
     handleFilterChange,
     handlePageChange,
     handlePageSizeChange,
@@ -92,7 +96,9 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
         toast({
           title: "Welcome emails sent successfully",
           description: `Successfully sent ${result.result.sent} emails. ${
-            result.result.failed && result.result.failed > 0 ? `${result.result.failed} failed.` : ""
+            result.result.failed && result.result.failed > 0
+              ? `${result.result.failed} failed.`
+              : ""
           }`,
         });
       } else {
@@ -104,7 +110,8 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
         });
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
       setEmailSendingError(errorMessage);
       toast({
         title: "Error sending welcome emails",
@@ -137,7 +144,10 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
     } catch (error) {
       toast({
         title: "Error retrying welcome email",
-        description: error instanceof Error ? error.message : "An unexpected error occurred",
+        description:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {
@@ -178,16 +188,17 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
       </div>
 
       {/* Main Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="table" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             Contractor Table
           </TabsTrigger>
         </TabsList>
-
-        
-
 
         <TabsContent value="table" className="space-y-6">
           <ContractorInterestTable
@@ -206,6 +217,8 @@ export const ContractorInterestDashboard: React.FC<ContractorInterestDashboardPr
             onPageSizeChange={handlePageSizeChange}
             isLoading={isLoading}
             totalContractors={totalContractors}
+            stats={stats}
+            isStatsLoading={isStatsLoading}
           />
         </TabsContent>
       </Tabs>

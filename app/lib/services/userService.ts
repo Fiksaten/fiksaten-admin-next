@@ -14,10 +14,9 @@ type RequestAccountDeletionBody = RequestAccountDeletionData["body"];
 
 const updateUser = async (
   accessToken: string | undefined,
-  userData: UserUpdateBody,
+  userData: UserUpdateBody
 ) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -37,8 +36,7 @@ const requestAccountDeletion = async (
   accessToken: string | undefined,
   userData: RequestAccountDeletionBody
 ) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -58,10 +56,14 @@ const getAllUsers = async (
   accessToken: string | undefined,
   limit?: number,
   page?: number,
-  search?: string
+  search?: string,
+  role?: "admin" | "contractor" | "consumer",
+  dateFrom?: string,
+  dateTo?: string,
+  sortBy?: "createdAt" | "email" | "firstname" | "lastname",
+  sortOrder?: "asc" | "desc"
 ) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }
@@ -70,6 +72,11 @@ const getAllUsers = async (
       limit,
       page,
       search,
+      role,
+      dateFrom,
+      dateTo,
+      sortBy,
+      sortOrder,
     },
     headers: {
       Authorization: `Bearer ${token}`,
@@ -82,8 +89,7 @@ const getAllUsers = async (
 };
 
 const getUserById = async (accessToken: string | undefined, userId: string) => {
-  const token =
-    resolveToken(accessToken);
+  const token = resolveToken(accessToken);
   if (!token) {
     throw new Error("No access token available");
   }

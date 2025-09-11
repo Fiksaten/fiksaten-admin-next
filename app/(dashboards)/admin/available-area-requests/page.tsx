@@ -5,11 +5,11 @@ import AvailableAreaRequestsTable from "./AvailableAreaRequestsTable";
 export default async function AvailableAreaRequestsPage() {
   const accessToken = await getaccessToken();
   const availableAreaRequests = await getAllAvailableAreaRequests(accessToken);
-  
+
   return (
     <AvailableAreaRequestsTable
       availableAreaRequests={availableAreaRequests}
+      accessToken={accessToken}
     />
   );
 }
-
