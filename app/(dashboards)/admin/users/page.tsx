@@ -10,11 +10,10 @@ export default async function UsersPage() {
     getAllUsers(accessToken),
     getUsersInsights(accessToken ?? undefined),
   ]);
-  const users = usersData?.users || [];
   return (
     <div className="space-y-6">
+      <UserAdminTable initialData={usersData} accessToken={accessToken} />
       <UsersInsightsClient insights={insights} />
-      <UserAdminTable initialUsers={users} accessToken={accessToken} />
     </div>
   );
 }

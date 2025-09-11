@@ -5,13 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import {
-    AlertCircle,
-    CheckCircle,
-    Clock,
-    Copy,
-    ExternalLink, FileText, History, Mail,
-    MessageSquare,
-    Phone, TrendingUp
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Copy,
+  ExternalLink,
+  FileText,
+  History,
+  Mail,
+  MessageSquare,
+  Phone,
+  TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -29,18 +33,21 @@ interface CustomerServiceActionsProps {
   };
 }
 
-export default function CustomerServiceActions({ user, order }: CustomerServiceActionsProps) {
+export default function CustomerServiceActions({
+  user,
+  order,
+}: CustomerServiceActionsProps) {
   const [loading, setLoading] = useState<string | null>(null);
 
   const copyToClipboard = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
       toast({ title: `${label} kopioitu leikepöydälle` });
-    } catch (error) {
-      toast({ 
-        title: "Virhe", 
+    } catch {
+      toast({
+        title: "Virhe",
         description: "Kopiointi epäonnistui",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -58,15 +65,21 @@ TILAUKSEN TIEDOT
 ---------------
 Tilaus ID: ${order.id}
 Tila: ${order.status}
-Luotu: ${new Date().toLocaleDateString('fi-FI')}
+Luotu: ${new Date().toLocaleDateString("fi-FI")}
 
 HUOMIOT
 -------
-• ${order.status === "pending" ? "Odottaa urakoitsijan vastausta" : 
-      order.status === "accepted" ? "Urakoitsija hyväksytty, valmistele aikataulu" : 
-      order.status === "waitingForPayment" ? "Maksu odottaa vahvistusta" : 
-      order.status === "done" ? "Työ valmistunut, pyydä palautetta" : 
-      "Tila vaatii huomiota"}
+• ${
+      order.status === "pending"
+        ? "Odottaa urakoitsijan vastausta"
+        : order.status === "accepted"
+        ? "Urakoitsija hyväksytty, valmistele aikataulu"
+        : order.status === "waitingForPayment"
+        ? "Maksu odottaa vahvistusta"
+        : order.status === "done"
+        ? "Työ valmistunut, pyydä palautetta"
+        : "Tila vaatii huomiota"
+    }
     `.trim();
   };
 
@@ -76,18 +89,18 @@ HUOMIOT
       switch (action) {
         case "call":
           if (user.phoneNumber) {
-            window.open(`tel:${user.phoneNumber}`, '_blank');
+            window.open(`tel:${user.phoneNumber}`, "_blank");
           } else {
-            toast({ 
-              title: "Virhe", 
+            toast({
+              title: "Virhe",
               description: "Puhelinnumeroa ei ole saatavilla",
-              variant: "destructive"
+              variant: "destructive",
             });
           }
           break;
         case "email":
           const subject = encodeURIComponent(`Tilaus ${order.id} - Tuki`);
-          const body = encodeURIComponent(`Hei ${user.firstname || 'asiakas'},
+          const body = encodeURIComponent(`Hei ${user.firstname || "asiakas"},
 
 Olemme yhteydessä tilauksesi ${order.id} osalta.
 
@@ -97,7 +110,10 @@ Miten voimme auttaa?
 
 Ystävällisin terveisin,
 Fiksaten tuki`);
-          window.open(`mailto:${user.email}?subject=${subject}&body=${body}`, '_blank');
+          window.open(
+            `mailto:${user.email}?subject=${subject}&body=${body}`,
+            "_blank"
+          );
           break;
         case "copy-order-id":
           await copyToClipboard(order.id, "Tilaus ID");
@@ -112,23 +128,25 @@ Fiksaten tuki`);
           if (user.phoneNumber) {
             await copyToClipboard(user.phoneNumber, "Puhelinnumero");
           } else {
-            toast({ 
-              title: "Virhe", 
+            toast({
+              title: "Virhe",
               description: "Puhelinnumeroa ei ole saatavilla",
-              variant: "destructive"
+              variant: "destructive",
             });
           }
           break;
         case "copy-summary":
-          await copyToClipboard(generateCustomerSummary(), "Asiakkaan yhteenveto");
+          await copyToClipboard(
+            generateCustomerSummary(),
+            "Asiakkaan yhteenveto"
+          );
           break;
-
       }
-    } catch (error) {
-      toast({ 
-        title: "Virhe", 
+    } catch {
+      toast({
+        title: "Virhe",
         description: "Toiminto epäonnistui",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(null);
@@ -194,19 +212,31 @@ Fiksaten tuki`);
           {/* Customer Details */}
           <div className="space-y-2">
             <div className="flex justify-between items-center p-2 border rounded">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Nimi:</span>
-              <span className="text-sm font-medium">{user.firstname} {user.lastname}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Nimi:
+              </span>
+              <span className="text-sm font-medium">
+                {user.firstname} {user.lastname}
+              </span>
             </div>
             <div className="flex justify-between items-center p-2 border rounded">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Sähköposti:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Sähköposti:
+              </span>
               <span className="text-sm font-medium">{user.email}</span>
             </div>
             <div className="flex justify-between items-center p-2 border rounded">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Puhelin:</span>
-              <span className="text-sm font-medium">{user.phoneNumber || "Ei saatavilla"}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Puhelin:
+              </span>
+              <span className="text-sm font-medium">
+                {user.phoneNumber || "Ei saatavilla"}
+              </span>
             </div>
             <div className="flex justify-between items-center p-2 border rounded">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Tila:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Tila:
+              </span>
               <div className="flex items-center gap-2">
                 {getStatusIcon()}
                 <Badge variant="secondary" className="text-xs">
@@ -270,7 +300,7 @@ Fiksaten tuki`);
               Puhelin
             </Button>
           </div>
-          
+
           <Button
             variant="outline"
             className="w-full"
@@ -295,7 +325,7 @@ Fiksaten tuki`);
           <Button
             variant="outline"
             className="w-full justify-start"
-            onClick={() => window.open(`/admin/users/${user.id}`, '_blank')}
+            onClick={() => window.open(`/admin/users/${user.id}`, "_blank")}
           >
             <ExternalLink className="h-4 w-4 mr-2" />
             Asiakkaan profiili
@@ -303,7 +333,9 @@ Fiksaten tuki`);
           <Button
             variant="outline"
             className="w-full justify-start"
-            onClick={() => window.open(`/admin/orders?search=${user.id}`, '_blank')}
+            onClick={() =>
+              window.open(`/admin/orders?search=${user.id}`, "_blank")
+            }
           >
             <History className="h-4 w-4 mr-2" />
             Tilaushistoria

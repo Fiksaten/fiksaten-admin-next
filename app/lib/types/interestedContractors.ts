@@ -22,6 +22,10 @@ export interface ContractorFilters {
   emailStatus: string;
   status: string;
   assignedAdmin: string;
+  dateFrom?: Date;
+  dateTo?: Date;
+  sortBy?: "createdAt" | "name" | "email" | "status" | "emailStatus";
+  sortOrder?: "asc" | "desc";
 }
 
 export interface ContractorListResponse {
@@ -54,6 +58,20 @@ export interface UpdateContractorRequest {
   status?: "waitingForResponse" | "interested" | "notInterested" | "registered";
   notes?: string;
   assignedAdminId?: string; // Use undefined for unassigned, or admin UUID
+}
+
+export interface ContractorStats {
+  total: number;
+  emailSent: number;
+  emailNotSent: number;
+  emailFailed: number;
+  recentlyAdded: number;
+  waitingForResponse: number;
+  interested: number;
+  notInterested: number;
+  registered: number;
+  assigned: number;
+  unassigned: number;
 }
 
 export interface EmailSendingResult {

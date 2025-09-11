@@ -1,10 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import type {
   ContractorFilters,
+  ContractorStats,
   InterestedContractor,
 } from "@/app/lib/types/interestedContractors";
 import { cn } from "@/app/lib/utils";
@@ -22,6 +23,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 import {
   Select,
   SelectContent,
@@ -74,9 +84,13 @@ interface ContractorInterestTableProps {
   isLoading?: boolean;
   totalContractors: number;
   retryingEmails?: Set<string>;
+  stats?: ContractorStats | null;
+  isStatsLoading?: boolean;
 }
 
-export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = ({
+export const ContractorInterestTable: React.FC<
+  ContractorInterestTableProps
+> = ({
   contractors,
   filters,
   onFilterChange,
@@ -92,86 +106,69 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
   isLoading = false,
   totalContractors,
   retryingEmails = new Set(),
+  stats,
+  isStatsLoading = false,
 }) => {
-  const [sortBy, setSortBy] = useState<
-    "newest" | "oldest" | "name" | "email_status" | "status"
-  >("newest");
+  // Use passed stats or fallback to calculated stats for backward compatibility
+  const displayStats = stats || {
+    total: totalContractors,
+    emailSent: contractors.filter((c) => c.welcomeEmailSent).length,
+    emailNotSent: contractors.filter(
+      (c) => !c.welcomeEmailSent && !c.welcomeEmailError
+    ).length,
+    emailFailed: contractors.filter(
+      (c) => !c.welcomeEmailSent && c.welcomeEmailError
+    ).length,
+    recentlyAdded: contractors.filter((c) => {
+      const createdAt = new Date(c.createdAt);
+      const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      return createdAt > dayAgo;
+    }).length,
+    waitingForResponse: contractors.filter(
+      (c) => c.status === "waitingForResponse"
+    ).length,
+    interested: contractors.filter((c) => c.status === "interested").length,
+    notInterested: contractors.filter((c) => c.status === "notInterested")
+      .length,
+    registered: contractors.filter((c) => c.status === "registered").length,
+    assigned: contractors.filter((c) => c.assignedAdminId).length,
+    unassigned: contractors.filter((c) => !c.assignedAdminId).length,
+  };
+
+  const handleFilterChange = (key: keyof ContractorFilters, value: any) => {
+    onFilterChange({ ...filters, [key]: value });
+  };
 
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const stats = useMemo(() => {
-    const total = totalContractors;
-    const emailSent = contractors.filter((c) => c.welcomeEmailSent).length;
-    const emailNotSent = contractors.filter((c) => !c.welcomeEmailSent && !c.welcomeEmailError).length;
-    const emailFailed = contractors.filter((c) => !c.welcomeEmailSent && c.welcomeEmailError).length;
-    const recentlyAdded = contractors.filter((c) => {
-      const createdAt = new Date(c.createdAt);
-      const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      return createdAt > dayAgo;
-    }).length;
+  const applyFilters = () => {
+    // Filters are applied automatically through the hook
+  };
 
-    const waitingForResponse = contractors.filter((c) => c.status === "waitingForResponse").length;
-    const interested = contractors.filter((c) => c.status === "interested").length;
-    const notInterested = contractors.filter((c) => c.status === "notInterested").length;
-    const registered = contractors.filter((c) => c.status === "registered").length;
-    const assigned = contractors.filter((c) => c.assignedAdminId).length;
-    const unassigned = contractors.filter((c) => !c.assignedAdminId).length;
-
-    return { 
-      total, 
-      emailSent, 
-      emailNotSent, 
-      emailFailed, 
-      recentlyAdded,
-      waitingForResponse,
-      interested,
-      notInterested,
-      registered,
-      assigned,
-      unassigned
-    };
-  }, [contractors, totalContractors]);
-
-  const sortedContractors = useMemo(() => {
-    return [...contractors].sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        case "oldest":
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "email_status":
-          const getStatusPriority = (contractor: InterestedContractor) => {
-            if (!contractor.welcomeEmailSent && contractor.welcomeEmailError) return 3;
-            if (!contractor.welcomeEmailSent) return 2;
-            return 1;
-          };
-          return getStatusPriority(b) - getStatusPriority(a);
-        case "status":
-          const statusOrder = { waitingForResponse: 1, interested: 2, notInterested: 3, registered: 4 };
-          return statusOrder[a.status] - statusOrder[b.status];
-        default:
-          return 0;
-      }
+  const clearFilters = () => {
+    onFilterChange({
+      search: "",
+      emailStatus: "all",
+      status: "all",
+      assignedAdmin: "all",
+      sortBy: "createdAt",
+      sortOrder: "desc",
     });
-  }, [contractors, sortBy]);
-
-  const handleFilterChange = (key: keyof ContractorFilters, value: string) => {
-    onFilterChange({ ...filters, [key]: value });
   };
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       waitingForResponse: {
         variant: "secondary" as const,
-        className: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+        className:
+          "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
       },
       interested: {
         variant: "default" as const,
-        className: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+        className:
+          "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
       },
       notInterested: {
         variant: "destructive" as const,
@@ -179,27 +176,34 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
       },
       registered: {
         variant: "outline" as const,
-        className: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+        className:
+          "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
       },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.waitingForResponse;
+    const config =
+      statusConfig[status as keyof typeof statusConfig] ||
+      statusConfig.waitingForResponse;
 
     return (
       <Badge variant={config.variant} className={config.className}>
-        {status.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+        {status
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase())}
       </Badge>
     );
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
+    return format(new Date(dateString), "MM/dd/yyyy");
   };
 
   const formatRelativeTime = (dateString: string) => {
     const now = new Date();
     const date = new Date(dateString);
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    const diffInHours = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+    );
 
     if (diffInHours < 1) return "Just now";
     if (diffInHours < 24) return `${diffInHours}h ago`;
@@ -232,8 +236,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Total
+                </p>
+                <p className="text-2xl font-bold">
+                  {isStatsLoading ? "..." : displayStats.total}
+                </p>
               </div>
               <Users className="h-8 w-8 text-muted-foreground" />
             </div>
@@ -244,8 +252,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Email Sent</p>
-                <p className="text-2xl font-bold text-green-600">{stats.emailSent}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Email Sent
+                </p>
+                <p className="text-2xl font-bold text-green-600">
+                  {isStatsLoading ? "..." : displayStats.emailSent}
+                </p>
               </div>
               <MailCheck className="h-8 w-8 text-green-600" />
             </div>
@@ -256,8 +268,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Not Sent</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.emailNotSent}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Not Sent
+                </p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {isStatsLoading ? "..." : displayStats.emailNotSent}
+                </p>
               </div>
               <Mail className="h-8 w-8 text-yellow-600" />
             </div>
@@ -268,8 +284,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Failed</p>
-                <p className="text-2xl font-bold text-red-600">{stats.emailFailed}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Failed
+                </p>
+                <p className="text-2xl font-bold text-red-600">
+                  {isStatsLoading ? "..." : displayStats.emailFailed}
+                </p>
               </div>
               <MailX className="h-8 w-8 text-red-600" />
             </div>
@@ -280,8 +300,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Assigned</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.assigned}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Assigned
+                </p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {isStatsLoading ? "..." : displayStats.assigned}
+                </p>
               </div>
               <UserCheck className="h-8 w-8 text-blue-600" />
             </div>
@@ -292,8 +316,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Recent</p>
-                <p className="text-2xl font-bold text-purple-600">{stats.recentlyAdded}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Recent
+                </p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {isStatsLoading ? "..." : displayStats.recentlyAdded}
+                </p>
               </div>
               <Clock className="h-8 w-8 text-purple-600" />
             </div>
@@ -307,8 +335,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Waiting</p>
-                <p className="text-xl font-bold text-yellow-600">{stats.waitingForResponse}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Waiting
+                </p>
+                <p className="text-xl font-bold text-yellow-600">
+                  {isStatsLoading ? "..." : displayStats.waitingForResponse}
+                </p>
               </div>
               <Clock className="h-6 w-6 text-yellow-600" />
             </div>
@@ -319,8 +351,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Interested</p>
-                <p className="text-xl font-bold text-green-600">{stats.interested}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Interested
+                </p>
+                <p className="text-xl font-bold text-green-600">
+                  {isStatsLoading ? "..." : displayStats.interested}
+                </p>
               </div>
               <UserCheck className="h-6 w-6 text-green-600" />
             </div>
@@ -331,8 +367,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Not Interested</p>
-                <p className="text-xl font-bold text-red-600">{stats.notInterested}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Not Interested
+                </p>
+                <p className="text-xl font-bold text-red-600">
+                  {isStatsLoading ? "..." : displayStats.notInterested}
+                </p>
               </div>
               <Users className="h-6 w-6 text-red-600" />
             </div>
@@ -343,8 +383,12 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Registered</p>
-                <p className="text-xl font-bold text-blue-600">{stats.registered}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Registered
+                </p>
+                <p className="text-xl font-bold text-blue-600">
+                  {isStatsLoading ? "..." : displayStats.registered}
+                </p>
               </div>
               <Building2 className="h-6 w-6 text-blue-600" />
             </div>
@@ -360,9 +404,15 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
               <Filter className="h-5 w-5" />
               Filters & Search
             </CardTitle>
-            <AlertDialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+            <AlertDialog
+              open={showPasswordDialog}
+              onOpenChange={setShowPasswordDialog}
+            >
               <AlertDialogTrigger asChild>
-                <Button onClick={() => setShowPasswordDialog(true)} className="flex items-center gap-2">
+                <Button
+                  onClick={() => setShowPasswordDialog(true)}
+                  className="flex items-center gap-2"
+                >
                   <Send className="h-4 w-4" />
                   Send Welcome Emails
                 </Button>
@@ -376,14 +426,19 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                   <AlertDialogDescription>
                     <div className="space-y-3">
                       <p className="text-red-600 font-medium">
-                        ⚠️ WARNING: You are about to send welcome emails to {stats.emailNotSent} contractors.
+                        ⚠️ WARNING: You are about to send welcome emails to{" "}
+                        {displayStats.emailNotSent} contractors.
                       </p>
                       <p>
-                        This action will send welcome emails to all contractors who haven&apos;t received them yet. 
-                        Please enter the confirmation password to proceed.
+                        This action will send welcome emails to all contractors
+                        who haven&apos;t received them yet. Please enter the
+                        confirmation password to proceed.
                       </p>
                       <div className="space-y-2">
-                        <label htmlFor="password" className="text-sm font-medium">
+                        <label
+                          htmlFor="password"
+                          className="text-sm font-medium"
+                        >
                           Confirmation Password:
                         </label>
                         <Input
@@ -404,7 +459,9 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                           data-lpignore="true"
                         />
                         {passwordError && (
-                          <p className="text-sm text-red-600">{passwordError}</p>
+                          <p className="text-sm text-red-600">
+                            {passwordError}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -426,7 +483,7 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -441,7 +498,9 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
 
             <Select
               value={filters.emailStatus}
-              onValueChange={(value) => handleFilterChange("emailStatus", value)}
+              onValueChange={(value) =>
+                handleFilterChange("emailStatus", value)
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="All Email Status" />
@@ -463,7 +522,9 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="waitingForResponse">Waiting for Response</SelectItem>
+                <SelectItem value="waitingForResponse">
+                  Waiting for Response
+                </SelectItem>
                 <SelectItem value="interested">Interested</SelectItem>
                 <SelectItem value="notInterested">Not Interested</SelectItem>
                 <SelectItem value="registered">Registered</SelectItem>
@@ -472,7 +533,9 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
 
             <Select
               value={filters.assignedAdmin}
-              onValueChange={(value) => handleFilterChange("assignedAdmin", value)}
+              onValueChange={(value) =>
+                handleFilterChange("assignedAdmin", value)
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="All Admins" />
@@ -483,25 +546,88 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                 <SelectItem value="unassigned">Unassigned</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Date Range and Sort Options */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
+            {/* Date From */}
+            <div>
+              <Label>Date From</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {filters.dateFrom
+                      ? format(filters.dateFrom, "PPP")
+                      : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={filters.dateFrom}
+                    onSelect={(date) => handleFilterChange("dateFrom", date)}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* Date To */}
+            <div>
+              <Label>Date To</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {filters.dateTo
+                      ? format(filters.dateTo, "PPP")
+                      : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={filters.dateTo}
+                    onSelect={(date) => handleFilterChange("dateTo", date)}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
 
             <Select
-              value={sortBy}
-              onValueChange={(value) => {
-                const allowed = ["newest","oldest","name","email_status","status"] as const;
-                if ((allowed as readonly string[]).includes(value)) {
-                  setSortBy(value as (typeof allowed)[number]);
-                }
-              }}
+              value={filters.sortBy || "createdAt"}
+              onValueChange={(value) => handleFilterChange("sortBy", value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="newest">Newest First</SelectItem>
-                <SelectItem value="oldest">Oldest First</SelectItem>
-                <SelectItem value="name">Name A-Z</SelectItem>
-                <SelectItem value="email_status">Email Status</SelectItem>
-                <SelectItem value="status">Business Status</SelectItem>
+                <SelectItem value="createdAt">Created Date</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="status">Status</SelectItem>
+                <SelectItem value="emailStatus">Email Status</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={filters.sortOrder || "desc"}
+              onValueChange={(value) => handleFilterChange("sortOrder", value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Sort Order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="desc">Descending</SelectItem>
+                <SelectItem value="asc">Ascending</SelectItem>
               </SelectContent>
             </Select>
 
@@ -519,6 +645,20 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                 <SelectItem value="100">100 per page</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Filter Actions */}
+          <div className="flex gap-2">
+            <Button onClick={applyFilters} disabled={isLoading}>
+              Apply Filters
+            </Button>
+            <Button
+              onClick={clearFilters}
+              variant="outline"
+              disabled={isLoading}
+            >
+              Clear Filters
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -550,12 +690,13 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sortedContractors.map((contractor) => (
+                    {contractors.map((contractor) => (
                       <TableRow
                         key={contractor.id}
                         className={cn(
                           "hover:bg-muted/50",
-                          contractor.welcomeEmailError && "border-l-4 border-l-red-500"
+                          contractor.welcomeEmailError &&
+                            "border-l-4 border-l-red-500"
                         )}
                       >
                         <TableCell>
@@ -570,7 +711,9 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            <div className="font-mono text-sm">{contractor.email}</div>
+                            <div className="font-mono text-sm">
+                              {contractor.email}
+                            </div>
                             {contractor.phoneNumber && (
                               <div className="text-sm text-muted-foreground">
                                 {contractor.phoneNumber}
@@ -583,7 +726,9 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                             {contractor.businessId && (
                               <div className="flex items-center gap-1 text-sm">
                                 <Building2 className="h-3 w-3" />
-                                <span className="font-mono">{contractor.businessId}</span>
+                                <span className="font-mono">
+                                  {contractor.businessId}
+                                </span>
                               </div>
                             )}
                             {contractor.website && (
@@ -595,7 +740,9 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                               </div>
                             )}
                             {!contractor.businessId && !contractor.website && (
-                              <span className="text-sm text-muted-foreground">No business details</span>
+                              <span className="text-sm text-muted-foreground">
+                                No business details
+                              </span>
                             )}
                           </div>
                         </TableCell>
@@ -613,12 +760,18 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                         <TableCell>
                           <div className="text-sm">
                             {contractor.assignedAdminId ? (
-                              <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                              <Badge
+                                variant="outline"
+                                className="bg-blue-50 text-blue-700"
+                              >
                                 <UserCheck className="h-3 w-3 mr-1" />
                                 Assigned
                               </Badge>
                             ) : (
-                              <Badge variant="secondary" className="bg-gray-50 text-gray-600">
+                              <Badge
+                                variant="secondary"
+                                className="bg-gray-50 text-gray-600"
+                              >
                                 Unassigned
                               </Badge>
                             )}
@@ -654,34 +807,61 @@ export const ContractorInterestTable: React.FC<ContractorInterestTableProps> = (
                 </Table>
               </div>
 
-              {sortedContractors.length === 0 && !isLoading && (
+              {contractors.length === 0 && !isLoading && (
                 <div className="text-center py-8 text-muted-foreground">
                   <UserPlus className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>No contractors found matching your criteria.</p>
                 </div>
               )}
 
-              {/* Pagination */}
+              {/* Enhanced Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-4">
                   <div className="text-sm text-muted-foreground">
-                    Page {currentPage} of {totalPages} ({stats.total} total contractors)
+                    Showing {(currentPage - 1) * pageSize + 1} to{" "}
+                    {Math.min(currentPage * pageSize, totalContractors)} of{" "}
+                    {totalContractors} contractors
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center space-x-2">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => onPageChange(currentPage - 1)}
-                      disabled={currentPage <= 1}
+                      disabled={currentPage <= 1 || isLoading}
                     >
                       <ChevronLeft className="h-4 w-4" />
                       Previous
                     </Button>
+
+                    {/* Page Numbers */}
+                    <div className="flex items-center space-x-1">
+                      {Array.from(
+                        { length: Math.min(5, totalPages) },
+                        (_, i) => {
+                          const pageNum = Math.max(1, currentPage - 2) + i;
+                          if (pageNum > totalPages) return null;
+                          return (
+                            <Button
+                              key={pageNum}
+                              variant={
+                                pageNum === currentPage ? "default" : "outline"
+                              }
+                              size="sm"
+                              onClick={() => onPageChange(pageNum)}
+                              disabled={isLoading}
+                            >
+                              {pageNum}
+                            </Button>
+                          );
+                        }
+                      )}
+                    </div>
+
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => onPageChange(currentPage + 1)}
-                      disabled={currentPage >= totalPages}
+                      disabled={currentPage >= totalPages || isLoading}
                     >
                       Next
                       <ChevronRight className="h-4 w-4" />

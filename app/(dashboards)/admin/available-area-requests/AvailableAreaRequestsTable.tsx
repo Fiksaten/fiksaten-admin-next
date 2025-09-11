@@ -1,12 +1,34 @@
 "use client";
 
-import { GetAllAvailableAreaRequestsResponse } from "@/app/lib/openapi-client";
+import {
+  GetAllAvailableAreaRequestsResponse,
+  getCityById,
+} from "@/app/lib/openapi-client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   AlertCircle,
   Building2,
@@ -20,12 +42,13 @@ import {
   Send,
   TrendingUp,
   Users,
-  XCircle
+  XCircle,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 interface AvailableAreaRequestsTableProps {
   availableAreaRequests: GetAllAvailableAreaRequestsResponse;
+  accessToken: string;
 }
 
 type Status = "pending" | "notified" | "cancelled";
@@ -40,6 +63,7 @@ interface Filters {
 
 export default function AvailableAreaRequestsTable({
   availableAreaRequests,
+  accessToken,
 }: AvailableAreaRequestsTableProps) {
   const [filters, setFilters] = useState<Filters>({
     status: "all",
@@ -50,15 +74,82 @@ export default function AvailableAreaRequestsTable({
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  const [cityNames, setCityNames] = useState<Record<string, string>>({});
+  const [loadingCities, setLoadingCities] = useState<Set<string>>(new Set());
+
+  // Cache city names to avoid duplicate API calls
+  const getCityName = async (cityId: string) => {
+    // Return cached name if available
+    if (cityNames[cityId]) {
+      return cityNames[cityId];
+    }
+
+    // Return empty string if already loading
+    if (loadingCities.has(cityId)) {
+      return "";
+    }
+
+    // Mark as loading
+    setLoadingCities((prev) => new Set(prev).add(cityId));
+
+    try {
+      const city = await getCityById({
+        path: { id: cityId },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      const cityName = city.data?.cityName || "";
+
+      // Cache the result
+      setCityNames((prev) => ({ ...prev, [cityId]: cityName }));
+
+      return cityName;
+    } catch (error) {
+      console.error(`Error fetching city ${cityId}:`, error);
+      return "";
+    } finally {
+      // Remove from loading set
+      setLoadingCities((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(cityId);
+        return newSet;
+      });
+    }
+  };
+
+  // Pre-load city names for all unique city IDs
+  useEffect(() => {
+    const uniqueCityIds = Array.from(
+      new Set(
+        availableAreaRequests
+          .filter((req) => req.cityId)
+          .map((req) => req.cityId!)
+      )
+    );
+
+    uniqueCityIds.forEach((cityId) => {
+      if (!cityNames[cityId] && !loadingCities.has(cityId)) {
+        getCityName(cityId);
+      }
+    });
+  }, [availableAreaRequests, cityNames, loadingCities]);
 
   // Calculate statistics
   const stats = useMemo(() => {
     const total = availableAreaRequests.length;
-    const pending = availableAreaRequests.filter(req => req.status === "pending").length;
-    const notified = availableAreaRequests.filter(req => req.status === "notified").length;
-    const cancelled = availableAreaRequests.filter(req => req.status === "cancelled").length;
-    const withCity = availableAreaRequests.filter(req => req.cityId).length;
-    const withoutCity = availableAreaRequests.filter(req => !req.cityId).length;
+    const pending = availableAreaRequests.filter(
+      (req) => req.status === "pending"
+    ).length;
+    const notified = availableAreaRequests.filter(
+      (req) => req.status === "notified"
+    ).length;
+    const cancelled = availableAreaRequests.filter(
+      (req) => req.status === "cancelled"
+    ).length;
+    const withCity = availableAreaRequests.filter((req) => req.cityId).length;
+    const withoutCity = availableAreaRequests.filter(
+      (req) => !req.cityId
+    ).length;
 
     return {
       total,
@@ -86,8 +177,10 @@ export default function AvailableAreaRequestsTable({
           request.email,
           request.notFoundCity || "",
           request.id,
-        ].join(" ").toLowerCase();
-        
+        ]
+          .join(" ")
+          .toLowerCase();
+
         if (!searchableText.includes(searchTerm)) {
           return false;
         }
@@ -97,8 +190,9 @@ export default function AvailableAreaRequestsTable({
       if (filters.dateRange !== "all") {
         const requestDate = new Date(request.createdAt);
         const now = new Date();
-        const diffInDays = (now.getTime() - requestDate.getTime()) / (1000 * 60 * 60 * 24);
-        
+        const diffInDays =
+          (now.getTime() - requestDate.getTime()) / (1000 * 60 * 60 * 24);
+
         switch (filters.dateRange) {
           case "today":
             if (diffInDays > 1) return false;
@@ -169,11 +263,26 @@ export default function AvailableAreaRequestsTable({
   const getStatusBadge = (status: Status) => {
     switch (status) {
       case "pending":
-        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
+        return (
+          <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+            <Clock className="w-3 h-3 mr-1" />
+            Pending
+          </Badge>
+        );
       case "notified":
-        return <Badge variant="default" className="bg-green-100 text-green-800"><CheckCircle className="w-3 h-3 mr-1" />Notified</Badge>;
+        return (
+          <Badge variant="default" className="bg-green-100 text-green-800">
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Notified
+          </Badge>
+        );
       case "cancelled":
-        return <Badge variant="destructive" className="bg-red-100 text-red-800"><XCircle className="w-3 h-3 mr-1" />Cancelled</Badge>;
+        return (
+          <Badge variant="destructive" className="bg-red-100 text-red-800">
+            <XCircle className="w-3 h-3 mr-1" />
+            Cancelled
+          </Badge>
+        );
     }
   };
 
@@ -192,7 +301,9 @@ export default function AvailableAreaRequestsTable({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Available Area Requests</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Available Area Requests
+          </h1>
           <p className="text-muted-foreground">
             Manage customer requests for service availability in new areas
           </p>
@@ -209,14 +320,14 @@ export default function AvailableAreaRequestsTable({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Requests</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Requests
+            </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">
-              All time requests
-            </p>
+            <p className="text-xs text-muted-foreground">All time requests</p>
           </CardContent>
         </Card>
 
@@ -226,7 +337,9 @@ export default function AvailableAreaRequestsTable({
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+            <div className="text-2xl font-bold text-yellow-600">
+              {stats.pending}
+            </div>
             <p className="text-xs text-muted-foreground">
               Awaiting notification
             </p>
@@ -239,7 +352,9 @@ export default function AvailableAreaRequestsTable({
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.notified}</div>
+            <div className="text-2xl font-bold text-green-600">
+              {stats.notified}
+            </div>
             <p className="text-xs text-muted-foreground">
               Successfully notified
             </p>
@@ -248,14 +363,16 @@ export default function AvailableAreaRequestsTable({
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Conversion Rate
+            </CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats.conversionRate}%</div>
-            <p className="text-xs text-muted-foreground">
-              Pending to notified
-            </p>
+            <div className="text-2xl font-bold text-blue-600">
+              {stats.conversionRate}%
+            </div>
+            <p className="text-xs text-muted-foreground">Pending to notified</p>
           </CardContent>
         </Card>
       </div>
@@ -275,14 +392,16 @@ export default function AvailableAreaRequestsTable({
               <Input
                 placeholder="Search by email or city..."
                 value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, search: e.target.value })
+                }
                 className="pl-10"
               />
             </div>
 
             <Select
               value={filters.status}
-              onValueChange={(value: Status | "all") => 
+              onValueChange={(value: Status | "all") =>
                 setFilters({ ...filters, status: value })
               }
             >
@@ -299,7 +418,7 @@ export default function AvailableAreaRequestsTable({
 
             <Select
               value={filters.dateRange}
-              onValueChange={(value: "all" | "today" | "week" | "month") => 
+              onValueChange={(value: "all" | "today" | "week" | "month") =>
                 setFilters({ ...filters, dateRange: value })
               }
             >
@@ -340,7 +459,9 @@ export default function AvailableAreaRequestsTable({
         <CardHeader>
           <CardTitle>Area Requests</CardTitle>
           <CardDescription>
-            Showing {startIndex + 1}-{Math.min(endIndex, filteredAndSortedData.length)} of {filteredAndSortedData.length} requests
+            Showing {startIndex + 1}-
+            {Math.min(endIndex, filteredAndSortedData.length)} of{" "}
+            {filteredAndSortedData.length} requests
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -348,7 +469,7 @@ export default function AvailableAreaRequestsTable({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => handleSort("email")}
                   >
@@ -360,7 +481,7 @@ export default function AvailableAreaRequestsTable({
                       )}
                     </div>
                   </TableHead>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => handleSort("city")}
                   >
@@ -372,7 +493,7 @@ export default function AvailableAreaRequestsTable({
                       )}
                     </div>
                   </TableHead>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => handleSort("status")}
                   >
@@ -384,7 +505,7 @@ export default function AvailableAreaRequestsTable({
                       )}
                     </div>
                   </TableHead>
-                  <TableHead 
+                  <TableHead
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => handleSort("createdAt")}
                   >
@@ -405,7 +526,9 @@ export default function AvailableAreaRequestsTable({
                     <TableCell colSpan={5} className="text-center py-8">
                       <div className="flex flex-col items-center gap-2">
                         <AlertCircle className="h-8 w-8 text-muted-foreground" />
-                        <p className="text-muted-foreground">No requests found matching your filters</p>
+                        <p className="text-muted-foreground">
+                          No requests found matching your filters
+                        </p>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -415,19 +538,28 @@ export default function AvailableAreaRequestsTable({
                       <TableCell className="font-medium">
                         <div className="flex flex-col">
                           <span>{request.email}</span>
-                          <span className="text-xs text-muted-foreground">ID: {request.id}</span>
+                          <span className="text-xs text-muted-foreground">
+                            ID: {request.id}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell>
                         {request.cityId ? (
                           <div className="flex items-center gap-2">
                             <MapPin className="h-4 w-4 text-green-600" />
-                            <span>City ID: {request.cityId}</span>
+                            <span>
+                              {cityNames[request.cityId] ||
+                                (loadingCities.has(request.cityId)
+                                  ? "Loading..."
+                                  : "Unknown City")}
+                            </span>
                           </div>
                         ) : (
                           <div className="flex items-center gap-2">
                             <AlertCircle className="h-4 w-4 text-yellow-600" />
-                            <span className="text-sm">{request.notFoundCity}</span>
+                            <span className="text-sm">
+                              {request.notFoundCity}
+                            </span>
                           </div>
                         )}
                       </TableCell>
@@ -463,7 +595,9 @@ export default function AvailableAreaRequestsTable({
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground">
-                Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedData.length)} of {filteredAndSortedData.length} results
+                Showing {startIndex + 1} to{" "}
+                {Math.min(endIndex, filteredAndSortedData.length)} of{" "}
+                {filteredAndSortedData.length} results
               </div>
               <div className="flex items-center space-x-2">
                 <Button
