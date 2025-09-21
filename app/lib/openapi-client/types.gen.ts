@@ -267,6 +267,101 @@ export type ForgotPasswordResponses = {
 
 export type ForgotPasswordResponse = ForgotPasswordResponses[keyof ForgotPasswordResponses];
 
+export type ResetPasswordData = {
+    /**
+     * Request body
+     */
+    body: {
+        accessToken: string;
+        refreshToken: string;
+        password: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/auth/reset-password';
+};
+
+export type ResetPasswordErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        message: string;
+        details?: string;
+    };
+    /**
+     * Unauthorized
+     */
+    401: {
+        message: string;
+        details?: string;
+    };
+    /**
+     * Server Error
+     */
+    500: {
+        message: string;
+        details?: string;
+    };
+};
+
+export type ResetPasswordError = ResetPasswordErrors[keyof ResetPasswordErrors];
+
+export type ResetPasswordResponses = {
+    /**
+     * Success
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type ResetPasswordResponse = ResetPasswordResponses[keyof ResetPasswordResponses];
+
+export type ResetPasswordWithOtpData = {
+    /**
+     * Request body
+     */
+    body: {
+        email: string;
+        otpCode: string;
+        password: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/auth/reset-password-otp';
+};
+
+export type ResetPasswordWithOtpErrors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        message: string;
+        details?: string;
+    };
+    /**
+     * Server Error
+     */
+    500: {
+        message: string;
+        details?: string;
+    };
+};
+
+export type ResetPasswordWithOtpError = ResetPasswordWithOtpErrors[keyof ResetPasswordWithOtpErrors];
+
+export type ResetPasswordWithOtpResponses = {
+    /**
+     * Success
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type ResetPasswordWithOtpResponse = ResetPasswordWithOtpResponses[keyof ResetPasswordWithOtpResponses];
+
 export type GetAuthGoogleData = {
     body?: never;
     path?: never;
@@ -9647,6 +9742,15 @@ export type CreateOfferData = {
         materialCost?: string | null;
         offerDescription?: string | null;
         status?: 'pending' | 'accepted' | 'declined';
+        offerAvailableDates: Array<{
+            id: string;
+            offerId: string;
+            date: string;
+            startTime: string | null;
+            endTime: string | null;
+            createdAt: string;
+            updatedAt: string;
+        }>;
     };
     path?: never;
     query?: never;
@@ -9745,5 +9849,5 @@ export type GetPublicCampaignsResponses = {
 export type GetPublicCampaignsResponse = GetPublicCampaignsResponses[keyof GetPublicCampaignsResponses];
 
 export type ClientOptions = {
-    baseUrl: 'https://fiksaten-api-v2-1.onrender.com' | (string & {});
+    baseUrl: 'http://localhost:3000' | (string & {});
 };
